@@ -1,0 +1,28 @@
+2009-06-10  Manuel Cerón  <ceronman@gmail.com>
+
+	* MainWindow.cs: Added Action callbacks
+
+2009-06-06  Manuel Cerón  <ceronman@gmail.com>
+
+	* MainWindow.cs: Using UndoableTool when creation
+
+2009-06-04  Manuel Cerón  <ceronman@gmail.com>
+
+	* MainWindow.cs: Added Undo and Redo actions
+
+2009-05-28  Manuel Cerón  <ceronman@gmail.com>
+
+	* ClassFigure.cs:
+	* ClassDesigner.csproj: Added ClassFigure.
+
+	* MainWindow.cs: Added a menu entry for creating ClassFigures
+
+2009-05-28  Manuel Cerón  <ceronman@gmail.com>
+
+	* Main.cs:
+	* gtk-gui:
+	* MainWindow.cs:
+	* AssemblyInfo.cs:
+	* ClassDesigner.csproj: Added new example project. Will be
+	base for the Class Designer Addin of MonoDevelop
+

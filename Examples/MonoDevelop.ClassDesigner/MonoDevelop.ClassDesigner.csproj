@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{73A8571A-9FA6-43A5-BC04-B7C1EE13D63B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AssemblyName>MonoDevelop.ClassDesigner</AssemblyName>
+    <RootNamespace>MonoDevelop.ClassDesigner</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>3</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="MonoDevelop.Core, Version=2.0.0.0, Culture=neutral">
+      <Package>monodevelop</Package>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="MonoDevelop.Core.Gui, Version=2.0.0.0, Culture=neutral">
+      <Package>monodevelop</Package>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="MonoDevelop.Ide, Version=2.0.0.0, Culture=neutral">
+      <Package>monodevelop</Package>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="MonoDevelop.Projects, Version=2.0.0.0, Culture=neutral">
+      <Package>monodevelop</Package>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="Mono.Cairo">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="gdk-sharp, Version=2.10.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="gtk-sharp, Version=2.10.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="pango-sharp, Version=2.10.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="MonoDevelop.Components, Version=2.2.0.0, Culture=neutral">
+      <Package>monodevelop</Package>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="Commands.cs" />
+    <Compile Include="ShowClassDesignerHandler.cs" />
+    <Compile Include="ClassDesignerView.cs" />
+    <Compile Include="MonoDevelop.ClassDesigner.Figures\ClassFigure.cs" />
+    <Compile Include="MonoDevelop.ClassDesigner.Figures\TypeFigure.cs" />
+    <Compile Include="MonoDevelop.ClassDesigner.Figures\TypeHeaderFigure.cs" />
+    <Compile Include="MonoDevelop.ClassDesigner.Figures\TypeMemberFigure.cs" />
+    <Compile Include="MonoDevelop.ClassDesigner.Figures\TypeMemberGroupFigure.cs" />
+    <Compile Include="MonoDevelop.ClassDesigner.Figures\InheritanceConnection.cs" />
+    <Compile Include="MonoDevelop.ClassDesigner.Figures\EnumFigure.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <EmbeddedResource Include="MonoDevelop.ClassDesigner.addin.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="MonoDevelop.ClassDesigner.Figures\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\MonoHotDraw\MonoHotDraw.csproj">
+      <Project>{D5D2EB0A-662A-471D-94C0-FD51C96E9429}</Project>
+      <Name>MonoHotDraw</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties InternalTargetFrameworkVersion="3.5" />
+    </MonoDevelop>
+  </ProjectExtensions>
+</Project>

@@ -1,0 +1,17 @@
+2009-08-14  Manuel Cerón  <ceronman@gmail.com>
+
+	* gui.stetic:
+	* MainWindow.cs: Demo/MainWindow updated to control zooming
+	and show visible area
+
+2009-06-10  Manuel Cerón  <ceronman@gmail.com>
+
+	* gui.stetic:
+	* MainWindow.cs: Added Action callbacks
+
+2009-06-10  Manuel Cerón  <ceronman@gmail.com>
+
+	* gui.stetic:
+	* generated.cs:
+	* MainWindow.cs: Added Demo Project
+

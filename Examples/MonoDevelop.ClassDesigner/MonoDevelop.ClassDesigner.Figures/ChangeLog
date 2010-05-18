@@ -1,0 +1,66 @@
+2009-08-01  Manuel Cerón  <ceronman@gmail.com>
+
+	* EnumFigure.cs:
+	* TypeFigure.cs:
+	* ClassFigure.cs: Moved functionality from ClassFigure to
+	TypeFigure
+
+2009-08-01  Manuel Cerón  <ceronman@gmail.com>
+
+	* TypeFigure.cs: AddMemberGroup uses VstackFigure
+
+	* EnumFigure.cs: Added Enum Figure
+
+2009-07-10  Manuel Cerón  <ceronman@gmail.com>
+
+	* InheritanceConnection.cs: Added inheritance connection
+	figure
+
+	* TypeFigure.cs: Changed linewidth of BasicDrawSelected
+
+2009-07-10  Manuel Cerón  <ceronman@gmail.com>
+
+	* TypeFigure.cs: Added ContainsPoint and Mame members
+
+	* TypeHeaderFigure.cs: Using a larger font size
+
+2009-07-10  Manuel Cerón  <ceronman@gmail.com>
+
+	* ClassFigure.cs: Rewritten
+
+	* TypeFigure.cs: Rewritten from VStackFigure
+
+	* TypeMemberFigure.cs:
+	* TypeMemberGroupFigure.cs: Using special font color for
+	member type
+
+	* TypeHeaderFigure.cs: Added properties
+
+2009-07-09  Manuel Cerón  <ceronman@gmail.com>
+
+	* TypeHeaderFigure.cs: Now inherits form VStackFigure. Added
+	Paddings and Sizes
+
+	* TypeMemberFigure.cs: Adding Sizes and Alignments
+
+	* TypeMemberGroupFigure.cs: Added
+
+2009-07-09  Manuel Cerón  <ceronman@gmail.com>
+
+	* TypeMemberFigure.cs: Testing icon
+
+2009-07-09  Manuel Cerón  <ceronman@gmail.com>
+
+	* TypeMemberFigure.cs: Added.
+
+2009-07-07  Manuel Cerón  <ceronman@gmail.com>
+
+	* TypeHeaderFigure.cs: Added a toggle Handle
+
+2009-07-06  Manuel Cerón  <ceronman@gmail.com>
+
+	* TypeFigure.cs:
+	* ClassFigure.cs:
+	* TypeHeaderFigure.cs: Added new Class Designer Addin Project
+	for MonoDevelop
+
