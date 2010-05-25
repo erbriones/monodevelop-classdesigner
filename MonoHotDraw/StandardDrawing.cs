@@ -36,6 +36,8 @@ namespace MonoHotDraw {
 	
 		public event EventHandler <DrawingEventArgs> DrawingInvalidated;
 		public event EventHandler <DrawingEventArgs> SizeAllocated;
+		public event EventHandler <FigureEventArgs> FigureAdded;
+		public event EventHandler <FigureEventArgs> FigureRemoved;
 
 		public StandardDrawing (): base () {
 		}
@@ -55,6 +57,7 @@ namespace MonoHotDraw {
 		{
 			base.Add (figure);
 			figure.FigureChanged += FigureChangedHandler;
+			OnFigureAdded(figure);
 			RecalculateDisplayBox ();
 		}
 		
@@ -62,11 +65,24 @@ namespace MonoHotDraw {
 		{
 			base.Remove (figure);
 			figure.FigureChanged -= FigureChangedHandler;
+			OnFigureRemoved (figure);
 			RecalculateDisplayBox ();
 		}
  
 		protected override void FigureInvalidatedHandler (object sender, FigureEventArgs args) {
 			OnDrawingInvalidated (new DrawingEventArgs (this, args.Rectangle));
+		}
+		
+		protected void OnFigureAdded (IFigure figure) {
+			if (FigureAdded != null) {
+				FigureAdded (this, new FigureEventArgs (figure, figure.DisplayBox));
+			}
+		}
+		
+		protected void OnFigureRemoved (IFigure figure) {
+			if (FigureRemoved != null) {
+				FigureRemoved (this, new FigureEventArgs (figure, figure.DisplayBox));
+			}
 		}
 		
 		protected virtual void OnDrawingInvalidated (DrawingEventArgs args) {

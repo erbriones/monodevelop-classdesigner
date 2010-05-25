@@ -1,7 +1,7 @@
 <Addin id          = "ClassDesigner"
        namespace   = "MonoDevelop"
        name        = "Visual Class Designer"
-       author      = "Manuel Cerón	"
+       author      = "Manuel Cerón, Evan Briones"
        copyright   = "MIT X11"
        url         = "http://www.monodevelop.com"
        description = "A Visual Class Designer for MonoDevelop"
@@ -14,10 +14,10 @@
 	</Runtime>
 
 	<Dependencies>
-		<Addin id="Core" version="2.0"/>
-		<Addin id="Core.Gui" version="2.0"/>
-		<Addin id="Projects" version="2.0"/>
-		<Addin id="Ide" version="2.0"/>
+		<Addin id="Core" version="2.2"/>
+		<Addin id="Core.Gui" version="2.2"/>
+		<Addin id="Projects" version="2.2"/>
+		<Addin id="Ide" version="2.2"/>
 	</Dependencies>
 
 	<Extension path = "/MonoDevelop/Ide/Commands">
@@ -34,5 +34,19 @@
 			             insertafter = "Options"/>
 		</Condition>
 	</Extension>
+	<Extension path="/MonoDevelop/Ide/FileFilters">
+		<FileFilter _label="Class Diagram Files" extensions="*.cd" />
+	</Extension>
+	
+	<Extension path="/MonoDevelop/Core/MimeTypes">
+		<MimeType id="class-diagram" _description="Class Diagram File" isText="false"
+				  icon="gtk-convert">
+			<File pattern="*.cd" />
+		</MimeType>
+	</Extension>
 
+	<Extension path="/MonoDevelop/Ide/DisplayBindings">
+		<DisplayBinding id="ClassDesigner" insertafter="DefaultDisplayBinding" 	
+						class="MonoDevelop.ClassDesigner.ClassDiagramDisplayBinding" />
+	</Extension>
 </Addin>

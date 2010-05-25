@@ -1,3 +1,14 @@
+2010-05-25  Evan Briones  <erbriones@gmail.com>
+	
+	* IDrawing: Added FigureAdded and FigureRemoved events to the
+	interface.
+	
+	* StandDrawing: Implemented the FigureAdded and FigureRemoved
+	event handlers.
+	
+	* MonoHotDraw.csproj: Modified the Gtk references to not be
+	version specific.
+	
 2009-08-14  Manuel Cerón  <ceronman@gmail.com>
 
 	* StandardDrawingView.cs: Added zooming support

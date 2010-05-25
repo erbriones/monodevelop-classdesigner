@@ -1,21 +1,21 @@
-// MonoHotDraw. Diagramming Framework
-//
-// Authors:
-//	Manuel Cerón <ceronman@gmail.com>
-//	Mario Carrión <mario@monouml.org>
-//
-// Copyright (C) 2006, 2007, 2008, 2009 MonoUML Team (http://www.monouml.org)
-//
+// 
+// InterfaceFigure.cs
+//  
+// Author:
+//       Evan <erbriones@gmail.com>
+// 
+// Copyright (c) 2010 Evan
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-//
+// 
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-//
+// 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -24,36 +24,28 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using Cairo;
 using System;
-using System.Collections.Generic;
-using MonoHotDraw.Figures;
-using MonoHotDraw.Util;
+using MonoDevelop.Core;
+using MonoDevelop.Projects.Dom;
 
-namespace MonoHotDraw {
+namespace MonoDevelop.ClassDesigner.Figures
+{
 
-	public interface IDrawing {
-	
-		void Add (IFigure figure);
-		void Remove (IFigure figure);
-		void Draw (Context context, FigureCollection figures);
-		void Draw (Context context);
-		bool Includes (IFigure figure);
-		IFigure FindFigure (double x, double y);
-		void RecalculateDisplayBox ();
-		
-		void BringToFront (IFigure figure);
-		void SendToBack (IFigure figure);
+	public class InterfaceFigure : TypeFigure
+	{
 
-		RectangleD DisplayBox { get; }
-		IEnumerable <IFigure> FiguresEnumeratorReverse { get; }
-		IEnumerable <IFigure> FiguresEnumerator { get; }
+		public InterfaceFigure (IType domType) : base(domType)
+		{
+		}
 
-		event EventHandler <DrawingEventArgs> DrawingInvalidated;
-		event EventHandler <DrawingEventArgs> SizeAllocated;
-		
-		event EventHandler <FigureEventArgs> FigureAdded;
-		event EventHandler <FigureEventArgs> FigureRemoved;
+		protected override ClassType ClassType {
+			get { return ClassType.Interface; }
+		}
+
+		protected override void CreateGroups ()
+		{
+			methods = new TypeMemberGroupFigure (GettextCatalog.GetString ("Methods"));
+			AddMemberGroup (methods);
+		}
 	}
 }
-

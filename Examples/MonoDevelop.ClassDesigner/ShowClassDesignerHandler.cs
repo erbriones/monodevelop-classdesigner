@@ -36,9 +36,12 @@ namespace MonoDevelop.ClassDesigner {
 		protected override void Run() 
 		{
 			ClassDesignerView view = new ClassDesignerView();
+			view.Create ();
+			
 			IdeApp.Workbench.OpenDocument(view, true);
 			Project project = IdeApp.ProjectOperations.CurrentSelectedProject;
 			ProjectDom dom = ProjectDomService.GetProjectDom(project);
+		
 			foreach (IType type in dom.Types) {
 				System.Console.WriteLine("-----------");
 				System.Console.WriteLine(type.FullName);

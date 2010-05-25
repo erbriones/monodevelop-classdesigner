@@ -1,3 +1,20 @@
+2010-05-25  Evan Briones  <erbriones@gmail.com>
+	* ClassDesignerView.cs: Moved diagram creation to class diagram.
+	Added support for loading and saving.  
+	
+	* ClassDiagram: Added basic class diagram support 
+	
+	* ClassDiagramDisplayBinding: Added a display binding for class
+	diagram files.
+	
+	* MonoDevelop.ClassDesigner.addin.xml: Added FileFilter, MimeType,
+	and DisplayBinding extensions for class diagram files. 
+	
+	* ShowClassDesignerHandle.cs: Added method call to display diagram.
+	
+	* MonoDevelop.ClassDesigner.csproj: Changed the gtk references to not be
+	version specific. 
+
 2009-08-01  Manuel Cerón  <ceronman@gmail.com>
 
 	* MonoDevelop.ClassDesigner.csproj: Project updated

@@ -23,7 +23,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+
+using System;
 using System.Collections.Generic;
+using System.Xml;
 using Gtk;
 using MonoDevelop.Core;
 using MonoDevelop.Ide.Gui;
@@ -32,11 +35,14 @@ using MonoDevelop.Projects.Dom;
 using MonoDevelop.Projects.Dom.Parser;
 using MonoDevelop.ClassDesigner.Figures;
 using MonoHotDraw;
+using MonoHotDraw.Figures;
 using MonoHotDraw.Tools;
 
 namespace MonoDevelop.ClassDesigner {
 	
 	public class ClassDesignerView: AbstractViewContent {
+		SteticComponent mhdEditor;
+		ClassDiagram diagram;
 		
 		public override string StockIconId {
 			get {
@@ -46,11 +52,34 @@ namespace MonoDevelop.ClassDesigner {
 		
 		public override void Load (string fileName)
 		{
+			Console.WriteLine ("Loading {0}", fileName);
+			
+			diagram.Load (XmlReader.Create (fileName));			
 		}
 		
+		public override void Save ()
+		{
+			Save (ContentName);
+		}
+
+		public override void Save (string fileName)
+		{	
+			XmlWriter writer;
+			
+			lock (writer = XmlWriter.Create (fileName)) {
+				diagram.Write (writer);
+				
+				writer.Flush ();
+				writer.Close ();
+			}
+			
+			ContentName = fileName;
+			IsDirty = false;
+		}
+
 		public override bool IsFile {
 			get {
-				return false;
+				return true;
 			}
 		}
 		
@@ -59,68 +88,35 @@ namespace MonoDevelop.ClassDesigner {
 				return mhdEditor;
 			}
 		}
-		
-		public ClassDesignerView()
+
+		public ClassDesignerView ()
 		{
-			ContentName = GettextCatalog.GetString ("Class Diagram");
-			IsViewOnly = true;
-			
+			IsViewOnly = false;
 			mhdEditor = new SteticComponent();
 			mhdEditor.ShowAll();
-			
-			// CODE DOM TEST:
-			// THIS IS TEMPORAL
-			
+
 			Project project = IdeApp.ProjectOperations.CurrentSelectedProject;
 			ProjectDom dom = ProjectDomService.GetProjectDom(project);
-			figures = new List<TypeFigure>();
-			foreach (IType type in dom.Types) {
-				if (type.ClassType == ClassType.Class) {
-					System.Console.WriteLine("Adding Class");
-					figures.Add(new ClassFigure(type));
-				}
-				
-				if (type.ClassType == ClassType.Enum) {
-					System.Console.WriteLine("Adding Enum");
-					figures.Add(new EnumFigure(type));
-				}
-			}
 			
-			double x = 50.0;
-			double y = 50.0;
-			
-			foreach (TypeFigure figure in figures)  {
-				mhdEditor.View.Drawing.Add(figure);
-				figure.MoveTo(x, y);
-				x += figure.DisplayBox.Width + 50.0;
-				if (x > 1000.0) {
-					x = 50.0;
-					y += figure.DisplayBox.Height + 100.0;
-				}
-			}
-			
-			foreach (IType type in dom.Types) {
-				if (type.ClassType == ClassType.Class) {
-					ClassFigure subclass = GetFigure(type.Name);
-					ClassFigure superclass = GetFigure(type.BaseType.Name);
-					
-					if (subclass != null && superclass != null) {
-						InheritanceConnectionFigure connection = new InheritanceConnectionFigure(subclass, superclass);
-						mhdEditor.View.Drawing.Add(connection);
-					}
-				}
-			}
+			diagram = new ClassDiagram (mhdEditor, dom);
+			diagram.DiagramChanged += OnDiagramChanged;
+			UntitledName = "Untitled1.cd";
 		}
 		
-		private ClassFigure GetFigure(string name) {
-			foreach (TypeFigure figure in figures) {
-				if (figure.Name == name)
-					return figure as ClassFigure;
-			}
-			return null;
+		public ClassDesignerView (string fileName) : this ()
+		{
+			ContentName = fileName;
 		}
 		
-		private SteticComponent mhdEditor;
-		private List<TypeFigure> figures;
+		public void Create ()
+		{
+			diagram.Create ();
+		}
+		
+		
+		void OnDiagramChanged (object sender, EventArgs e)
+		{
+			IsDirty = true;
+		}
 	}
 }

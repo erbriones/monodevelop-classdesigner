@@ -49,12 +49,23 @@
     <Reference Include="Mono.Cairo">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="gdk-sharp, Version=2.10.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="gtk-sharp, Version=2.10.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="pango-sharp, Version=2.10.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="gdk-sharp, Version=2.10.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Package>gtk-sharp-2.0</Package>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="gtk-sharp, Version=2.10.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Package>gtk-sharp-2.0</Package>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="pango-sharp, Version=2.10.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Package>gtk-sharp-2.0</Package>
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
     <Reference Include="MonoDevelop.Components, Version=2.2.0.0, Culture=neutral">
       <Package>monodevelop</Package>
     </Reference>
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
@@ -62,12 +73,17 @@
     <Compile Include="ShowClassDesignerHandler.cs" />
     <Compile Include="ClassDesignerView.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Figures\ClassFigure.cs" />
-    <Compile Include="MonoDevelop.ClassDesigner.Figures\TypeFigure.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Figures\TypeHeaderFigure.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Figures\TypeMemberFigure.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Figures\TypeMemberGroupFigure.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Figures\InheritanceConnection.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Figures\EnumFigure.cs" />
+    <Compile Include="ClassDiagramDisplayBinding.cs" />
+    <Compile Include="MonoDevelop.ClassDesigner.Figures\TypeFigure.cs" />
+    <Compile Include="MonoDevelop.ClassDesigner.Figures\StructFigure.cs" />
+    <Compile Include="MonoDevelop.ClassDesigner.Figures\InterfaceFigure.cs" />
+    <Compile Include="MonoDevelop.ClassDesigner.Figures\DelegateFigure.cs" />
+    <Compile Include="ClassDiagram.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

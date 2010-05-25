@@ -1,3 +1,11 @@
+2010-09-22  Evan Briones  <erbriones@gmail.com>
+	* DelegateFigure.cs:
+	* InterfaceFigure.cs:
+	* StructFigure.cs: Added Figures
+	* TypeFigure: Added a Toggle method and Expanded property for
+	the Collapsed property in class diagram files. Changed Name from 
+	String to IType. 
+	
 2009-08-01  Manuel Cerón  <ceronman@gmail.com>
 
 	* EnumFigure.cs:

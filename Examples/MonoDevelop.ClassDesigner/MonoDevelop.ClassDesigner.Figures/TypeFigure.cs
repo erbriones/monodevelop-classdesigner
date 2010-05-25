@@ -63,6 +63,7 @@ namespace MonoDevelop.ClassDesigner.Figures {
 			if (domtype == null || domtype.ClassType != this.ClassType) {
 				throw new ArgumentException();
 			}
+			this.domtype = domtype;
 			
 			Header.Name = domtype.Name;
 			Header.Namespace = domtype.Namespace;
@@ -139,9 +140,8 @@ namespace MonoDevelop.ClassDesigner.Figures {
 			}
 		}
 		
-		// FIXME: Use an IType member instead
-		public string Name {
-			get { return Header.Name; }
+		public IType Name {
+			get { return domtype; }
 		}
 		
 		public void AddField(Pixbuf icon, string type, string name) {
@@ -164,6 +164,8 @@ namespace MonoDevelop.ClassDesigner.Figures {
 			members.Add(group);
 		}
 		
+		
+		
 		protected TypeHeaderFigure Header { get; set; }
 		
 		protected virtual void CreateGroups() {
@@ -184,6 +186,15 @@ namespace MonoDevelop.ClassDesigner.Figures {
 			}
 		}
 		
+		public void Toggle ()
+		{
+			expandHandle.Active = !expandHandle.Active;
+		}
+		
+		public bool Expanded {
+			get { return expandHandle.Active; }
+		}
+		
 		protected TypeMemberGroupFigure fields;
 		protected TypeMemberGroupFigure properties;
 		protected TypeMemberGroupFigure methods;
@@ -191,5 +202,6 @@ namespace MonoDevelop.ClassDesigner.Figures {
 		
 		private VStackFigure members;
 		private ToggleButtonHandle expandHandle;
+		private IType domtype;
 	}
 }
