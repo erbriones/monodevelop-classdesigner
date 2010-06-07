@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using Gtk;
 using Gdk;
+using Cairo;
 using MonoHotDraw.Figures;
 using MonoHotDraw.Handles;
 using MonoHotDraw.Util;
@@ -93,25 +94,44 @@ namespace MonoDevelop.ClassDesigner.Figures {
 			}
 		}
 		
-		public override void BasicDrawSelected (Cairo.Context context) {
-			RectangleD rect = DisplayBox;
-			rect.OffsetDot5();
-			context.LineWidth = 3.0;
-			context.Rectangle(GdkCairoHelper.CairoRectangle(rect));
-			context.Stroke();
+		void DrawPattern (Cairo.Context context)
+		{
+			context.Save ();
+			Gradient pattern = new LinearGradient (DisplayBox.X, DisplayBox.Y, DisplayBox.X2, DisplayBox.Y2);
+			pattern.AddColorStop (0, FigureColor);
+			context.Pattern = pattern;
+			context.FillPreserve();
+			context.Restore ();
 		}
 		
-		public override void BasicDraw (Cairo.Context context) {
+		public override void BasicDrawSelected (Cairo.Context context)
+		{
 			RectangleD rect = DisplayBox;
-			rect.OffsetDot5();
-			context.LineWidth = 1.0;
-			context.Rectangle(GdkCairoHelper.CairoRectangle(rect));
-			context.Color = new Cairo.Color(1.0, 1.0, 0.7, 0.8);
-			context.FillPreserve();
+			rect.OffsetDot5 ();
+			CairoFigures.RoundedRectangle (context, rect, 6.25);
+		
+			DrawPattern (context);
+		
+			context.LineWidth = 3.0;
 			context.Color = new Cairo.Color(0.0, 0.0, 0.0, 1.0);
 			context.Stroke();
 			
-			base.BasicDraw(context);
+			base.BasicDraw (context);
+		}
+
+		public override void BasicDraw (Cairo.Context context)
+		{
+			RectangleD rect = DisplayBox;
+			
+			CairoFigures.RoundedRectangle (context, rect, 6.25);
+		
+			DrawPattern (context);
+			
+			context.LineWidth = 1.0;
+			context.Color = new Cairo.Color(0.0, 0.0, 0.0, 1.0);
+			context.Stroke();
+			
+			base.BasicDraw (context);
 		}
 		
 		public override bool ContainsPoint (double x, double y) {
@@ -195,6 +215,12 @@ namespace MonoDevelop.ClassDesigner.Figures {
 			get { return expandHandle.Active; }
 		}
 		
+		protected Cairo.Color FigureColor {
+			get { return color; }
+			set {
+				color = value;
+			}
+		}
 		protected TypeMemberGroupFigure fields;
 		protected TypeMemberGroupFigure properties;
 		protected TypeMemberGroupFigure methods;
@@ -203,5 +229,6 @@ namespace MonoDevelop.ClassDesigner.Figures {
 		private VStackFigure members;
 		private ToggleButtonHandle expandHandle;
 		private IType domtype;
+		Cairo.Color color;
 	}
 }

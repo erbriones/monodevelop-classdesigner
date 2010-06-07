@@ -51,7 +51,10 @@ namespace MonoHotDraw {
 					
 			DebugCreateTimer ();
 		}
-
+		
+		protected StandardDrawingView (IntPtr raw) : base (raw)
+		{}
+		
 		public IDrawing Drawing {
 			set {
 				if (value == _drawing) {

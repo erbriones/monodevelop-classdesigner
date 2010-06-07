@@ -36,6 +36,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 
 		public InterfaceFigure (IType domType) : base(domType)
 		{
+			FigureColor = new Cairo.Color (0.8, 0.8, 0.8, 0.4);
 		}
 
 		protected override ClassType ClassType {
@@ -44,6 +45,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 
 		protected override void CreateGroups ()
 		{
+			properties = new TypeMemberGroupFigure (GettextCatalog.GetString("Properties"));
 			methods = new TypeMemberGroupFigure (GettextCatalog.GetString ("Methods"));
 			AddMemberGroup (methods);
 		}

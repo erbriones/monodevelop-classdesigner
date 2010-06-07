@@ -24,33 +24,50 @@
 // THE SOFTWARE.
 
 using MonoDevelop.Components.Commands;
+using MonoDevelop.Ide.Gui.Components;
 using MonoDevelop.Ide.Gui;
+using MonoDevelop.Ide.Gui.Pads.ProjectPad;
 using MonoDevelop.Projects;
 using MonoDevelop.Projects.Dom;
 using MonoDevelop.Projects.Dom.Parser;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MonoDevelop.ClassDesigner {
 
 	public class ShowClassDesignerHandler: CommandHandler {
 		protected override void Run() 
 		{
-			ClassDesignerView view = new ClassDesignerView();
-			view.Create ();
+			object item = IdeApp.ProjectOperations.CurrentSelectedItem;
+			Project project;
+			
+			if (item is ProjectFile)
+				project = ((ProjectFile)item).Project;
+			else if (item is Project)
+				project = (Project) item;
+			else if (item is ProjectFolder)
+				project = ((ProjectFolder) item).Project;
+			else
+				project = IdeApp.ProjectOperations.CurrentSelectedProject;
+		
+			var view = new ClassDesignerView (String.Empty);
+			view.Diagram.AddFromProject (project);
 			
 			IdeApp.Workbench.OpenDocument(view, true);
-			Project project = IdeApp.ProjectOperations.CurrentSelectedProject;
-			ProjectDom dom = ProjectDomService.GetProjectDom(project);
-		
+			var dom = ProjectDomService.GetProjectDom (project);
+			
 			foreach (IType type in dom.Types) {
-				System.Console.WriteLine("-----------");
-				System.Console.WriteLine(type.FullName);
-				System.Console.WriteLine(type.Namespace);
-				System.Console.WriteLine(type.HasParts);
-				System.Console.WriteLine(type.ClassType.ToString());
-				System.Console.WriteLine(type.FieldCount);
-				System.Console.WriteLine("-----------");
+					System.Console.WriteLine("-----------");
+					System.Console.WriteLine(type.FullName);
+					System.Console.WriteLine(type.Namespace);
+					System.Console.WriteLine(type.HasParts);
+					System.Console.WriteLine(type.ClassType.ToString());
+					System.Console.WriteLine(type.FieldCount);
+					System.Console.WriteLine("-----------");
 			}
+		
+			return;
 		}
 	}
 }

@@ -23,6 +23,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
 using System.Collections.Generic;
 using Gtk;
 using Gdk;
@@ -39,6 +40,10 @@ namespace MonoHotDraw {
 			
 			Hadjustment = NewDefaultAdjustment();
 			Vadjustment = NewDefaultAdjustment();
+		}
+		
+		protected ContainerCanvas (IntPtr raw) : base(raw)
+		{
 		}
 		
 		public class ContainerCanvasChild: Container.ContainerChild {
@@ -142,7 +147,12 @@ namespace MonoHotDraw {
 		}
 	
 		protected override void ForAll (bool include_internals, Callback callback) {
+			if (_children == null)
+				return;			
 			foreach (ContainerCanvasChild  child in _children.Values) {
+				if (child.Child == null)
+					continue;
+				
 				callback (child.Child);
 			}
 		}

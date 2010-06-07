@@ -1,3 +1,14 @@
+2010-06-06  Evan Briones  <erbriones@gmail.com>
+	* StandardDrawing: Added simple AutoLayout method.
+ 
+2010-05-27  Evan Briones  <erbriones@gmail.com>
+	* ContainerCanvas: Added checking for null _children in ForAll method.
+	Also added IntPtr constructor so that StandardDrawingView could pass the IntPtr
+	to the Gtk.Container.
+	
+	* StandardDrawingView: Implemented a protected IntPtr constructor. This fixed
+	a error which complained about not having an implemented IntPtr constructor.
+
 2010-05-25  Evan Briones  <erbriones@gmail.com>
 	
 	* IDrawing: Added FigureAdded and FigureRemoved events to the

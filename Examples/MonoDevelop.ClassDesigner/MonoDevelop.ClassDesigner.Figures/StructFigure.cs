@@ -36,6 +36,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 
 		public StructFigure (IType domType) : base(domType)
 		{
+			FigureColor = new Cairo.Color (0.0, 0.2, 0.9, 0.4);
 		}
 
 		protected override ClassType ClassType {

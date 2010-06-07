@@ -25,8 +25,6 @@
 
 using System;
 using System.Collections.Generic;
-using Gtk;
-using Gdk;
 using MonoHotDraw.Figures;
 using MonoDevelop.Core;
 using MonoDevelop.Projects.Dom;
@@ -37,12 +35,13 @@ namespace MonoDevelop.ClassDesigner.Figures {
 	public class ClassFigure: TypeFigure {
 		
 		public ClassFigure(IType domtype): base(domtype) {
+			FigureColor = new Cairo.Color (0.1, 0.1, 0.9, 0.4);
 		}
-		
+				
 		protected override ClassType ClassType {
 			get {
 				return ClassType.Class;
 			}
-		}
+		}		
 	}
 }

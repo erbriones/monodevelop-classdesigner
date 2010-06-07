@@ -1,3 +1,22 @@
+2010-06-06  Evan Briones  <erbriones@gmail.com>
+	* MonoDevelop.ClassDesigner.addin.xml: Added new extensions
+	for NodeBuilder.
+	
+	* ClassDesignerView.cs: Changed constructors and added protected
+	constructor. Added a Diagram property.
+	
+	* ShowClassDesignerHandler.cs: Changed to use new AddFrom methods.
+	
+	* MonoDevelop.ClassDesigner.csproj: New folders and files added.
+	Some files moved into new folder.
+	
+2010-05-27  Evan Briones  <erbriones@gmail.com>
+	* ClassDesignerView.cs: Fixed a bug where the current selected project could
+	not be determined on loading monodevelop. Now it will get the project by the fileName
+	if the dom is null.
+	 
+	* ClassDiagram.cs: Added error handling for attributes that do not exist.
+	
 2010-05-25  Evan Briones  <erbriones@gmail.com>
 	* ClassDesignerView.cs: Moved diagram creation to class diagram.
 	Added support for loading and saving.  

@@ -68,7 +68,24 @@ namespace MonoHotDraw {
 			OnFigureRemoved (figure);
 			RecalculateDisplayBox ();
 		}
- 
+		
+		public void AutoLayout ()
+		{
+			double x = 50.0;
+			double y = 50.0;
+			
+			foreach (IFigure figure in Figures) {
+				figure.MoveTo (x, y);
+				
+				x += figure.DisplayBox.Width + 50.0;
+				
+				if (x > 1000.0) {
+					x = 50.0;
+					y += figure.DisplayBox.Height + 100.0;
+				}
+			}	
+		}
+		
 		protected override void FigureInvalidatedHandler (object sender, FigureEventArgs args) {
 			OnDrawingInvalidated (new DrawingEventArgs (this, args.Rectangle));
 		}

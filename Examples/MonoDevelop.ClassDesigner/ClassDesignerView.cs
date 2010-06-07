@@ -33,6 +33,7 @@ using MonoDevelop.Ide.Gui;
 using MonoDevelop.Projects;
 using MonoDevelop.Projects.Dom;
 using MonoDevelop.Projects.Dom.Parser;
+using MonoDevelop.ClassDesigner.Diagram;
 using MonoDevelop.ClassDesigner.Figures;
 using MonoHotDraw;
 using MonoHotDraw.Figures;
@@ -50,11 +51,14 @@ namespace MonoDevelop.ClassDesigner {
 			}
 		}
 		
+		public ClassDiagram Diagram {
+			get { return diagram; }
+		}
+		
 		public override void Load (string fileName)
 		{
 			Console.WriteLine ("Loading {0}", fileName);
-			
-			diagram.Load (XmlReader.Create (fileName));			
+			diagram.Load (XmlReader.Create (fileName));
 		}
 		
 		public override void Save ()
@@ -88,32 +92,37 @@ namespace MonoDevelop.ClassDesigner {
 				return mhdEditor;
 			}
 		}
-
-		public ClassDesignerView ()
+		
+		protected ClassDesignerView (Project project, string fileName)
 		{
+			if (String.IsNullOrEmpty (fileName))
+				UntitledName = "ClassDiagram.cd";
+			else {
+				ContentName = fileName;
+
+				if (project == null)
+					project = IdeApp.Workspace.GetProjectContainingFile (ContentName);
+			}
+			
 			IsViewOnly = false;
+			
 			mhdEditor = new SteticComponent();
 			mhdEditor.ShowAll();
-
-			Project project = IdeApp.ProjectOperations.CurrentSelectedProject;
-			ProjectDom dom = ProjectDomService.GetProjectDom(project);
 			
-			diagram = new ClassDiagram (mhdEditor, dom);
-			diagram.DiagramChanged += OnDiagramChanged;
-			UntitledName = "Untitled1.cd";
+			Project = project;
+			diagram = new ClassDiagram (mhdEditor, ProjectDomService.GetProjectDom (project));
+			Diagram.DiagramChanged += OnDiagramChanged;
+				
 		}
 		
-		public ClassDesignerView (string fileName) : this ()
+		public ClassDesignerView (Project project) : this (project, String.Empty)
 		{
-			ContentName = fileName;
 		}
 		
-		public void Create ()
+		public ClassDesignerView (string fileName) : this (null, fileName)
 		{
-			diagram.Create ();
 		}
-		
-		
+
 		void OnDiagramChanged (object sender, EventArgs e)
 		{
 			IsDirty = true;

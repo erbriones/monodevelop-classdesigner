@@ -22,18 +22,45 @@
 
 	<Extension path = "/MonoDevelop/Ide/Commands">
 		<Command id = "MonoDevelop.ClassDesigner.Commands.ShowClassDesigner"
-		         defaultHandler = "MonoDevelop.ClassDesigner.ShowClassDesignerHandler"
 		         _label = "Class Designer"
 		         icon = "gtk-convert"/>
 	</Extension>
-
+	
 	<Extension path="/MonoDevelop/Ide/ContextMenu/ProjectPad">
-		<Condition id="ItemType" value="Project">
+		<Condition id="ItemType" value="Project|ProjectFolder|ProjectFile">
 			<CommandItem id="MonoDevelop.ClassDesigner.Commands.ShowClassDesigner"
 			             _label = "_Show Class Diagram"
 			             insertafter = "Options"/>
 		</Condition>
 	</Extension>
+
+	<Extension path="/MonoDevelop/Ide/ContextMenu/ClassPad/Project">
+		<CommandItem id="MonoDevelop.ClassDesigner.Commands.ShowClassDesigner"
+			_label="_Show Class Diagram" insertafter="Options"/>
+	</Extension>
+
+	<Extension path="/MonoDevelop/Ide/ContextMenu/ClassPad/Namespace">
+		<CommandItem id="MonoDevelop.ClassDesigner.Commands.ShowClassDesigner"
+			_label="_Show Class Diagram" insertafter="Options"/>
+	</Extension>
+
+	<Extension path="/MonoDevelop/Ide/ContextMenu/ClassPad/Class">
+		<CommandItem id="MonoDevelop.ClassDesigner.Commands.ShowClassDesigner"
+			_label="_Show Class Diagram" insertafter="Options"/>
+	</Extension>
+	
+	
+	<Extension path="/MonoDevelop/Ide/Pads/ProjectPad">
+		<NodeBuilder class="MonoDevelop.ClassDesigner.Extensions.GenericNodeBuilderExtension" />
+		<NodeBuilder class="MonoDevelop.ClassDesigner.Extensions.GenericNodeBuilderExtension" />
+		<NodeBuilder class="MonoDevelop.ClassDesigner.Extensions.GenericNodeBuilderExtension" />
+	</Extension>
+	
+	<Extension path="/MonoDevelop/Ide/Pads/ClassPad">
+		<NodeBuilder class="MonoDevelop.ClassDesigner.Extensions.GenericNodeBuilderExtension" />
+		<NodeBuilder class="MonoDevelop.ClassDesigner.Extensions.GenericNodeBuilderExtension" />
+	</Extension>
+	
 	<Extension path="/MonoDevelop/Ide/FileFilters">
 		<FileFilter _label="Class Diagram Files" extensions="*.cd" />
 	</Extension>

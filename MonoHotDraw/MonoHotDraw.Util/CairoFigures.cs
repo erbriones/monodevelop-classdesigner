@@ -53,5 +53,34 @@ namespace MonoHotDraw.Util {
 			c.LineTo (rect.X+radius, rect.Y);
 			c.CurveTo (rect.X+radius, rect.Y, rect.X, rect.Y, rect.X, rect.Y+radius);
 		}
+		
+		public static void RoundedRectangle (Cairo.Context c, RectangleD rect, double radius)
+		{
+			if (radius > (rect.Width /2) || radius > (rect.Height / 2)) {
+				radius = Math.Min ((rect.Width /2), (rect.Height / 2));
+			}
+			
+			c.Save ();
+			
+			/* Bottom Left */
+			c.MoveTo(rect.X, rect.Y + radius);
+			c.Arc (rect.X + radius, rect.Y + radius, radius, Math.PI, -Math.PI/2);
+			c.LineTo (rect.X2 - radius, rect.Y);
+			
+			/* Bottom Right */
+			c.Arc (rect.X2 - radius, rect.Y + radius, radius, -Math.PI/2, 0);
+			c.LineTo (rect.X2, rect.Y2 - radius);
+				
+			/* Top Right */
+			c.Arc (rect.X2 - radius, rect.Y2 - radius, radius, 0, Math.PI/2);
+			c.LineTo (rect.X + radius, rect.Y2);
+					
+			/* Top Left */
+			c.Arc(rect.X + radius, rect.Y2 - radius, radius, Math.PI/2, Math.PI);
+			c.ClosePath ();
+			
+			c.Restore ();
+		}
+		
 	}
 }

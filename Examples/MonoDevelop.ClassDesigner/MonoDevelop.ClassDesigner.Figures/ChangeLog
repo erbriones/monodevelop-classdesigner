@@ -1,4 +1,15 @@
-2010-09-22  Evan Briones  <erbriones@gmail.com>
+2010-06-06  Evan Briones  <erbriones@gmail.com>
+	* CommentFigure.cs: Added new figure.
+	
+	* DelegateFigure.cs:
+	* InterfaceFigure.cs:
+	* StructFigure.cs: 
+	* ClassFigure.cs: Sets FigureColor property from constructor to set figure color.
+		
+	* TypeFigure.cs: Change drawing to now draw rounded rectangles.
+	Added FigureColor property.
+	
+2010-05-22  Evan Briones  <erbriones@gmail.com>
 	* DelegateFigure.cs:
 	* InterfaceFigure.cs:
 	* StructFigure.cs: Added Figures
