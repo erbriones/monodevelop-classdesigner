@@ -23,6 +23,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using MonoDevelop.ClassDesigner;
 using MonoDevelop.Components.Commands;
 using MonoDevelop.Ide.Gui.Components;
 using MonoDevelop.Ide.Gui;
@@ -50,9 +51,9 @@ namespace MonoDevelop.ClassDesigner {
 				project = ((ProjectFolder) item).Project;
 			else
 				project = IdeApp.ProjectOperations.CurrentSelectedProject;
-		
-			var view = new ClassDesignerView (String.Empty);
-			view.Diagram.AddFromProject (project);
+	
+			var view = new ClassDesignerView (project);
+			view.Designer.AddFromProject (project);
 			
 			IdeApp.Workbench.OpenDocument(view, true);
 			var dom = ProjectDomService.GetProjectDom (project);

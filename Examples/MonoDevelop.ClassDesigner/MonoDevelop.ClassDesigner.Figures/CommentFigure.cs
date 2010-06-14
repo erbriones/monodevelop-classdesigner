@@ -31,10 +31,8 @@ using MonoHotDraw.Util;
 
 namespace MonoDevelop.ClassDesigner.Figures
 {
-
 	public class CommentFigure : MultiLineTextFigure
-	{
-
+	{		
 		public CommentFigure (string comment) : base (comment)
 		{
 		}
@@ -64,6 +62,17 @@ namespace MonoDevelop.ClassDesigner.Figures
 			context.Color = new Cairo.Color(0.0, 0.0, 0.0, 1.0);
 			context.Stroke ();
 		}
-
+		
+		public override string Text {
+			get { return base.Text; }
+			set {
+				if (value == null) {
+					base.Text = String.Empty;
+					return;
+				}
+				
+				base.Text = value;
+			}
+		}
 	}
 }

@@ -27,7 +27,6 @@
 using System;
 using System.Linq;
 using MonoDevelop.ClassDesigner;
-using MonoDevelop.ClassDesigner.Diagram;
 using MonoDevelop.Core;
 using MonoDevelop.Components.Commands;
 using MonoDevelop.Projects;
@@ -65,29 +64,29 @@ namespace MonoDevelop.ClassDesigner.Extensions
 		[AllowMultiSelection]
 		public void Handler ()
 		{
-			var designer = IdeApp.Workbench.ActiveDocument.GetContent<ClassDesignerView> ()
+			var view = IdeApp.Workbench.ActiveDocument.GetContent<ClassDesignerView> ()
 				?? IdeApp.Workbench.Documents.Select (d => d.GetContent<ClassDesignerView> ()).FirstOrDefault (v => v != null);
 					
-			if (designer == null) {
-				designer = new ClassDesignerView (GetProject (CurrentNode));
-				IdeApp.Workbench.OpenDocument(designer, true);
+			if (view == null) {
+				view = new ClassDesignerView (GetProject (CurrentNode));
+				IdeApp.Workbench.OpenDocument(view, true);
 			}
 			
 			foreach (var node in CurrentNodes) {				
 				if (node.DataItem is Project) {
-					designer.Diagram.AddFromProject ((Project) node.DataItem);
+					view.Designer.AddFromProject ((Project) node.DataItem);
 				} else if (node.DataItem is ProjectFolder) {
 					var folder = (ProjectFolder) node.DataItem;
-					designer.Diagram.AddFromDirectory (folder.Path);
+					view.Designer.AddFromDirectory (folder.Path);
 				} else if (node.DataItem is ProjectFile) {
 					var file = (ProjectFile) node.DataItem;
-					designer.Diagram.AddFromFile (file.FilePath);
+					view.Designer.AddFromFile (file.FilePath);
 				} else if (node.DataItem is NamespaceData) {
 					var nsdata = (NamespaceData) node.DataItem;
-					designer.Diagram.AddFromNamespace (nsdata.FullName);
+					view.Designer.AddFromNamespace (nsdata.FullName);
 				} else if (node.DataItem is ClassData) {
 					var cls = (ClassData) node.DataItem;
-					designer.Diagram.AddFromType (cls.Class);
+					view.Designer.AddFromType (cls.Class);
 				}
 			}
 		}

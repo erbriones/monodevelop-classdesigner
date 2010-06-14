@@ -1,3 +1,15 @@
+2010-06-13  Evan Briones  <erbriones@gmail.com>
+	* Commands.cs: Added new Command for opening class designer.
+	
+	* ShowClassDesignerHandler.cs: 
+	* ClassDesignerView.cs: Fixed to use new Designer type.
+	
+	* MonoDevelop.ClassDesigner.Components: Folder Added
+		
+	* MonoDevelop.ClassDesigner.Designer: Folder Added
+
+	* MonoDevelop.ClassDesigner.Diagram: Folder Removed
+
 2010-06-06  Evan Briones  <erbriones@gmail.com>
 	* MonoDevelop.ClassDesigner.addin.xml: Added new extensions
 	for NodeBuilder.

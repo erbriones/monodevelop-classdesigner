@@ -24,6 +24,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using Gtk;
 using Gdk;
@@ -43,16 +44,16 @@ namespace MonoDevelop.ClassDesigner.Figures {
 		public TypeFigure(): base() {
 			Spacing = 10.0;
 			Header = new TypeHeaderFigure();
-			members = new VStackFigure();
+			memberGroups = new VStackFigure();
 			Add(Header);
 
 			expandHandle = new ToggleButtonHandle(this, new AbsoluteLocator(10, 20));
 			expandHandle.Toggled += delegate(object sender, ToggleEventArgs e) {
 				if (e.Active) {
-					Add(members);
+					Add(memberGroups);
 				}
 				else {
-					Remove(members);
+					Remove(memberGroups);
 				}
 			};
 			expandHandle.Active = false;
@@ -64,6 +65,7 @@ namespace MonoDevelop.ClassDesigner.Figures {
 			if (domtype == null || domtype.ClassType != this.ClassType) {
 				throw new ArgumentException();
 			}
+			
 			this.domtype = domtype;
 			
 			Header.Name = domtype.Name;
@@ -164,40 +166,72 @@ namespace MonoDevelop.ClassDesigner.Figures {
 			get { return domtype; }
 		}
 		
+		public bool Expanded {
+			get { return expandHandle.Active; }
+		}
+		
+		protected Cairo.Color FigureColor {
+			get { return color; }
+			set {
+				color = value;
+			}
+		}
+		
 		public void AddField(Pixbuf icon, string type, string name) {
 			fields.AddMember(icon, type, name);
+			members.AddMember (icon, type, name);
+			alphabetical.AddMember (icon, type, name);
 		}
 		
 		public void AddMethod(Pixbuf icon, string retvalue, string name) {
 			methods.AddMember(icon, retvalue, name);
+			members.AddMember (icon, retvalue, name);
+			alphabetical.AddMember (icon, retvalue, name);
 		}
 		
 		public void AddProperty(Pixbuf icon, string type, string name) {
 			properties.AddMember(icon, type, name);
+			members.AddMember (icon, type, name);
+			alphabetical.AddMember (icon, type, name);
 		}
 		
 		public void AddEvent(Pixbuf icon, string type, string name) {
 			events.AddMember(icon, type, name);
+			members.AddMember (icon, type, name);
+			alphabetical.AddMember (icon, type, name);
 		}
 		
 		protected virtual void AddMemberGroup(VStackFigure group) {
-			members.Add(group);
+			memberGroups.Add(group);
 		}
-		
-		
 		
 		protected TypeHeaderFigure Header { get; set; }
 		
-		protected virtual void CreateGroups() {
+		protected virtual void ChangeGrouping ()
+		{
+			if (grouping == GroupingSetting.Access) {
+				AddMemberGroup(fields);
+				AddMemberGroup(properties);
+				AddMemberGroup(methods);
+				AddMemberGroup(events);
+			} else if (grouping == GroupingSetting.Alphabetical) {
+				
+			} else if (grouping == GroupingSetting.Member) {
+				
+			}
+		}
+		
+		protected virtual void CreateGroups()
+		{
 			fields = new TypeMemberGroupFigure(GettextCatalog.GetString("Fields"));
 			properties = new TypeMemberGroupFigure(GettextCatalog.GetString("Properties"));
 			methods = new TypeMemberGroupFigure(GettextCatalog.GetString("Methods"));
 			events = new TypeMemberGroupFigure(GettextCatalog.GetString("Events"));
+			members = new TypeMemberGroupFigure(GettextCatalog.GetString("Members"));
+			alphabetical = new TypeMemberGroupFigure(GettextCatalog.GetString("Alphabetical"));
 			
-			AddMemberGroup(fields);
-			AddMemberGroup(properties);
-			AddMemberGroup(methods);
-			AddMemberGroup(events);
+			ChangeGrouping ();
+			
 		}
 		
 		protected virtual ClassType ClassType {
@@ -211,24 +245,18 @@ namespace MonoDevelop.ClassDesigner.Figures {
 			expandHandle.Active = !expandHandle.Active;
 		}
 		
-		public bool Expanded {
-			get { return expandHandle.Active; }
-		}
-		
-		protected Cairo.Color FigureColor {
-			get { return color; }
-			set {
-				color = value;
-			}
-		}
 		protected TypeMemberGroupFigure fields;
 		protected TypeMemberGroupFigure properties;
 		protected TypeMemberGroupFigure methods;
 		protected TypeMemberGroupFigure events;
+		protected TypeMemberGroupFigure members;
+		protected TypeMemberGroupFigure alphabetical;
+		protected static MembersFormat format;
+		protected static GroupingSetting grouping;
 		
-		private VStackFigure members;
-		private ToggleButtonHandle expandHandle;
-		private IType domtype;
+		VStackFigure memberGroups;
+		ToggleButtonHandle expandHandle;
+		IType domtype;
 		Cairo.Color color;
 	}
 }

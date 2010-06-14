@@ -1,3 +1,13 @@
+2010-06-13  Evan Briones  <erbriones@gmail.com>
+	* GroupingSetting.cs: 
+	Added new AddFrom methods class diagram.
+	
+	* MembersFormat.cs: New enum added.
+	
+	* IAssociation.cs: Added interface for types supporting associations
+	
+	* ClassFigure.cs: Added HideInheritanceLine support.
+	
 2010-06-06  Evan Briones  <erbriones@gmail.com>
 	* CommentFigure.cs: Added new figure.
 	

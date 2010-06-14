@@ -1,0 +1,9 @@
+2010-06-13  Evan Briones  <erbriones@gmail.com>
+	* AbstractDesigner.cs: 
+	* Designer.cs: Refactored ClassDiagram to create new designer type
+	
+	* DiagramEventArgs.cs: Added for diagram related events.
+
+2010-06-06  Evan Briones  <erbriones@gmail.com> 
+	* ClassDiagram.cs: Moved to new namespace.
+

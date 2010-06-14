@@ -46,9 +46,9 @@ namespace MonoHotDraw {
 		public StandardDrawingView (IDrawingEditor editor): base () {
 			Drawing = new StandardDrawing ();
 			Editor = editor;
+			ScaleRange = new ScaleRange (5, 0.25, 0.1);	
 			Scale = 1.0;
 			_selection = new FigureCollection ();
-					
 			DebugCreateTimer ();
 		}
 		
@@ -78,8 +78,26 @@ namespace MonoHotDraw {
 		public double Scale {
 			get { return _scale; }
 			set { 
-				_scale = value;
+				if (value > ScaleRange.Maximum)
+					_scale = ScaleRange.Maximum;
+				else if (value < ScaleRange.Minimum)
+					_scale = ScaleRange.Minimum;
+				else
+					_scale = value;
+				
 				QueueDraw();
+			}
+		}
+		
+		public ScaleRange ScaleRange {
+			get { 
+				if (_range == null)
+					_range = new ScaleRange (5, 0.25, 0.1);
+				
+				return _range;
+			}
+			set {
+				_range = value;
 			}
 		}
 
@@ -98,6 +116,12 @@ namespace MonoHotDraw {
 		public void Add (IFigure figure) {
 			Drawing.Add (figure);
 		}
+		
+		public void AddRange (IEnumerable<IFigure> figures)
+		{
+			foreach (IFigure figure in figures)
+				Drawing.Add (figure);
+		}
 
 		public void AddToSelection (IFigure figure) {
 			if (!IsFigureSelected (figure) && Drawing.Includes (figure)) {
@@ -115,7 +139,13 @@ namespace MonoHotDraw {
 		public void Remove (IFigure figure) {
 			Drawing.Remove (figure);
 		}
-
+		
+		public void RemoveRange (IEnumerable<IFigure> figures)
+		{
+			foreach (IFigure figure in figures)
+				Drawing.Remove (figure);
+		}
+		
 		public void RemoveFromSelection (IFigure figure) {
 			_selection.Remove (figure);
 			figure.Invalidate ();
@@ -234,7 +264,7 @@ namespace MonoHotDraw {
 				Vadjustment.Value = Math.Round (rect.Y2 - visible.Height, 0);
 			}
 		}
-		
+
 		protected IEnumerable <IHandle> SelectionHandles {
 			get {
 				foreach (IFigure figure in SelectionEnumerator) {
@@ -330,6 +360,18 @@ namespace MonoHotDraw {
 			return base.OnKeyReleaseEvent(ev);
 		}
 		
+		protected override bool OnScrollEvent (EventScroll e)
+		{
+			if (e.Device.Source == InputSource.Mouse) {
+				if (e.Direction == ScrollDirection.Up)
+					Scale = Scale + _range.Step;
+				else if (e.Direction == ScrollDirection.Down)
+					Scale = Scale - _range.Step;
+			}
+			
+			return base.OnScrollEvent (e);
+		}
+		
 		protected override void OnSizeAllocated (Gdk.Rectangle allocation) {
 			base.OnSizeAllocated (allocation);
 			
@@ -382,7 +424,8 @@ namespace MonoHotDraw {
 			Vadjustment.Upper = drawing_box.Y2;
 			Vadjustment.Change ();
 		}
-		
+	
+	
 		[ConditionalAttribute ("DEBUG_SHOW_FPS")]
 		private void DebugCreateTimer () {
 			GLib.Timeout.Add (1000, delegate() {
@@ -400,10 +443,12 @@ namespace MonoHotDraw {
 		private bool _drag;		
 		private IDrawing _drawing;
 		private FigureCollection _selection;
+		private ScaleRange _range;
 		
 		// used for debug purposes
 		private int _frameCount = 0;
 		private double _scale = 1.0;
+		
 	}
 }
 

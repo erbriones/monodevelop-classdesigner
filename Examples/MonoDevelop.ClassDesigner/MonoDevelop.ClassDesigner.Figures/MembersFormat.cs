@@ -1,5 +1,5 @@
 // 
-// GroupingSetting.cs
+// MembersFormat.cs
 //  
 // Author:
 //       Evan <erbriones@gmail.com>
@@ -24,12 +24,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-namespace MonoDevelop.ClassDesigner.Diagram
+namespace MonoDevelop.ClassDesigner.Figures
 {
-	public enum GroupingSetting
+	public enum MembersFormat
 	{
-		Access,
-		Alphabetical,
-		Member
+		Name,
+		NameAndType,
+		FullSignature
 	}
 }

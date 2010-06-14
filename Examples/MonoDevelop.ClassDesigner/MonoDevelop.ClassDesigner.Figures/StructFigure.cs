@@ -31,14 +31,23 @@ using MonoDevelop.Projects.Dom;
 namespace MonoDevelop.ClassDesigner.Figures
 {
 
-	public class StructFigure : TypeFigure
+	public class StructFigure : TypeFigure, IAssociation
 	{
-
+		bool hideAssociations;
+		
 		public StructFigure (IType domType) : base(domType)
 		{
 			FigureColor = new Cairo.Color (0.0, 0.2, 0.9, 0.4);
+			HideAssociations = false;
 		}
-
+		
+		public bool HideAssociations {
+			get { return hideAssociations; }
+			set {
+				hideAssociations = value;
+			}
+		}
+		
 		protected override ClassType ClassType {
 			get { return ClassType.Struct; }
 		}

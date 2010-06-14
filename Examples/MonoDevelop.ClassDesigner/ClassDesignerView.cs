@@ -28,13 +28,17 @@ using System;
 using System.Collections.Generic;
 using System.Xml;
 using Gtk;
+using Gdk;
 using MonoDevelop.Core;
 using MonoDevelop.Ide.Gui;
 using MonoDevelop.Projects;
 using MonoDevelop.Projects.Dom;
 using MonoDevelop.Projects.Dom.Parser;
-using MonoDevelop.ClassDesigner.Diagram;
+using MonoDevelop.ClassDesigner;
+using Cls = MonoDevelop.ClassDesigner.Designer;
+using MonoDevelop.ClassDesigner.Designer;
 using MonoDevelop.ClassDesigner.Figures;
+using MonoDevelop.DesignerSupport.Toolbox;
 using MonoHotDraw;
 using MonoHotDraw.Figures;
 using MonoHotDraw.Tools;
@@ -42,8 +46,34 @@ using MonoHotDraw.Tools;
 namespace MonoDevelop.ClassDesigner {
 	
 	public class ClassDesignerView: AbstractViewContent {
-		SteticComponent mhdEditor;
-		ClassDiagram diagram;
+		Cls.Designer designer;
+		
+		public ClassDesignerView () : this ((Project) null)
+		{
+		}
+
+		public ClassDesignerView (Project project)
+		{
+			this.UntitledName = "ClassDiagram.cd";
+			this.IsViewOnly = false;
+			
+			designer = new Cls.Designer (project, new SteticComponent ());
+			designer.DiagramChanged += OnDiagramChanged;
+			Control.ShowAll ();
+		}
+		
+		public ClassDesignerView (string fileName)
+		{
+			if (String.IsNullOrEmpty (fileName)) 
+				throw new ArgumentNullException ();
+			
+			this.ContentName = fileName;
+			
+			designer = new Cls.Designer (IdeApp.Workspace.GetProjectContainingFile (fileName));
+			designer.Project = this.Project;
+			designer.DiagramChanged += OnDiagramChanged;
+			Control.ShowAll ();
+		}
 		
 		public override string StockIconId {
 			get {
@@ -51,14 +81,23 @@ namespace MonoDevelop.ClassDesigner {
 			}
 		}
 		
-		public ClassDiagram Diagram {
-			get { return diagram; }
+		public Cls.Designer Designer {
+			get { return designer; }
 		}
+		
+		public override Project Project {
+			get {
+				return designer.Project;
+			}
+			set {
+				designer.Project = value;
+			}
+		}
+
 		
 		public override void Load (string fileName)
 		{
-			Console.WriteLine ("Loading {0}", fileName);
-			diagram.Load (XmlReader.Create (fileName));
+			Designer.Load (fileName);
 		}
 		
 		public override void Save ()
@@ -69,10 +108,11 @@ namespace MonoDevelop.ClassDesigner {
 		public override void Save (string fileName)
 		{	
 			XmlWriter writer;
+			var diagram = Designer.Diagram;
 			
 			lock (writer = XmlWriter.Create (fileName)) {
 				diagram.Write (writer);
-				
+
 				writer.Flush ();
 				writer.Close ();
 			}
@@ -89,43 +129,13 @@ namespace MonoDevelop.ClassDesigner {
 		
 		public override Widget Control {
 			get {
-				return mhdEditor;
+				return (Widget) designer.Editor;
 			}
 		}
 		
-		protected ClassDesignerView (Project project, string fileName)
-		{
-			if (String.IsNullOrEmpty (fileName))
-				UntitledName = "ClassDiagram.cd";
-			else {
-				ContentName = fileName;
-
-				if (project == null)
-					project = IdeApp.Workspace.GetProjectContainingFile (ContentName);
-			}
-			
-			IsViewOnly = false;
-			
-			mhdEditor = new SteticComponent();
-			mhdEditor.ShowAll();
-			
-			Project = project;
-			diagram = new ClassDiagram (mhdEditor, ProjectDomService.GetProjectDom (project));
-			Diagram.DiagramChanged += OnDiagramChanged;
-				
-		}
-		
-		public ClassDesignerView (Project project) : this (project, String.Empty)
-		{
-		}
-		
-		public ClassDesignerView (string fileName) : this (null, fileName)
-		{
-		}
-
-		void OnDiagramChanged (object sender, EventArgs e)
+		void OnDiagramChanged (object sender, DiagramEventArgs e)
 		{
 			IsDirty = true;
-		}
+		}		
 	}
 }

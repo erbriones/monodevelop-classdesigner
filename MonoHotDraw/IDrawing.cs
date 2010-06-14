@@ -48,12 +48,10 @@ namespace MonoHotDraw {
 		RectangleD DisplayBox { get; }
 		IEnumerable <IFigure> FiguresEnumeratorReverse { get; }
 		IEnumerable <IFigure> FiguresEnumerator { get; }
-
+		IList <IFigure> FigureCollection { get; }
+		
 		event EventHandler <DrawingEventArgs> DrawingInvalidated;
 		event EventHandler <DrawingEventArgs> SizeAllocated;
-		
-		event EventHandler <FigureEventArgs> FigureAdded;
-		event EventHandler <FigureEventArgs> FigureRemoved;
 	}
 }
 

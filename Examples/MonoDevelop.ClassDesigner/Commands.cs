@@ -26,6 +26,7 @@
 namespace MonoDevelop.ClassDesigner {
 
 	public enum Commands {
-		ShowClassDesigner
+		ShowClassDesigner,
+		OpenClassDesigner
 	}
 }

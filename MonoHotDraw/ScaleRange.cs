@@ -1,20 +1,21 @@
-// MonoDevelop ClassDesigner
-//
-// Authors:
-//	Manuel Cerón <ceronman@gmail.com>
-//
-// Copyright (C) 2009 Manuel Cerón
-//
+// 
+// ScaleRange.cs
+//  
+// Author:
+//       Evan Briones <erbriones@gmail.com>
+// 
+// Copyright (c) 2010 Evan Briones
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-//
+// 
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-//
+// 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -24,45 +25,32 @@
 // THE SOFTWARE.
 
 using System;
-using System.Collections.Generic;
-using MonoHotDraw.Figures;
-using MonoDevelop.Core;
-using MonoDevelop.Projects.Dom;
-using MonoDevelop.Core.Gui;
 
-namespace MonoDevelop.ClassDesigner.Figures {
-	
-	public class ClassFigure: TypeFigure, IAssociation {
-		bool hideInheritance;
-		bool hideAssociations;
+namespace MonoHotDraw
+{
+	public class ScaleRange
+	{
+		double max;
+		double min;
+		double step;
 		
-		public ClassFigure (IType domType): this (domType, false)
+		public ScaleRange(double maximum, double minimum, double step)
 		{
+			max = maximum;
+			min = minimum;
+			this.step = step;
 		}
 		
-		public ClassFigure (IType domType, bool hideInheritance) : base (domType)
-		{
-			HideInheritance = hideInheritance;
-			HideAssociations = false;
-			FigureColor = new Cairo.Color (0.1, 0.1, 0.9, 0.4);	
+		public double Step {
+			get { return step; }
 		}
 		
-		public bool HideInheritance {
-			get { return hideInheritance; }
-			set { hideInheritance = value; }
+		public double Maximum {
+			get { return max; }
 		}
 		
-		public bool HideAssociations {
-			get { return hideAssociations; }
-			set {
-				hideAssociations = value;
-			}
+		public double Minimum {
+			get { return min; }
 		}
-		
-		protected override ClassType ClassType {
-			get {
-				return ClassType.Class;
-			}
-		}		
 	}
 }

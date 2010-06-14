@@ -1,0 +1,10 @@
+2010-06-13  Evan Briones  <erbriones@gmail.com>
+	* GenericNodeCommandHandler.cs: Fixed to use new Designer type
+
+2010-06-06  Evan Briones  <erbriones@gmail.com>
+	* GenericNodeCommandHandler.cs Added a NodeCommandHandler for Project
+	ProjectFolder, ProjectFile, NamespaceData and ClassData,=,
+	 
+	* GenericNodeBuilderExtension.cs: Added a NodeBuilderExtension.
+	
+

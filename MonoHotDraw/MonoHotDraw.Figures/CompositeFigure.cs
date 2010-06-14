@@ -26,6 +26,7 @@
 using Cairo;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using MonoHotDraw.Handles;
 using MonoHotDraw.Tools;
 using MonoHotDraw.Util;
@@ -40,22 +41,14 @@ namespace MonoHotDraw.Figures {
 		}
 
 		public override bool ContainsPoint (double x, double y) {
-			foreach (IFigure figure in FiguresEnumerator) {
-				if (figure.ContainsPoint (x, y) ) {
-					return true;
-				}
-			}
-			return false;
+			return Figures.Any (f => f.ContainsPoint (x, y));
 		}
 
-		// TODO replace with linq
 		public IEnumerable <IFigure> FiguresEnumeratorReverse {
-			get {
-				for (int i=1; i <= Figures.Count; i++) {
-					yield return Figures [Figures.Count - i];
-				}
-			}
-		}
+ 			get {
+				return Figures.Where (f => f != null).Reverse ();
+ 			}
+ 		}
 
 		public override IEnumerable <IFigure> FiguresEnumerator {
 			get {

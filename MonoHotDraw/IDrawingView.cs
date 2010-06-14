@@ -37,7 +37,9 @@ namespace MonoHotDraw {
 	public interface IDrawingView {
 	
 		void Add (IFigure figure);
+		void AddRange (IEnumerable<IFigure> figures);
 		void Remove (IFigure figure);
+		void RemoveRange (IEnumerable<IFigure> figures);
 		//Used by clipboad
 		FigureCollection InsertFigures (FigureCollection figures, double dx, double dy, bool check);
 		
@@ -58,6 +60,7 @@ namespace MonoHotDraw {
 		IEnumerable <IFigure> SelectionEnumerator { get; }
 		int SelectionCount { get; }
 		RectangleD VisibleArea { get; }
+		ScaleRange ScaleRange { get; set; }
 		double Scale { get; set; }
 		
 		void AddWidget (Gtk.Widget w, double x, double y);

@@ -24,6 +24,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 using Cairo;
 
 using MonoHotDraw.Figures;
@@ -53,11 +54,15 @@ namespace MonoHotDraw {
 			set { _displayBox = value; }
 		}
 		
+		public IList<IFigure> FigureCollection {
+			get { return base.Figures; }
+		}
+		
 		public override void Add (IFigure figure)
 		{
 			base.Add (figure);
 			figure.FigureChanged += FigureChangedHandler;
-			OnFigureAdded(figure);
+			OnFigureAdded(new FigureEventArgs (figure, figure.DisplayBox));
 			RecalculateDisplayBox ();
 		}
 		
@@ -65,40 +70,27 @@ namespace MonoHotDraw {
 		{
 			base.Remove (figure);
 			figure.FigureChanged -= FigureChangedHandler;
-			OnFigureRemoved (figure);
+			OnFigureRemoved (new FigureEventArgs (figure, figure.DisplayBox));
 			RecalculateDisplayBox ();
 		}
-		
-		public void AutoLayout ()
-		{
-			double x = 50.0;
-			double y = 50.0;
-			
-			foreach (IFigure figure in Figures) {
-				figure.MoveTo (x, y);
 				
-				x += figure.DisplayBox.Width + 50.0;
-				
-				if (x > 1000.0) {
-					x = 50.0;
-					y += figure.DisplayBox.Height + 100.0;
-				}
-			}	
-		}
-		
 		protected override void FigureInvalidatedHandler (object sender, FigureEventArgs args) {
 			OnDrawingInvalidated (new DrawingEventArgs (this, args.Rectangle));
 		}
 		
-		protected void OnFigureAdded (IFigure figure) {
-			if (FigureAdded != null) {
-				FigureAdded (this, new FigureEventArgs (figure, figure.DisplayBox));
+		protected virtual void OnFigureAdded (FigureEventArgs e) {
+			var handler = FigureAdded;
+			
+			if (handler != null) {
+				handler (this, e);
 			}
 		}
 		
-		protected void OnFigureRemoved (IFigure figure) {
-			if (FigureRemoved != null) {
-				FigureRemoved (this, new FigureEventArgs (figure, figure.DisplayBox));
+		protected virtual void OnFigureRemoved (FigureEventArgs e) {
+			var handler = FigureRemoved;
+			
+			if (handler != null) {
+				handler (this, e);
 			}
 		}
 		

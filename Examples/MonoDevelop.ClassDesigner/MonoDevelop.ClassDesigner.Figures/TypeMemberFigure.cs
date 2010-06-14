@@ -52,6 +52,11 @@ namespace MonoDevelop.ClassDesigner.Figures {
 			Add(_name);
 		}
 		
+		public override string ToString ()
+		{
+			return _name.Text;
+		}
+		
 		private SimpleTextFigure _retvalue;
 		private SimpleTextFigure _name;
 		private PixbufFigure _icon;

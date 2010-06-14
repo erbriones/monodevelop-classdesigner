@@ -165,6 +165,7 @@
     <Compile Include="MonoHotDraw.Figures\StackFigure.cs" />
     <Compile Include="MonoHotDraw.Figures\VStackFigure.cs" />
     <Compile Include="MonoHotDraw.Figures\PixbufFigure.cs" />
+    <Compile Include="ScaleRange.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -1,20 +1,32 @@
+2010-06-13  Evan Briones  <erbriones@gmail.com>
+
+	* ScaleRange.cs: Added new type.
+
+	* StandardDrawing.cs: Added a range to the scale.
+	
+	* StandardDrawingView.cs: Implemented AddRange and RemoveRange methods.
+
+	* IDrawingView.cs: Added new member FigureCollection.
+	Added new methods AddRange and RemoveRange. 
+
 2010-06-06  Evan Briones  <erbriones@gmail.com>
-	* StandardDrawing: Added simple AutoLayout method.
+	* StandardDrawing.cs: Added simple AutoLayout method.
  
 2010-05-27  Evan Briones  <erbriones@gmail.com>
-	* ContainerCanvas: Added checking for null _children in ForAll method.
+
+	* ContainerCanvas.cs: Added checking for null _children in ForAll method.
 	Also added IntPtr constructor so that StandardDrawingView could pass the IntPtr
 	to the Gtk.Container.
 	
-	* StandardDrawingView: Implemented a protected IntPtr constructor. This fixed
+	* StandardDrawingView.cs: Implemented a protected IntPtr constructor. This fixed
 	a error which complained about not having an implemented IntPtr constructor.
 
 2010-05-25  Evan Briones  <erbriones@gmail.com>
 	
-	* IDrawing: Added FigureAdded and FigureRemoved events to the
+	* IDrawing.cs: Added FigureAdded and FigureRemoved events to the
 	interface.
 	
-	* StandDrawing: Implemented the FigureAdded and FigureRemoved
+	* StandDrawing.cs: Implemented the FigureAdded and FigureRemoved
 	event handlers.
 	
 	* MonoHotDraw.csproj: Modified the Gtk references to not be
