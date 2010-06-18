@@ -33,19 +33,29 @@ using MonoHotDraw.Util;
 
 namespace MonoDevelop.ClassDesigner.Figures {
 	
-	public class TypeMemberGroupFigure: VStackFigure {
+	public class TypeMemberGroupFigure : VStackFigure
+	{
+		string _name;
+		bool _collapsed;
+		SimpleTextFigure compartmentName;
+		VStackFigure membersStack;
+		List<TypeMemberFigure> hidden;
+		ToggleButtonHandle expandHandle;
 		
-		public TypeMemberGroupFigure(string name): base() {
+		public TypeMemberGroupFigure (string name) : base ()
+		{
 			Spacing = 5;
 			Alignment = VStackAlignment.Left;
 			
-			groupName = new SimpleTextFigure(name);
-			groupName.Padding = 0;
-			groupName.FontSize = 10;
-			groupName.FontColor = new Cairo.Color(0.3, 0.0, 0.0);
+			_name = name;
+			hidden = new List<TypeMemberFigure> ();
+			compartmentName = new SimpleTextFigure (name);
+			compartmentName.Padding = 0;
+			compartmentName.FontSize = 10;
+			compartmentName.FontColor = new Cairo.Color(0.3, 0.0, 0.0);			
 			
-			Add(groupName);
-			
+			Add (compartmentName);
+
 			membersStack = new VStackFigure();
 			membersStack.Spacing = 2;
 			
@@ -58,12 +68,8 @@ namespace MonoDevelop.ClassDesigner.Figures {
 					Remove(membersStack);
 				}
 			};
+			
 			expandHandle.Active = true;
-		}
-		
-		public void AddMember(Pixbuf icon, string retValue, string name) {
-			TypeMemberFigure member = new TypeMemberFigure(icon, retValue, name);
-			membersStack.Add(member);
 		}
 		
 		public override IEnumerable<IHandle> HandlesEnumerator {
@@ -79,10 +85,85 @@ namespace MonoDevelop.ClassDesigner.Figures {
 				return rect;
 			}
 		}
-
 		
-		private SimpleTextFigure groupName;
-		private VStackFigure membersStack;
-		private ToggleButtonHandle expandHandle;
+		public new IEnumerable<TypeMemberFigure> FiguresEnumerator {
+			get {
+				foreach (var f in membersStack.FiguresEnumerator)
+					yield return (TypeMemberFigure) f;
+				
+				foreach (var f in hidden)
+					yield return f;
+			}
+		}
+				
+		public string Name {
+			get { return _name; }
+		}
+		
+		public bool Collapsed {
+			get { return _collapsed; }
+			set {
+				if (_collapsed == value)
+					return;
+				
+				if (value)
+					expandHandle.Active = false;
+				else
+					expandHandle.Active = true;
+				
+				_collapsed = value;
+			}
+		}
+		
+		public bool IsEmpty {
+			get {
+				return membersStack.FiguresEnumerator.ToFigures ().Count == 0;
+			}
+		}
+				
+		public void AddMembers (IEnumerable<TypeMemberFigure> members)
+		{
+			if (members == null)
+				return;
+			
+			foreach (var member in members)
+				AddMember (member);
+		}
+		
+		public void AddMember(TypeMemberFigure member) {		
+			if (member.Hidden)
+				hidden.Add (member);
+			else
+				membersStack.Add(member);
+		}
+		
+		public void Hide (TypeMemberFigure figure)
+		{
+			if (hidden.Contains (figure))
+				return;
+			
+			figure.Hidden = true;
+			membersStack.Remove (figure);
+			hidden.Add (figure);
+		}
+		
+		public void Show (TypeMemberFigure figure)
+		{
+			figure.Hidden = false;
+			membersStack.Add (figure);
+			
+			if (!hidden.Contains (figure))
+				return;
+			
+			hidden.Remove (figure);
+		}
+		
+		public override void Clear ()
+		{
+			foreach (var m in membersStack.FiguresEnumerator)
+				membersStack.Remove (m);
+			
+			hidden.Clear ();
+		}
 	}
 }

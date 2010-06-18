@@ -28,16 +28,24 @@ using Cairo;
 using Gdk;
 using MonoHotDraw.Figures;
 using MonoHotDraw.Util;
+using MonoDevelop.Projects.Dom;
 
 namespace MonoDevelop.ClassDesigner.Figures {
 	
 	public class TypeMemberFigure: HStackFigure {
 		
-		public TypeMemberFigure(Pixbuf icon, string retvalue, string name): base()
+		public TypeMemberFigure(Pixbuf icon, IBaseMember memberInfo, bool hidden): base ()
 		{
-			_icon = new PixbufFigure(icon);
-			_retvalue = new SimpleTextFigure(retvalue);
-			_name = new SimpleTextFigure(name);
+			_icon = new PixbufFigure (icon);
+			_memberInfo = memberInfo;
+			
+			if (memberInfo.ReturnType != null)
+				_retvalue = new SimpleTextFigure (memberInfo.ReturnType.Name);
+			else
+				_retvalue = new SimpleTextFigure (String.Empty);
+					
+			_name = new SimpleTextFigure (memberInfo.Name);
+			_hidden = hidden;
 			
 			_name.Padding = 0.0;
 			_name.FontSize = 10;
@@ -52,13 +60,23 @@ namespace MonoDevelop.ClassDesigner.Figures {
 			Add(_name);
 		}
 		
-		public override string ToString ()
-		{
-			return _name.Text;
+		public string Name {
+			get { return _name.Text; }
 		}
 		
-		private SimpleTextFigure _retvalue;
-		private SimpleTextFigure _name;
-		private PixbufFigure _icon;
+		public bool Hidden {
+			get { return _hidden; }
+			set { _hidden = value; }
+		}
+		
+		public IBaseMember MemberInfo {
+			get { return _memberInfo; }
+		}
+			
+		bool _hidden;
+		IBaseMember _memberInfo;
+		SimpleTextFigure _retvalue;
+		SimpleTextFigure _name;
+		PixbufFigure _icon;
 	}
 }

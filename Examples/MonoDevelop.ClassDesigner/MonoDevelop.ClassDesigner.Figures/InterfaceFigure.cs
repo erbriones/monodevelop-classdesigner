@@ -24,8 +24,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using Gtk;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using MonoDevelop.Core;
+using MonoDevelop.Core.Gui;
 using MonoDevelop.Projects.Dom;
 
 namespace MonoDevelop.ClassDesigner.Figures
@@ -33,7 +37,6 @@ namespace MonoDevelop.ClassDesigner.Figures
 
 	public class InterfaceFigure : TypeFigure
 	{
-
 		public InterfaceFigure (IType domType) : base(domType)
 		{
 			FigureColor = new Cairo.Color (0.8, 0.8, 0.8, 0.4);
@@ -42,12 +45,39 @@ namespace MonoDevelop.ClassDesigner.Figures
 		protected override ClassType ClassType {
 			get { return ClassType.Interface; }
 		}
-
-		protected override void CreateGroups ()
+		
+		
+		// FIXME: Figure out how this works for access
+		public override void Update ()
 		{
-			properties = new TypeMemberGroupFigure (GettextCatalog.GetString("Properties"));
-			methods = new TypeMemberGroupFigure (GettextCatalog.GetString ("Methods"));
-			AddMemberGroup (methods);
+			if (grouping != GroupingSetting.Access) {
+				base.Update ();
+				return;
+			}
+			
+			var compartment = Compartments.Where (c => c.Name == "Members").SingleOrDefault ();
+			var members = new List<TypeMemberFigure> ();
+				
+			
+			members.AddRange (Compartments
+			                  .Select (c => c.FiguresEnumerator.Where (m => m != null))
+			                  .OfType<TypeMemberFigure> ());
+			                  
+			foreach (var c in Compartments) {
+				RemoveMemberGroup (c);
+				compartment.Clear ();
+			}
+			
+			if (members.Count () == 0) {
+				foreach (var m in Name.Members) {
+					var icon = ImageService.GetPixbuf (m.StockIcon, IconSize.Menu);
+					members.Add (new TypeMemberFigure (icon, m, false));
+				}
+			}
+			
+			compartment.AddMembers (members);
+			AddMemberGroup (compartment);
 		}
+
 	}
 }

@@ -24,15 +24,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using Gtk;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using MonoDevelop.Core;
+using MonoDevelop.Core.Gui;
+using MonoDevelop.Projects;
 using MonoDevelop.Projects.Dom;
+using MonoDevelop.Projects.Dom.Parser;
 
 namespace MonoDevelop.ClassDesigner.Figures
 {
 	public class DelegateFigure : TypeFigure
 	{
-
 		public DelegateFigure (IType domType) : base (domType)
 		{
 			FigureColor = new Cairo.Color (0.8, 0.1, 0.8, 0.4);
@@ -42,6 +47,43 @@ namespace MonoDevelop.ClassDesigner.Figures
 			get {
 				return ClassType.Delegate;
 			}
+		}
+		
+		public override void Update ()
+		{				
+			var parameters = new List<TypeMemberFigure> ();
+			var compartment = Compartments
+				.Where (c => c.Name == "Parameters")
+				.SingleOrDefault ();
+			
+			var invoke = Name.Methods.Where (m => m.Name == "Invoke").SingleOrDefault ();
+			
+			parameters.AddRange (compartment.FiguresEnumerator);
+			 
+			if (parameters.Count () == 0)
+			{
+				foreach (var p in invoke.Parameters) {
+					var icon = ImageService.GetPixbuf (p.StockIcon, IconSize.Menu);
+					parameters.Add (new TypeMemberFigure (icon, p, false));
+				}
+			}
+			
+			// FIXME: How does grouping change in vs.net class diagram?
+			if (grouping == GroupingSetting.Alphabetical)
+				compartment.AddMembers (parameters.OrderBy (p => p.Name));
+			else if (grouping == GroupingSetting.Access)
+				compartment.AddMembers (parameters);
+			else
+				compartment.AddMembers (parameters);
+			
+			compartment.AddMembers (parameters);
+			AddMemberGroup (compartment);
+		}
+		
+		protected override void CreateCompartments ()
+		{
+			var parameters = new TypeMemberGroupFigure ("Parameters");
+			AddCompartment (parameters);
 		}
 	}
 }

@@ -1,4 +1,19 @@
+2010-06-18  Evan Briones  <erbriones@gmail.com>
+	
+	* ICollapsable.cs: New interface for supporting collapse.
+	
+	* DelegateFigure.cs:
+	* InterfaceFigure.cs:
+	* StructFigure.cs:
+	* EnumFigure.cs:
+	* ClassFigure.cs:
+	* TypeFigure.cs:
+	* TypeMemberFigure.cs:
+	* TypeMemberGroupFigure.cs: Implemented grouping and support for compartments.
+	Changes made to figures to support grouping. Initial work on hidden members started.
+
 2010-06-13  Evan Briones  <erbriones@gmail.com>
+
 	* GroupingSetting.cs: 
 	Added new AddFrom methods class diagram.
 	
@@ -9,6 +24,7 @@
 	* ClassFigure.cs: Added HideInheritanceLine support.
 	
 2010-06-06  Evan Briones  <erbriones@gmail.com>
+
 	* CommentFigure.cs: Added new figure.
 	
 	* DelegateFigure.cs:

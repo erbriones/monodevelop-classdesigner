@@ -1,6 +1,13 @@
+2010-06-18  Evan Briones  <erbriones@gmail.com>
+
+	* StackFigure.cs: Added public method to clear the stack.
+	
+	* AttributeFigure.cs:
+	* SimpleTextFigure.cs: Change FontSize to support double value.
+
 2010-06-13  Evan Briones  <erbriones@gmail.com>
 	
-	* CompositeFigure: Changed several members to use Linq.  
+	* CompositeFigure.cs: Changed several members to use Linq.  
 	
 2009-07-27  Manuel Cerón  <ceronman@gmail.com>
 

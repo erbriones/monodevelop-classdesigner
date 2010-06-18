@@ -41,14 +41,16 @@ namespace MonoHotDraw.Figures {
 		public event EventHandler TextChanged;
 
 		public SimpleTextFigure (string text): base () {
+			
 			TextEditable  = true;
 			Padding       = 2.0;
 			FontColor     = (Cairo.Color) AttributeFigure.GetDefaultAttribute (FigureAttribute.FontColor);
 			FontAlignment = (Pango.Alignment) AttributeFigure.GetDefaultAttribute (FigureAttribute.FontAlignment);
 			FontFamily    = (string) AttributeFigure.GetDefaultAttribute (FigureAttribute.FontFamily);
-			FontSize      = (int) AttributeFigure.GetDefaultAttribute (FigureAttribute.FontSize);
+			FontSize      = Convert.ToDouble (AttributeFigure.GetDefaultAttribute (FigureAttribute.FontSize));
 			FontStyle     = (Pango.Style) AttributeFigure.GetDefaultAttribute (FigureAttribute.FontStyle);
 			_text         = text;
+			
 			GenerateDummyContext ();
 		}
 
@@ -56,7 +58,7 @@ namespace MonoHotDraw.Figures {
 			FontColor     = (Cairo.Color) info.GetValue ("FontColor", typeof (Cairo.Color));
 			FontAlignment = (Pango.Alignment) info.GetValue ("FontAlignment", typeof (Pango.Alignment));
 			FontFamily    = (string) info.GetValue ("FontFamily", typeof (string));
-			FontSize      = info.GetInt32 ("FontSize");
+			FontSize      = (double) info.GetDouble ("FontSize");
 			FontStyle     = (Pango.Style) info.GetValue ("FontStyle", typeof (Pango.Style));
 			_displayBox   = (RectangleD) info.GetValue ("DisplayBox", typeof (RectangleD));
 			_text         = (string) info.GetValue ("Text", typeof (string));
@@ -82,7 +84,7 @@ namespace MonoHotDraw.Figures {
 			}
 		}	
 
-		public int FontSize {
+		public double FontSize {
 			get { return _fontSize; }
 			set { _fontSize = value; }
 		}
@@ -212,7 +214,7 @@ namespace MonoHotDraw.Figures {
 					FontColor = (Cairo.Color) value;
 					break;
 				case FigureAttribute.FontSize:
-					FontSize = (int) value;
+					FontSize = (double) value;
 					break;
 				case FigureAttribute.FontStyle:
 					FontStyle = (Pango.Style) value;
@@ -280,7 +282,7 @@ namespace MonoHotDraw.Figures {
 		private Pango.Alignment _fontAlignment;
 		private Cairo.Color     _fontColor;
 		private string          _fontFamily;
-		private int             _fontSize;
+		private double          _fontSize;
 		private Pango.Style     _fontStyle;
 		private double          _padding;
 		private Pango.Layout    _pangoLayout;

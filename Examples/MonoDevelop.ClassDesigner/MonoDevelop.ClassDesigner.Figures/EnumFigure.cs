@@ -23,8 +23,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using Gtk;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using MonoHotDraw.Figures;
 using MonoDevelop.Core;
 using MonoDevelop.Projects.Dom;
@@ -44,10 +46,35 @@ namespace MonoDevelop.ClassDesigner.Figures {
 			}
 		}
 		
-		protected override void CreateGroups ()
+		// FIXME: Set up correct compartments
+		public override void Update ()
 		{
-			fields = new TypeMemberGroupFigure(GettextCatalog.GetString("Fields"));
-			AddMemberGroup(fields);
+			List<TypeMemberFigure> members = new List<TypeMemberFigure> ();
+			TypeMemberGroupFigure compartment = Compartments
+				.Where (c => c.Name == "Fields")
+				.SingleOrDefault ();
+			
+			members.AddRange (Compartments.Select(c => c.FiguresEnumerator).OfType<TypeMemberFigure> ());
+			
+			if (members.Count () != Name.FieldCount) {
+				foreach (var f in Name.Fields) {
+					var icon = ImageService.GetPixbuf (f.StockIcon, IconSize.Menu);
+					members.Add (new TypeMemberFigure (icon, f, false));
+				}
+			}
+			
+			if (grouping == GroupingSetting.Alphabetical)
+				compartment.AddMembers (members.OrderBy (m => m.Name));
+			else
+				compartment.AddMembers (members);
+			
+			AddMemberGroup (compartment);
 		}
+		// FIXME: Set up correct compartments
+		protected override void CreateCompartments ()
+		{
+			var fields = new TypeMemberGroupFigure (GettextCatalog.GetString ("Fields"));
+			AddCompartment (fields);
+		}		
 	}
 }

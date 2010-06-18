@@ -100,7 +100,7 @@ namespace MonoHotDraw.Figures {
 			_defaultAttributes = new Dictionary<FigureAttribute, object> ();
 			_defaultAttributes.Add (FigureAttribute.FontAlignment, Pango.Alignment.Left);
 			_defaultAttributes.Add (FigureAttribute.FontFamily, "Sans Serif");
-			_defaultAttributes.Add (FigureAttribute.FontSize, 10);
+			_defaultAttributes.Add (FigureAttribute.FontSize, 10.0);
 			_defaultAttributes.Add (FigureAttribute.FontStyle, Pango.Style.Normal);
 			_defaultAttributes.Add (FigureAttribute.FontColor, new Cairo.Color (0.0, 0.0, 0.0, 1.0));
 			_defaultAttributes.Add (FigureAttribute.FillColor, new Cairo.Color (1.0, 1.0, 1.0, 0.8));

@@ -84,7 +84,6 @@
     <Compile Include="MonoDevelop.ClassDesigner.Figures\ClassFigure.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Figures\TypeHeaderFigure.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Figures\TypeMemberFigure.cs" />
-    <Compile Include="MonoDevelop.ClassDesigner.Figures\TypeMemberGroupFigure.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Figures\InheritanceConnection.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Figures\EnumFigure.cs" />
     <Compile Include="ClassDiagramDisplayBinding.cs" />
@@ -103,6 +102,8 @@
     <Compile Include="MonoDevelop.ClassDesigner.Components\ZoomWidget.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Figures\GroupingSetting.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Figures\MembersFormat.cs" />
+    <Compile Include="MonoDevelop.ClassDesigner.Figures\ICollapsable.cs" />
+    <Compile Include="MonoDevelop.ClassDesigner.Figures\TypeMemberGroupFigure.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -51,16 +51,5 @@ namespace MonoDevelop.ClassDesigner.Figures
 		protected override ClassType ClassType {
 			get { return ClassType.Struct; }
 		}
-
-		protected override void CreateGroups ()
-		{
-			fields = new TypeMemberGroupFigure (GettextCatalog.GetString ("Fields"));
-			properties = new TypeMemberGroupFigure (GettextCatalog.GetString ("Properties"));
-			methods = new TypeMemberGroupFigure (GettextCatalog.GetString ("Methods"));
-			
-			AddMemberGroup (fields);
-			AddMemberGroup (properties);
-			AddMemberGroup (methods);
-		}
 	}
 }

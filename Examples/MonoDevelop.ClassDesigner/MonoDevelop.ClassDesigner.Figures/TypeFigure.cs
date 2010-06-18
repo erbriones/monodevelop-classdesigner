@@ -39,16 +39,26 @@ using MonoDevelop.Core.Gui;
 
 namespace MonoDevelop.ClassDesigner.Figures {
 
-	public abstract class TypeFigure: VStackFigure {
+	public abstract class TypeFigure: VStackFigure, ICollapsable {
+		public static MembersFormat format = MembersFormat.FullSignature;
+		public static GroupingSetting grouping = GroupingSetting.Member;
+
+		VStackFigure memberGroups;
+		List<TypeMemberGroupFigure> compartments;
+		ToggleButtonHandle expandHandle;
+		IType _domtype;
+		bool collapsed;
+		Cairo.Color color;
 		
-		public TypeFigure(): base() {
+		public TypeFigure (): base () {
 			Spacing = 10.0;
-			Header = new TypeHeaderFigure();
-			memberGroups = new VStackFigure();
+			Header = new TypeHeaderFigure ();
+			compartments = new List<TypeMemberGroupFigure> ();
+			memberGroups = new VStackFigure ();
 			Add(Header);
 
-			expandHandle = new ToggleButtonHandle(this, new AbsoluteLocator(10, 20));
-			expandHandle.Toggled += delegate(object sender, ToggleEventArgs e) {
+			expandHandle = new ToggleButtonHandle (this, new AbsoluteLocator (10, 20));
+			expandHandle.Toggled += delegate (object sender, ToggleEventArgs e) {
 				if (e.Active) {
 					Add(memberGroups);
 				}
@@ -56,9 +66,8 @@ namespace MonoDevelop.ClassDesigner.Figures {
 					Remove(memberGroups);
 				}
 			};
-			expandHandle.Active = false;
 			
-			CreateGroups();
+			expandHandle.Active = true;
 		}
 		
 		public TypeFigure(IType domtype): this() {
@@ -66,34 +75,14 @@ namespace MonoDevelop.ClassDesigner.Figures {
 				throw new ArgumentException();
 			}
 			
-			this.domtype = domtype;
+			_domtype = domtype;
+			collapsed = false;
+	
+			Header.Name = _domtype.Name;
+			Header.Namespace = _domtype.Namespace;
+			Header.Type = _domtype.ClassType.ToString ();
 			
-			Header.Name = domtype.Name;
-			Header.Namespace = domtype.Namespace;
-			Header.Type = domtype.ClassType.ToString();
-			
-			foreach (IField field in domtype.Fields) {
-				Pixbuf icon = ImageService.GetPixbuf(field.StockIcon, IconSize.Menu);
-				AddField(icon, field.ReturnType.Name, field.Name);
-			}
-			
-			foreach (IProperty property in domtype.Properties) {
-				Pixbuf icon = ImageService.GetPixbuf(property.StockIcon, IconSize.Menu);
-				AddProperty(icon, property.ReturnType.Name, property.Name);
-			}
-			
-			foreach (IMethod method in domtype.Methods) {
-				Pixbuf icon = ImageService.GetPixbuf(method.StockIcon, IconSize.Menu);
-				IReturnType ret = method.ReturnType;
-				if (ret != null) {
-					AddMethod(icon, ret.Name, method.Name);
-				}
-			}
-			
-			foreach (IEvent ev in domtype.Events) {
-				Pixbuf icon = ImageService.GetPixbuf(ev.StockIcon, IconSize.Menu);
-				AddMethod(icon, ev.ReturnType.Name, ev.Name);
-			}
+			CreateCompartments ();
 		}
 		
 		void DrawPattern (Cairo.Context context)
@@ -163,7 +152,7 @@ namespace MonoDevelop.ClassDesigner.Figures {
 		}
 		
 		public IType Name {
-			get { return domtype; }
+			get { return _domtype; }
 		}
 		
 		public bool Expanded {
@@ -177,61 +166,198 @@ namespace MonoDevelop.ClassDesigner.Figures {
 			}
 		}
 		
-		public void AddField(Pixbuf icon, string type, string name) {
-			fields.AddMember(icon, type, name);
-			members.AddMember (icon, type, name);
-			alphabetical.AddMember (icon, type, name);
+		protected void AddMemberGroup (TypeMemberGroupFigure compartment)
+		{
+			if (compartment.IsEmpty)
+				return;
+			
+			memberGroups.Add (compartment);
 		}
 		
-		public void AddMethod(Pixbuf icon, string retvalue, string name) {
-			methods.AddMember(icon, retvalue, name);
-			members.AddMember (icon, retvalue, name);
-			alphabetical.AddMember (icon, retvalue, name);
+		protected void RemoveMemberGroup (TypeMemberGroupFigure compartment)
+		{
+			memberGroups.Remove (compartment);
+		}
+
+		protected void AddCompartment (TypeMemberGroupFigure newCompartment)
+		{
+			if (compartments.Contains (newCompartment))
+				return;
+			
+			compartments.Add (newCompartment);
 		}
 		
-		public void AddProperty(Pixbuf icon, string type, string name) {
-			properties.AddMember(icon, type, name);
-			members.AddMember (icon, type, name);
-			alphabetical.AddMember (icon, type, name);
-		}
-		
-		public void AddEvent(Pixbuf icon, string type, string name) {
-			events.AddMember(icon, type, name);
-			members.AddMember (icon, type, name);
-			alphabetical.AddMember (icon, type, name);
-		}
-		
-		protected virtual void AddMemberGroup(VStackFigure group) {
-			memberGroups.Add(group);
+		protected void RemoveCompartment (string name)
+		{
+			var comp = compartments
+				.Where (c => c.Name == name)
+				.SingleOrDefault ();
+			
+			compartments.Remove (comp);
 		}
 		
 		protected TypeHeaderFigure Header { get; set; }
 		
-		protected virtual void ChangeGrouping ()
+		public virtual void Update ()
 		{
-			if (grouping == GroupingSetting.Access) {
-				AddMemberGroup(fields);
-				AddMemberGroup(properties);
-				AddMemberGroup(methods);
-				AddMemberGroup(events);
-			} else if (grouping == GroupingSetting.Alphabetical) {
+			var members = new List<TypeMemberFigure> ();
+			
+			memberGroups.Clear ();
+			
+			compartments.ForEach (c => members.AddRange (c.FiguresEnumerator));
+			compartments.ForEach (c => c.Clear ());
+			
+			if (members.Count () == 0) {			
+				foreach (var member in _domtype.Members) {
+					var icon = ImageService.GetPixbuf (member.StockIcon, IconSize.Menu);
+					members.Add (new TypeMemberFigure (icon, member, false));
+				}
+			}
+			
+			if (grouping == GroupingSetting.Alphabetical) {
+				// Alphabetical compartment
+				var compartment = compartments
+					.Where (c => c.Name == "Members")
+					.SingleOrDefault ();
+	
+				compartment.AddMembers (members.OrderBy (m => m.Name));
+
+				AddMemberGroup (compartment);		
+			} else if (grouping == GroupingSetting.Access) {
+				// Public compartment
+				var compartment = compartments
+					.Where (c => c.Name == "Public")
+					.SingleOrDefault ();
+					
+				if (compartment != null) {
+					compartment.AddMembers (members.Where (m => ((IMember) m.MemberInfo).IsPublic));
+					AddMemberGroup (compartment);
+				}
 				
-			} else if (grouping == GroupingSetting.Member) {
+				// Private compartment
+				compartment = compartments
+					.Where (c => c.Name == "Private")
+					.SingleOrDefault ();
 				
+				if (compartment != null) {
+					compartment.AddMembers (members.Where (m => ((IMember) m.MemberInfo).IsPrivate));
+					AddMemberGroup (compartment);
+				}
+				
+				// Protected compartment
+				compartment = compartments
+					.Where (c => c.Name == "Protected")
+					.SingleOrDefault ();
+				
+				if (compartment != null) {
+					compartment.AddMembers (members.Where (m => ((IMember) m.MemberInfo).IsProtected));
+					AddMemberGroup (compartment);
+				}
+				
+				// Internal compartment
+				compartment = compartments
+					.Where (c => c.Name == "Internal")
+					.SingleOrDefault ();
+				
+				if (compartment != null) {
+					compartment.AddMembers (members.Where (m => ((IMember) m.MemberInfo).IsInternal));
+					AddMemberGroup (compartment);
+				}
+				
+				// ProtectedInternal compartment
+				compartment = compartments
+					.Where (c => c.Name == "Protected Internal")
+					.SingleOrDefault ();
+				
+				if (compartment != null) {
+					compartment.AddMembers (members.Where (m => ((IMember) m.MemberInfo).IsProtectedAndInternal));
+					AddMemberGroup (compartment);
+				}
+				
+			} else {
+				// Fields compartment
+				var compartment = compartments
+					.Where (c => c.Name == "Fields")
+					.SingleOrDefault ();
+				
+				if (compartment != null) {
+					compartment.AddMembers (members.Where (m => m.MemberInfo.MemberType == MemberType.Field));
+					AddMemberGroup (compartment);
+				}
+				
+				// Properties compartment
+				compartment = compartments
+					.Where (c => c.Name == "Properties")
+					.SingleOrDefault ();
+				
+				if (compartment != null) {
+					compartment.AddMembers (members.Where (m => m.MemberInfo.MemberType == MemberType.Property));
+					AddMemberGroup (compartment);
+				}
+				
+				// Methods compartment
+				compartment = compartments
+					.Where (c => c.Name == "Methods")
+					.SingleOrDefault ();
+				
+				if (compartment != null) {
+					compartment.AddMembers (members.Where (m => m.MemberInfo.MemberType == MemberType.Method));
+					AddMemberGroup (compartment);
+				}
+				// Events compartment
+				compartment = compartments
+					.Where (c => c.Name == "Events")
+					.SingleOrDefault ();
+				
+				if (compartment != null) {
+					compartment.AddMembers (members.Where (m => m.MemberInfo.MemberType == MemberType.Event));
+					AddMemberGroup (compartment);
+				}
+	
+				// NestedTypes compartment
+				compartment = compartments
+					.Where (c => c.Name == "Nested Types")
+					.SingleOrDefault ();
+				
+				if (compartment != null) {
+					compartment.AddMembers (members.Where (m => m.MemberInfo.MemberType == MemberType.Type));
+					AddMemberGroup (compartment);
+				}
 			}
 		}
-		
-		protected virtual void CreateGroups()
+				
+		protected virtual void CreateCompartments ()
 		{
-			fields = new TypeMemberGroupFigure(GettextCatalog.GetString("Fields"));
-			properties = new TypeMemberGroupFigure(GettextCatalog.GetString("Properties"));
-			methods = new TypeMemberGroupFigure(GettextCatalog.GetString("Methods"));
-			events = new TypeMemberGroupFigure(GettextCatalog.GetString("Events"));
-			members = new TypeMemberGroupFigure(GettextCatalog.GetString("Members"));
-			alphabetical = new TypeMemberGroupFigure(GettextCatalog.GetString("Alphabetical"));
+			// Default Group
+			var fields = new TypeMemberGroupFigure (GettextCatalog.GetString ("Fields"));
+			var properties = new TypeMemberGroupFigure (GettextCatalog.GetString ("Properties"));
+			var methods = new TypeMemberGroupFigure  (GettextCatalog.GetString ("Methods"));
+			var events = new TypeMemberGroupFigure (GettextCatalog.GetString ("Events"));
 			
-			ChangeGrouping ();
+			// Group Alphabetical
+			var members = new TypeMemberGroupFigure (GettextCatalog.GetString ("Members"));
 			
+			// Group by Access
+			var pub = new TypeMemberGroupFigure (GettextCatalog.GetString ("Public"));
+			var priv = new TypeMemberGroupFigure (GettextCatalog.GetString ("Private"));
+			var pro = new TypeMemberGroupFigure (GettextCatalog.GetString ("Protected"));
+			var pro_intr = new TypeMemberGroupFigure (GettextCatalog.GetString ("Protected Internal"));
+			var intr = new TypeMemberGroupFigure (GettextCatalog.GetString ("Internal"));
+					
+			// Other Groups
+			var nestedTypes = new TypeMemberGroupFigure (GettextCatalog.GetString ("Nested Types", true));
+			
+			AddCompartment (fields);
+			AddCompartment (properties);
+			AddCompartment (methods);
+			AddCompartment (events);
+			AddCompartment (members);
+			AddCompartment (pub);
+			AddCompartment (priv);
+			AddCompartment (pro);
+			AddCompartment (pro_intr);
+			AddCompartment (intr);
+			AddCompartment (nestedTypes);
 		}
 		
 		protected virtual ClassType ClassType {
@@ -240,23 +366,23 @@ namespace MonoDevelop.ClassDesigner.Figures {
 			}
 		}
 		
-		public void Toggle ()
-		{
-			expandHandle.Active = !expandHandle.Active;
+		public IEnumerable<TypeMemberGroupFigure> Compartments {
+			get { return compartments; }
 		}
 		
-		protected TypeMemberGroupFigure fields;
-		protected TypeMemberGroupFigure properties;
-		protected TypeMemberGroupFigure methods;
-		protected TypeMemberGroupFigure events;
-		protected TypeMemberGroupFigure members;
-		protected TypeMemberGroupFigure alphabetical;
-		protected static MembersFormat format;
-		protected static GroupingSetting grouping;
-		
-		VStackFigure memberGroups;
-		ToggleButtonHandle expandHandle;
-		IType domtype;
-		Cairo.Color color;
+		public bool Collapsed {
+			get { return collapsed;}
+			set {
+				if (collapsed == value)
+					return;
+				
+				if (collapsed)
+					expandHandle.Active = false;
+				else
+					expandHandle.Active = true;
+				
+				collapsed = value;
+			}
+		}		
 	}
 }

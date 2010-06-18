@@ -58,7 +58,7 @@ namespace MonoDevelop.ClassDesigner {
 			this.IsViewOnly = false;
 			
 			designer = new Cls.Designer (project, new SteticComponent ());
-			designer.DiagramChanged += OnDiagramChanged;
+			designer.Editor.View.VisibleAreaChanged += OnDiagramChanged;
 			Control.ShowAll ();
 		}
 		
@@ -71,7 +71,7 @@ namespace MonoDevelop.ClassDesigner {
 			
 			designer = new Cls.Designer (IdeApp.Workspace.GetProjectContainingFile (fileName));
 			designer.Project = this.Project;
-			designer.DiagramChanged += OnDiagramChanged;
+			designer.Editor.View.VisibleAreaChanged += OnDiagramChanged;
 			Control.ShowAll ();
 		}
 		
@@ -93,11 +93,12 @@ namespace MonoDevelop.ClassDesigner {
 				designer.Project = value;
 			}
 		}
-
 		
 		public override void Load (string fileName)
 		{
 			Designer.Load (fileName);
+			
+			IsDirty = false;
 		}
 		
 		public override void Save ()
@@ -107,15 +108,8 @@ namespace MonoDevelop.ClassDesigner {
 
 		public override void Save (string fileName)
 		{	
-			XmlWriter writer;
-			var diagram = Designer.Diagram;
-			
-			lock (writer = XmlWriter.Create (fileName)) {
-				diagram.Write (writer);
-
-				writer.Flush ();
-				writer.Close ();
-			}
+			lock (Designer.Diagram)
+				Designer.Diagram.Write (fileName);
 			
 			ContentName = fileName;
 			IsDirty = false;
@@ -133,7 +127,7 @@ namespace MonoDevelop.ClassDesigner {
 			}
 		}
 		
-		void OnDiagramChanged (object sender, DiagramEventArgs e)
+		void OnDiagramChanged (object sender, EventArgs e)
 		{
 			IsDirty = true;
 		}		

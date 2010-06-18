@@ -129,7 +129,7 @@ namespace MonoDevelop.ClassDesigner.Designer
 			if (compilationUnit == null)
 				return;
 			
-			var figures = compilationUnit.Types.Select (t => Diagram.CreateFigure (t, false)).Where (t => t != null);
+			var figures = compilationUnit.Types.Select (t => Diagram.CreateFigure (t)).Where (t => t != null);
 			Editor.View.AddRange (figures);
 			
 			AutoLayout ();	
@@ -163,14 +163,14 @@ namespace MonoDevelop.ClassDesigner.Designer
 			Project = project;
 			var dom = GetProjectDom ();
 		
-			Editor.View.AddRange (dom.Types.Select (t => Diagram.CreateFigure (t, false)).Where (f => f != null));
+			Editor.View.AddRange (dom.Types.Select (t => Diagram.CreateFigure (t)).Where (f => f != null));
 			
 			AutoLayout ();	
 		}
  
 		public void AddFromType (IType type)
 		{
-			var figure = Diagram.CreateFigure (type, false);
+			var figure = Diagram.CreateFigure (type);
 			
 			if (figure == null)
 				return;

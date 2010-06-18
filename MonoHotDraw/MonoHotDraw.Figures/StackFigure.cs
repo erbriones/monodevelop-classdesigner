@@ -53,6 +53,11 @@ namespace MonoHotDraw.Figures {
 			}
 		}
 		
+		public virtual void Clear ()	
+		{
+			Figures.ForEach (f => Remove (f));
+		}
+		
 		public override void Add (IFigure figure)
 		{
 			base.Add(figure);
