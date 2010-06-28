@@ -37,13 +37,24 @@ using MonoHotDraw.Figures;
 using MonoHotDraw.Handles;
 using MonoHotDraw.Util;
 
-namespace MonoHotDraw {
-
-	public class StandardDrawingView : ContainerCanvas, IDrawingView {
+namespace MonoHotDraw
+{
+	public class StandardDrawingView : ContainerCanvas, IDrawingView
+	{
+		bool _drag;		
+		IDrawing _drawing;
+		FigureCollection _selection;
+		ScaleRange _range;
+		double _scale = 1.0;
+		static TargetList targets;
 		
+		// used for debug purposes
+		int _frameCount = 0;
+	
 		public event EventHandler VisibleAreaChanged;
 		
-		public StandardDrawingView (IDrawingEditor editor): base () {
+		public StandardDrawingView (IDrawingEditor editor) : base ()
+		{
 			Drawing = new StandardDrawing ();
 			Editor = editor;
 			ScaleRange = new ScaleRange (5, 0.25, 0.1);	
@@ -52,14 +63,19 @@ namespace MonoHotDraw {
 			DebugCreateTimer ();
 		}
 		
+		static StandardDrawingView ()
+		{
+			targets = new TargetList ();
+		}
+		
 		protected StandardDrawingView (IntPtr raw) : base (raw)
-		{}
+		{
+		}
 		
 		public IDrawing Drawing {
 			set {
-				if (value == _drawing) {
+				if (value == _drawing)
 					return;
-				}
 
 				if (_drawing != null) {
 					_drawing.DrawingInvalidated -= OnDrawingInvalidated;
@@ -95,17 +111,13 @@ namespace MonoHotDraw {
 					_range = new ScaleRange (5, 0.25, 0.1);
 				
 				return _range;
-			}
-			set {
-				_range = value;
-			}
+			} set { _range = value; }
 		}
 
 		public IEnumerable <IFigure> SelectionEnumerator {
 			get {
-				foreach (IFigure fig in _selection) {
+				foreach (IFigure fig in _selection)
 					yield return fig;
-				}
 			}
 		}
 		
@@ -113,7 +125,12 @@ namespace MonoHotDraw {
 			get { return _selection.Count; }
 		}
 		
-		public void Add (IFigure figure) {
+		public static TargetEntry [] Targets {
+			get { return (TargetEntry []) targets; }
+		}
+		
+		public void Add (IFigure figure)
+		{
 			Drawing.Add (figure);
 		}
 		
@@ -123,20 +140,22 @@ namespace MonoHotDraw {
 				Drawing.Add (figure);
 		}
 
-		public void AddToSelection (IFigure figure) {
+		public void AddToSelection (IFigure figure)
+		{
 			if (!IsFigureSelected (figure) && Drawing.Includes (figure)) {
 				_selection.Add (figure);
 				figure.Invalidate ();
 			}
 		}
 		
-		public void AddToSelection (FigureCollection collection) {
-			foreach (IFigure figure in collection) {
+		public void AddToSelection (FigureCollection collection)
+		{
+			foreach (IFigure figure in collection)
 				AddToSelection (figure);
-			} 
 		}
 		
-		public void Remove (IFigure figure) {
+		public void Remove (IFigure figure)
+		{
 			Drawing.Remove (figure);
 		}
 		
@@ -146,48 +165,54 @@ namespace MonoHotDraw {
 				Drawing.Remove (figure);
 		}
 		
-		public void RemoveFromSelection (IFigure figure) {
+		public void RemoveFromSelection (IFigure figure)
+		{
 			_selection.Remove (figure);
 			figure.Invalidate ();
 		}
 
-		public void ToggleSelection (IFigure figure) {
-			if (IsFigureSelected (figure)) {
+		public void ToggleSelection (IFigure figure)
+		{
+			if (IsFigureSelected (figure))
 				RemoveFromSelection (figure);
-			} else {
+			else
 				AddToSelection (figure);
-			}
+			
 		}
 
-		public void ClearSelection () {
-			foreach (IFigure figure in _selection) {
+		public void ClearSelection ()
+		{
+			foreach (IFigure figure in _selection)
 				figure.Invalidate ();
-			}
 
 			_selection.Clear ();
 		}
 
-		public bool IsFigureSelected (IFigure figure) {
+		public bool IsFigureSelected (IFigure figure)
+		{
 			return _selection.Contains (figure);
 		}
 		
-		public IHandle FindHandle (double x, double y) {
+		public IHandle FindHandle (double x, double y)
+		{
 			foreach (IHandle handle in SelectionHandles) {
-				if (handle.ContainsPoint (x, y)) {
+				if (handle.ContainsPoint (x, y))
 					return handle;
-				}
 			}
+			
 			return null;
 		}
 		
-		public PointD ViewToDrawing (double x, double y) {
+		public PointD ViewToDrawing (double x, double y)
+		{
 			return new PointD {
 				X = (x/Scale + VisibleArea.X),
 				Y = (y/Scale + VisibleArea.Y)
 			};
 		}
 		
-		public PointD DrawingToView (double x, double y) {
+		public PointD DrawingToView (double x, double y)
+		{
 			return new PointD {
 					X = (x - VisibleArea.X) * Scale,
 					Y = (y - VisibleArea.Y) * Scale
@@ -205,7 +230,8 @@ namespace MonoHotDraw {
 			}
 		}
 		
-		public void ScrollToMakeVisible (PointD point) {
+		public void ScrollToMakeVisible (PointD point)
+		{
 			RectangleD visible = VisibleArea;
 			
 			if (visible.Contains(point.X, point.Y) ) {
@@ -220,27 +246,24 @@ namespace MonoHotDraw {
 			Vadjustment.Upper = Math.Max (Vadjustment.Upper, point.Y);
 			Vadjustment.Change ();
 			
-			if (point.X < visible.X) {
+			if (point.X < visible.X)
 				Hadjustment.Value = Math.Round (point.X, 0);
-			}
-			else if (point.X > visible.X2 ) {
+			else if (point.X > visible.X2 )
 				Hadjustment.Value = Math.Round (point.X - visible.Width, 0);
-			}
 			
-			if (point.Y < visible.Y) {
+			if (point.Y < visible.Y)
 				Vadjustment.Value = Math.Round (point.Y, 0);
-			}
-			else if (point.Y > visible.Y2) {
+			else if (point.Y > visible.Y2)
 				Vadjustment.Value = Math.Round (point.Y - visible.Height, 0);
-			}
+		
 		}
 		
-		public void ScrollToMakeVisible (RectangleD rect) {
+		public void ScrollToMakeVisible (RectangleD rect)
+		{
 			RectangleD visible = VisibleArea;
 			
-			if (visible.Contains(rect) ) {
+			if (visible.Contains (rect))
 				return;
-			}
 			
 			Hadjustment.Lower = Math.Min (Hadjustment.Lower, rect.X);			
 			Hadjustment.Upper = Math.Max (Hadjustment.Upper, rect.X2);
@@ -250,19 +273,17 @@ namespace MonoHotDraw {
 			Vadjustment.Upper = Math.Max (Vadjustment.Upper, rect.Y2);
 			Vadjustment.Change ();
 			
-			if (rect.X < visible.X) {
+			if (rect.X < visible.X)
 				Hadjustment.Value = Math.Round (rect.X, 0);
-			}
-			if (rect.X2 > visible.X2 ) {
+
+			if (rect.X2 > visible.X2 )
 				Hadjustment.Value = Math.Round (rect.X2 - visible.Width, 0);
-			}
 			
-			if (rect.Y < visible.Y) {
+			if (rect.Y < visible.Y)
 				Vadjustment.Value = Math.Round (rect.Y, 0);
-			}
-			if (rect.Y2 > visible.Y2) {
+			
+			if (rect.Y2 > visible.Y2)
 				Vadjustment.Value = Math.Round (rect.Y2 - visible.Height, 0);
-			}
 		}
 
 		protected IEnumerable <IHandle> SelectionHandles {
@@ -275,18 +296,28 @@ namespace MonoHotDraw {
 			}
 		}	
 		
-		public FigureCollection InsertFigures (FigureCollection figures, double dx, double dy, bool check) {
-			InsertIntoDrawingVisitor visitor = new InsertIntoDrawingVisitor (Drawing);
+		public FigureCollection InsertFigures (FigureCollection figures, double dx, double dy, bool check)
+		{
+			var visitor = new InsertIntoDrawingVisitor (Drawing);
+			
 			foreach (IFigure figure in figures) {	
 				figure.MoveBy (dx, dy);
 				visitor.VisitFigure (figure);
 			}
+			
 			AddToSelection (visitor.GetAddedFigures ());
 			//TODO: Use check parameter
 			return visitor.GetAddedFigures ();
 		}
+		
+		protected override bool OnDragMotion (DragContext context, int x, int y, uint time_)
+		{
+			
+			return base.OnDragMotion (context, x, y, time_);
+		}
 	
-		protected override bool OnExposeEvent (EventExpose ev) {
+		protected override bool OnExposeEvent (EventExpose ev)
+		{
 			using (Cairo.Context context = CairoHelper.Create (ev.Window)) {
 				
 				context.Save();
@@ -302,48 +333,52 @@ namespace MonoHotDraw {
 						figure.Draw (context);
 					}
 				}
-				foreach (IFigure figure in SelectionEnumerator) {					
+				
+				foreach (IFigure figure in SelectionEnumerator)					
 					figure.DrawSelected (context);
-				}
 				
 				context.Restore();
 				
-				foreach (IHandle handle in SelectionHandles) {
+				foreach (IHandle handle in SelectionHandles)
 					handle.Draw (context, this);
-				}
 			}
 			
 			DebugUpdateFrame ();
 			return base.OnExposeEvent(ev);
 		}
 		
-		protected override bool OnMotionNotifyEvent (EventMotion gdk_event) {
+		protected override bool OnMotionNotifyEvent (EventMotion gdk_event)
+		{
 			PointD point = ViewToDrawing(gdk_event.X, gdk_event.Y);
-			MouseEvent ev = new MouseEvent(this, gdk_event, point);
+			var ev = new MouseEvent(this, gdk_event, point);
 
 			if (_drag) {
 				// TODO: Move this to a Tool
 				ScrollToMakeVisible (point); 
 				Editor.Tool.MouseDrag (ev);
-			} else {
+			} else
 				Editor.Tool.MouseMove (ev);
-			}
 
 			return base.OnMotionNotifyEvent(gdk_event);
 		}
 
-		protected override bool OnButtonReleaseEvent (EventButton gdk_event) {
+		protected override bool OnButtonReleaseEvent (EventButton gdk_event)
+		{
 			Drawing.RecalculateDisplayBox();
 			PointD point = ViewToDrawing(gdk_event.X, gdk_event.Y);
-			MouseEvent ev = new MouseEvent(this, gdk_event, point);
+			var ev = new MouseEvent(this, gdk_event, point);
+			
 			Editor.Tool.MouseUp (ev);
 			_drag = false;
+			
 			return base.OnButtonReleaseEvent(gdk_event);
 		}
 
-		protected override bool OnButtonPressEvent (Gdk.EventButton gdk_event) {
+		protected override bool OnButtonPressEvent (Gdk.EventButton gdk_event) 
+		{
 			PointD point = ViewToDrawing(gdk_event.X, gdk_event.Y);
-			MouseEvent ev = new MouseEvent(this, gdk_event, point);
+			var ev = new MouseEvent(this, gdk_event, point);
+			
 			Editor.Tool.MouseDown (ev);
 			_drag = true;
 
@@ -355,7 +390,8 @@ namespace MonoHotDraw {
 			return base.OnKeyPressEvent(ev);
 		}
 		
-		protected override bool OnKeyReleaseEvent (Gdk.EventKey ev) {
+		protected override bool OnKeyReleaseEvent (Gdk.EventKey ev)
+		{
 			Editor.Tool.KeyUp (new KeyEvent(this, ev));
 			return base.OnKeyReleaseEvent(ev);
 		}
@@ -372,20 +408,23 @@ namespace MonoHotDraw {
 			return base.OnScrollEvent (e);
 		}
 		
-		protected override void OnSizeAllocated (Gdk.Rectangle allocation) {
+		protected override void OnSizeAllocated (Gdk.Rectangle allocation)
+		{
 			base.OnSizeAllocated (allocation);
 			
 			UpdateAdjustments ();
 			OnVisibleAreaChaned();
 		}
 
-		protected override void OnAdjustmentValueChanged (object sender, EventArgs args) {
+		protected override void OnAdjustmentValueChanged (object sender, EventArgs args)
+		{
 			QueueDraw();
 			OnVisibleAreaChaned();
 		}
 
 		
-		protected void OnDrawingInvalidated (object sender, DrawingEventArgs args) {
+		protected void OnDrawingInvalidated (object sender, DrawingEventArgs args)
+		{
 			RectangleD r = args.Rectangle;
 			PointD p = DrawingToView(r.X, r.Y);
 			r.X = p.X;
@@ -395,18 +434,20 @@ namespace MonoHotDraw {
 			QueueDrawArea ((int) r.X, (int) r.Y, (int) r.Width, (int) r.Height);
 		}
 		
-		protected void OnDrawingSizeAllocated (object sender, DrawingEventArgs args) {
+		protected void OnDrawingSizeAllocated (object sender, DrawingEventArgs args)
+		{
 			UpdateAdjustments ();
 			QueueDraw();
 		}
 		
-		protected void OnVisibleAreaChaned() {
-			if (VisibleAreaChanged != null) {
-				VisibleAreaChanged(this, new EventArgs());
-			}
+		protected void OnVisibleAreaChaned ()
+		{
+			if (VisibleAreaChanged != null)
+				VisibleAreaChanged(this, EventArgs.Empty);
 		}
 		
-		private void UpdateAdjustments () {
+		private void UpdateAdjustments ()
+		{
 			RectangleD drawing_box = Drawing.DisplayBox;
 			drawing_box.Add (VisibleArea);
 			
@@ -427,7 +468,8 @@ namespace MonoHotDraw {
 	
 	
 		[ConditionalAttribute ("DEBUG_SHOW_FPS")]
-		private void DebugCreateTimer () {
+		void DebugCreateTimer ()
+		{
 			GLib.Timeout.Add (1000, delegate() {
 				System.Console.WriteLine ("FPS: {0}", _frameCount.ToString());
 				_frameCount = 0;
@@ -436,19 +478,10 @@ namespace MonoHotDraw {
 		}
 		
 		[ConditionalAttribute ("DEBUG_SHOW_FPS")]
-		private void DebugUpdateFrame () {
+		void DebugUpdateFrame ()
+		{
 			_frameCount ++;
-		}
-		
-		private bool _drag;		
-		private IDrawing _drawing;
-		private FigureCollection _selection;
-		private ScaleRange _range;
-		
-		// used for debug purposes
-		private int _frameCount = 0;
-		private double _scale = 1.0;
-		
+		}		
 	}
 }
 

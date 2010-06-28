@@ -28,24 +28,29 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace MonoHotDraw.Figures {
+namespace MonoHotDraw.Figures
+{
 	//TODO: Verify serialization. It seems that Dictionary<FigureAttribute,object> 
 	//doesn't serialize completetly.
 
 	[Serializable]
-	public abstract class AttributeFigure : AbstractFigure {
+	public abstract class AttributeFigure : AbstractFigure
+	{
 
-		protected AttributeFigure () {
+		protected AttributeFigure ()
+		{
 		}	
 
-		protected AttributeFigure (SerializationInfo info, StreamingContext context) : base (info, context) {
+		protected AttributeFigure (SerializationInfo info, StreamingContext context) : base (info, context)
+		{
 			if (info.GetBoolean ("HasAttributes") == false)
 				return;
  
 			_attributes = (Dictionary<FigureAttribute, object>) info.GetValue ("Attributes", typeof (Dictionary<FigureAttribute, object>));
 		}
 
-		public static object GetDefaultAttribute (FigureAttribute attribute) {
+		public static object GetDefaultAttribute (FigureAttribute attribute)
+		{
 			if (_defaultAttributes == null)
 				InitializeDefaultAttributes ();
 
@@ -64,7 +69,8 @@ namespace MonoHotDraw.Figures {
 			_defaultAttributes [attribute] = value;
 		}
 		
-		public override void GetObjectData (SerializationInfo info, StreamingContext context) {
+		public override void GetObjectData (SerializationInfo info, StreamingContext context)
+		{
 			if (_attributes != null && _attributes.Count > 0) {
 				info.AddValue ("HasAttributes", true);
 				info.AddValue ("Attributes", _attributes);
@@ -75,7 +81,8 @@ namespace MonoHotDraw.Figures {
 			base.GetObjectData (info, context);
 		}
 		
-		public override object GetAttribute (FigureAttribute attribute) {
+		public override object GetAttribute (FigureAttribute attribute)
+		{
 			if (_attributes == null)
 				return AttributeFigure.GetDefaultAttribute (attribute);
 
@@ -86,7 +93,8 @@ namespace MonoHotDraw.Figures {
 			return returnValue;
 		}
 
-		public override void SetAttribute (FigureAttribute attribute, object value) {
+		public override void SetAttribute (FigureAttribute attribute, object value)
+		{
 			if (value == null)
 				return;
 
@@ -96,7 +104,8 @@ namespace MonoHotDraw.Figures {
 			_attributes [attribute] = value;
 		}
 		
-		private static void InitializeDefaultAttributes () {
+		private static void InitializeDefaultAttributes ()
+		{
 			_defaultAttributes = new Dictionary<FigureAttribute, object> ();
 			_defaultAttributes.Add (FigureAttribute.FontAlignment, Pango.Alignment.Left);
 			_defaultAttributes.Add (FigureAttribute.FontFamily, "Sans Serif");

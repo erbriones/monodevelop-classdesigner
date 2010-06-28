@@ -36,15 +36,15 @@ namespace MonoDevelop.ClassDesigner.Figures {
 	public class TypeHeaderFigure: VStackFigure {
 		
 		public TypeHeaderFigure(): base() {		
-			namespaceFigure = new SimpleTextFigure("Namespace");
+			namespaceFigure = new TextFigure("Namespace");
 			namespaceFigure.Padding = 0;
 			namespaceFigure.FontSize = 7;
 					
-			typeFigure = new SimpleTextFigure("Type");
+			typeFigure = new TextFigure("Type");
 			typeFigure.Padding = 0;
 			typeFigure.FontSize = 7;
 			
-			nameFigure = new SimpleTextFigure("Name");
+			nameFigure = new TextFigure("Name");
 			nameFigure.Padding = 0;
 			nameFigure.FontSize = 12;
 			Spacing = 0;
@@ -81,8 +81,8 @@ namespace MonoDevelop.ClassDesigner.Figures {
 			}
 		}
 		
-		private SimpleTextFigure namespaceFigure;
-		private SimpleTextFigure typeFigure;
-		private SimpleTextFigure nameFigure;
+		private TextFigure namespaceFigure;
+		private TextFigure typeFigure;
+		private TextFigure nameFigure;
 	}
 }

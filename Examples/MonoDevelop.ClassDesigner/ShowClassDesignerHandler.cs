@@ -25,8 +25,7 @@
 
 using MonoDevelop.ClassDesigner;
 using MonoDevelop.Components.Commands;
-using MonoDevelop.Ide.Gui.Components;
-using MonoDevelop.Ide.Gui;
+using MonoDevelop.Ide;
 using MonoDevelop.Ide.Gui.Pads.ProjectPad;
 using MonoDevelop.Projects;
 using MonoDevelop.Projects.Dom;

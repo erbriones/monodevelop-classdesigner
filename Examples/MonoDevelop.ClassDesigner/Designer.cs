@@ -35,10 +35,12 @@ using MonoDevelop.Projects.Dom;
 using MonoDevelop.Projects.Dom.Parser;
 using MonoDevelop.Ide.Gui;
 using MonoHotDraw;
+using MonoHotDraw.Tools;
+using MonoHotDraw.Connectors;
 using MonoHotDraw.Figures;
 
 
-namespace MonoDevelop.ClassDesigner.Designer
+namespace MonoDevelop.ClassDesigner
 {
 	public class Designer : AbstractDesigner
 	{
@@ -71,14 +73,6 @@ namespace MonoDevelop.ClassDesigner.Designer
 			}
 		}
 		
-		public void AddAssociation ()
-		{	
-		}
-		
-		public void AddAssociationCollection ()
-		{
-		}
-
 		void AddInheritance ()
 		{
 			ClassFigure subclass;
@@ -87,7 +81,7 @@ namespace MonoDevelop.ClassDesigner.Designer
 			
 			foreach (IType type in dom.Types) {				
 				if (type.ClassType == ClassType.Class) {		
-					subclass = Diagram.GetFigure (type.Name, typeof (ClassFigure)) as ClassFigure;
+					subclass = Diagram.GetFigure (type.Name) as ClassFigure;
 					
 					if (subclass.HideInheritance)
 						continue;
@@ -95,15 +89,21 @@ namespace MonoDevelop.ClassDesigner.Designer
 					if (type.BaseType == null)
 						superclass = null;
 					else
-						superclass = Diagram.GetFigure(type.BaseType.Name, typeof (ClassFigure)) as ClassFigure;
+						superclass = Diagram.GetFigure (type.BaseType.Name) as ClassFigure;
 					
 					if (subclass != null && superclass != null) {
-						InheritanceConnectionFigure connection = new InheritanceConnectionFigure (subclass, superclass);
+						var connection = new InheritanceConnectionFigure (subclass, superclass);
 						Editor.View.Add (connection);
 					}
 				}
 			}	
 		}	
+		
+		
+		public void AddConnection ()
+		{
+
+		}
 		
 		public void AddFromDirectory (string directory)
 		{

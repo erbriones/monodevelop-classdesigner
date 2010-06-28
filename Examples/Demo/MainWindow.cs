@@ -36,7 +36,7 @@ public partial class MainWindow: Gtk.Window
 	}
 
 	protected virtual void OnAddSimpleTextActionActivated (object sender, System.EventArgs e) {
-		mhdcanvas.AddWithDragging(new SimpleTextFigure("Hello World"));
+		mhdcanvas.AddWithDragging(new TextFigure("Hello World"));
 	}
 
 	protected virtual void OnAddMultiLineTextActionActivated (object sender, System.EventArgs e) {

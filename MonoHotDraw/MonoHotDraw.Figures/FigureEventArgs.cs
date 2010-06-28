@@ -26,11 +26,15 @@
 using System;
 using MonoHotDraw.Util;
 
-namespace MonoHotDraw.Figures {
-
-	public class FigureEventArgs : EventArgs {
-	
-		public FigureEventArgs (IFigure fig, RectangleD rect) {
+namespace MonoHotDraw.Figures
+{
+	public class FigureEventArgs : EventArgs
+	{
+		IFigure figure;
+		RectangleD rectangle;
+		
+		public FigureEventArgs (IFigure fig, RectangleD rect)
+		{
 			figure = fig;
 			rectangle = rect;
 		}
@@ -42,8 +46,5 @@ namespace MonoHotDraw.Figures {
 		public RectangleD Rectangle	{
 			get { return rectangle;	}
 		}
-
-		private IFigure figure;
-		private RectangleD rectangle;
 	}
 }

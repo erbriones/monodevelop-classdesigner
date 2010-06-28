@@ -45,15 +45,17 @@ namespace MonoHotDraw.Figures {
 		
 		public HStackAlignment Alignment { get; set; }
 		
-		protected override double CalculateHeight()
+		protected override double CalculateHeight ()
 		{
 			if (Figures.Count() == 0)
 				return 0.0;
+			
 			return (from IFigure fig in this.Figures
 			        select fig.DisplayBox.Height).Max();
 		}
 		
-		protected override double CalculateWidth() {
+		protected override double CalculateWidth ()
+		{
 			int count = Figures.Count();
 			
 			if (count == 0)
@@ -63,19 +65,22 @@ namespace MonoHotDraw.Figures {
 			        select fig.DisplayBox.Width).Sum() + Spacing * (count-1);
 		}
 		
-		protected override void UpdateFiguresPosition() {
-			double width = 0.0;
+		protected override void UpdateFiguresPosition ()
+		{
+			var width = 0.0;
+			
 			foreach (IFigure figure in Figures) {
 				RectangleD r = figure.DisplayBox;
 				r.X = Position.X + width;
 				r.Y = CalculateFigureY(figure);
-				AbstractFigure af = figure as AbstractFigure;
-				af.BasicDisplayBox = r;
+				var af = figure as AbstractFigure;
+				af.DisplayBox = r;
 				width += r.Width + Spacing;
 			}
 		}
 		
-		private double CalculateFigureY(IFigure figure) {
+		double CalculateFigureY (IFigure figure)
+		{
 			switch (Alignment) {
 			case HStackAlignment.Center:
 				return Position.Y + (Height - figure.DisplayBox.Height)/2;

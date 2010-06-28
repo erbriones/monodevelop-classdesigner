@@ -8,6 +8,7 @@
     <ProjectGuid>{D5AED9F8-B201-41B0-86CE-4004E3E20407}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AssemblyName>Clock</AssemblyName>
+    <RootNamespace>Clock</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

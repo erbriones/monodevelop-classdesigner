@@ -36,15 +36,15 @@ namespace MonoDevelop.ClassDesigner.Figures {
 		
 		public TypeMemberFigure(Pixbuf icon, IBaseMember memberInfo, bool hidden): base ()
 		{
-			_icon = new PixbufFigure (icon);
+			_icon = new ImageFigure (icon);
 			_memberInfo = memberInfo;
 			
 			if (memberInfo.ReturnType != null)
-				_retvalue = new SimpleTextFigure (memberInfo.ReturnType.Name);
+				_retvalue = new TextFigure (memberInfo.ReturnType.Name);
 			else
-				_retvalue = new SimpleTextFigure (String.Empty);
+				_retvalue = new TextFigure (String.Empty);
 					
-			_name = new SimpleTextFigure (memberInfo.Name);
+			_name = new TextFigure (memberInfo.Name);
 			_hidden = hidden;
 			
 			_name.Padding = 0.0;
@@ -75,8 +75,8 @@ namespace MonoDevelop.ClassDesigner.Figures {
 			
 		bool _hidden;
 		IBaseMember _memberInfo;
-		SimpleTextFigure _retvalue;
-		SimpleTextFigure _name;
-		PixbufFigure _icon;
+		TextFigure _retvalue;
+		TextFigure _name;
+		ImageFigure _icon;
 	}
 }

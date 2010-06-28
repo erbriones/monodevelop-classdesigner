@@ -28,28 +28,35 @@ using System;
 using System.Runtime.Serialization;
 using MonoHotDraw.Util;
 
-namespace MonoHotDraw.Figures {
-	
+namespace MonoHotDraw.Figures
+{	
 	[Serializable]
-	public class TriangleArrowLineTerminal : LineTerminal {
-
-		public TriangleArrowLineTerminal (): this (10.0, 20.0) {
+	public class TriangleArrowLineTerminal : LineTerminal
+	{
+		double _lineDistance;
+		double _pointDistance;
+		
+		public TriangleArrowLineTerminal (): this (10.0, 20.0)
+		{
 		}
 	
-		public TriangleArrowLineTerminal (double lDistance, double pDistance): base () {
+		public TriangleArrowLineTerminal (double lDistance, double pDistance): base ()
+		{
 			_lineDistance = lDistance;
 			_pointDistance = pDistance;
 		}
 
-		protected TriangleArrowLineTerminal (SerializationInfo info, StreamingContext context) : base (info, context) {
+		protected TriangleArrowLineTerminal (SerializationInfo info, StreamingContext context) : base (info, context)
+		{
 			_lineDistance  = info.GetDouble ("LineDistance");
 			_pointDistance = info.GetDouble ("PointDistance");
 		}
 		
-		public override PointD Draw (Context context, PointD a, PointD b) {
-			PointD leftPoint = new PointD ();
-			PointD middlePoint = new PointD ();
-			PointD rightPoint = new PointD ();
+		public override PointD Draw (Context context, PointD a, PointD b)
+		{
+			var leftPoint = new PointD ();
+			var middlePoint = new PointD ();
+			var rightPoint = new PointD ();
 			Geometry.GetArrowPoints (a, b, _lineDistance, _pointDistance, 
 									out leftPoint, out rightPoint, out middlePoint);
 			
@@ -63,21 +70,21 @@ namespace MonoHotDraw.Figures {
 			return middlePoint;
 		}
 		
-		public override void GetObjectData (SerializationInfo info, StreamingContext context) {
+		public override void GetObjectData (SerializationInfo info, StreamingContext context)
+		{
 			info.AddValue ("LineDistance", _lineDistance);
 			info.AddValue ("PointDistance", _pointDistance);
 
 			base.GetObjectData (info, context);
 		}
 		
-		public override RectangleD InvalidateRect (PointD b) {
-			double distance = Math.Max (_lineDistance*2, _pointDistance);
-			RectangleD r = new RectangleD (b.X, b.Y, 0.0, 0.0);
+		public override RectangleD InvalidateRect (PointD b)
+		{
+			var distance = Math.Max (_lineDistance*2, _pointDistance);
+			var r = new RectangleD (b.X, b.Y, 0.0, 0.0);
 			r.Inflate (distance, distance);
+			
 			return r;
 		}
-
-		private double _lineDistance;
-		private double _pointDistance;
 	}
 }

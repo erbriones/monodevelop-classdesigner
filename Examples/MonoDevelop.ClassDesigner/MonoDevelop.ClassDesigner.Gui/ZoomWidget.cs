@@ -28,7 +28,7 @@ using System;
 using MonoHotDraw;
 using Gtk;
 
-namespace MonoDevelop.ClassDesigner.Components
+namespace MonoDevelop.ClassDesigner.Gui
 {
 	public class ZoomWidget : Bin
 	{	
@@ -37,6 +37,10 @@ namespace MonoDevelop.ClassDesigner.Components
 		SeparatorMenuItem seperator;
 		Entry zoomEntry;
 		HScale zoomSlider;
+		
+		public ZoomWidget () :this (new ScaleRange (5.0, 0.1, 0.1), 1.0)
+		{
+		}
 		
 		public ZoomWidget (ScaleRange range, double startScale)
 		{

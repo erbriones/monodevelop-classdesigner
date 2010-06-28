@@ -1,3 +1,22 @@
+2010-06-27  Evan Briones  <erbriones@gmail.com>	
+
+	* ShowClassDesignerHandler.cs: Modified to compile against monodevelop trunk.
+	
+	* ClassDesignerView.cs: Modified to compile against monodevelop trunk.
+	Initial toolbox support started.
+	
+	* ClassDiagramDisplayBinding.cs: Modified to compile against monodevelop trunk.
+	
+	* MonoDevelop.ClassDesigner.Components:
+	* MonoDevelop.ClassDesigner.Gui: Components folder renamed to Gui.
+
+	* MonoDevelop.ClassDesigner.Designer: folder deleted basically repeats namespace.
+	
+	* ClassDiagram.cs:
+	* DiagramEventArgs.cs:
+	* AbstractDesigner.cs:	
+	* Designer.cs: Moved from MonoDevelop.ClassDesigner.Designer.
+
 2010-06-13  Evan Briones  <erbriones@gmail.com>
 	* Commands.cs: Added new Command for opening class designer.
 	

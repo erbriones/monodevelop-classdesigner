@@ -35,7 +35,7 @@ namespace MonoHotDraw.Tools {
 
 	public class TextTool: FigureTool	{
 
-		public TextTool (IDrawingEditor editor, SimpleTextFigure fig, ITool dt) 
+		public TextTool (IDrawingEditor editor, TextFigure fig, ITool dt) 
 			: base (editor, fig, dt) {
 		}
 		
@@ -74,12 +74,12 @@ namespace MonoHotDraw.Tools {
 			
 			public string OldText { get; set; }
 			public string NewText { get; set; }
-			public SimpleTextFigure AffectedFigure { get; set; }
+			public TextFigure AffectedFigure { get; set; }
 		}
 		
 		protected void CreateUndoActivity() {
 			TextToolUndoActivity activity = new TextToolUndoActivity(Editor.View);
-			activity.AffectedFigure = Figure as SimpleTextFigure;
+			activity.AffectedFigure = Figure as TextFigure;
 			activity.OldText = activity.AffectedFigure.Text;
 			UndoActivity = activity;
 		}

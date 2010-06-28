@@ -90,21 +90,6 @@
     <Compile Include="MonoHotDraw.Figures\AbstractFigure.cs" />
     <Compile Include="MonoHotDraw.Figures\AttributeFigure.cs" />
     <Compile Include="MonoHotDraw.Figures\BaseBoxFigure.cs" />
-    <Compile Include="MonoHotDraw.Figures\CompositeFigure.cs" />
-    <Compile Include="MonoHotDraw.Figures\EllipseFigure.cs" />
-    <Compile Include="MonoHotDraw.Figures\FigureAttribute.cs" />
-    <Compile Include="MonoHotDraw.Figures\FigureCollection.cs" />
-    <Compile Include="MonoHotDraw.Figures\FigureEventArgs.cs" />
-    <Compile Include="MonoHotDraw.Figures\IConnectionFigure.cs" />
-    <Compile Include="MonoHotDraw.Figures\IFigure.cs" />
-    <Compile Include="MonoHotDraw.Figures\IFigureVisitor.cs" />
-    <Compile Include="MonoHotDraw.Figures\LineConnection.cs" />
-    <Compile Include="MonoHotDraw.Figures\LineTerminal.cs" />
-    <Compile Include="MonoHotDraw.Figures\MultiLineTextFigure.cs" />
-    <Compile Include="MonoHotDraw.Figures\PolyLineFigure.cs" />
-    <Compile Include="MonoHotDraw.Figures\RectangleFigure.cs" />
-    <Compile Include="MonoHotDraw.Figures\SimpleTextFigure.cs" />
-    <Compile Include="MonoHotDraw.Figures\TriangleArrowLineTerminal.cs" />
     <Compile Include="MonoHotDraw.Handles\AbstractHandle.cs" />
     <Compile Include="MonoHotDraw.Handles\ChangeConnectionEndHandle.cs" />
     <Compile Include="MonoHotDraw.Handles\ChangeConnectionHandle.cs" />
@@ -161,11 +146,27 @@
     <Compile Include="MonoHotDraw.Handles\ToggleButtonHandle.cs" />
     <Compile Include="MonoHotDraw.Locators\AbsoluteLocator.cs" />
     <Compile Include="MonoHotDraw.Handles\PixbufHandle.cs" />
-    <Compile Include="MonoHotDraw.Figures\HStackFigure.cs" />
-    <Compile Include="MonoHotDraw.Figures\StackFigure.cs" />
-    <Compile Include="MonoHotDraw.Figures\VStackFigure.cs" />
-    <Compile Include="MonoHotDraw.Figures\PixbufFigure.cs" />
     <Compile Include="ScaleRange.cs" />
+    <Compile Include="MonoHotDraw.Figures\FigureAttribute.cs" />
+    <Compile Include="MonoHotDraw.Figures\CircularLineTerminal.cs" />
+    <Compile Include="MonoHotDraw.Figures\EllipseFigure.cs" />
+    <Compile Include="MonoHotDraw.Figures\FigureCollection.cs" />
+    <Compile Include="MonoHotDraw.Figures\IFigure.cs" />
+    <Compile Include="MonoHotDraw.Figures\IFigureVisitor.cs" />
+    <Compile Include="MonoHotDraw.Figures\ImageFigure.cs" />
+    <Compile Include="MonoHotDraw.Figures\LineConnection.cs" />
+    <Compile Include="MonoHotDraw.Figures\LineTerminal.cs" />
+    <Compile Include="MonoHotDraw.Figures\MultiLineTextFigure.cs" />
+    <Compile Include="MonoHotDraw.Figures\PolyLineFigure.cs" />
+    <Compile Include="MonoHotDraw.Figures\RectangleFigure.cs" />
+    <Compile Include="MonoHotDraw.Figures\StackFigure.cs" />
+    <Compile Include="MonoHotDraw.Figures\TriangleArrowLineTerminal.cs" />
+    <Compile Include="MonoHotDraw.Figures\VStackFigure.cs" />
+    <Compile Include="MonoHotDraw.Figures\CompositeFigure.cs" />
+    <Compile Include="MonoHotDraw.Figures\FigureEventArgs.cs" />
+    <Compile Include="MonoHotDraw.Figures\HStackFigure.cs" />
+    <Compile Include="MonoHotDraw.Figures\IConnectionFigure.cs" />
+    <Compile Include="MonoHotDraw.Figures\TextFigure.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -174,7 +175,6 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="MonoHotDraw.Figures\" />
     <Folder Include="MonoHotDraw.Tools\" />
     <Folder Include="MonoHotDraw.Handles\" />
     <Folder Include="MonoHotDraw.Commands\" />

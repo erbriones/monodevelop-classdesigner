@@ -31,19 +31,23 @@ using System.Runtime.Serialization;
 using MonoHotDraw.Handles;
 using MonoHotDraw.Util;
 
-namespace MonoHotDraw.Figures {
+namespace MonoHotDraw.Figures
+{
 
 	[Serializable]
-	public abstract class BaseBoxFigure : AttributeFigure {
+	public abstract class BaseBoxFigure : AttributeFigure
+	{
 
-		protected BaseBoxFigure () {
+		protected BaseBoxFigure ()
+		{
 		}
 
-		protected BaseBoxFigure (SerializationInfo info, StreamingContext context) : base (info, context) {
+		protected BaseBoxFigure (SerializationInfo info, StreamingContext context) : base (info, context)
+		{
 			DisplayBox = ((RectangleD) info.GetValue ("DisplayBox", typeof (RectangleD)));
 		}
 		
-		public override RectangleD BasicDisplayBox {
+		protected override RectangleD BasicDisplayBox {
 			set { _displayBox = value; }
 			get { return _displayBox; }
 		}
@@ -60,13 +64,15 @@ namespace MonoHotDraw.Figures {
 			}
 		}
 		
-		public override void GetObjectData (SerializationInfo info, StreamingContext context) {
+		public override void GetObjectData (SerializationInfo info, StreamingContext context)
+		{
 			info.AddValue ("DisplayBox", _displayBox);
 
 			base.GetObjectData (info, context);
 		}
 		
-		private void InstantiateHandles () {
+		private void InstantiateHandles ()
+		{
 			_handles = new List <IHandle> ();
 			_handles.Add (new SouthEastHandle (this));
 			_handles.Add (new SouthWestHandle (this));

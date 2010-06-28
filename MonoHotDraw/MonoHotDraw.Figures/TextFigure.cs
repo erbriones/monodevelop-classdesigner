@@ -36,11 +36,11 @@ using MonoHotDraw.Util;
 namespace MonoHotDraw.Figures {
 
 	[Serializable]
-	public class SimpleTextFigure : AttributeFigure {
+	public class TextFigure : AttributeFigure {
 	
 		public event EventHandler TextChanged;
 
-		public SimpleTextFigure (string text): base () {
+		public TextFigure (string text): base () {
 			
 			TextEditable  = true;
 			Padding       = 2.0;
@@ -54,7 +54,7 @@ namespace MonoHotDraw.Figures {
 			GenerateDummyContext ();
 		}
 
-		protected SimpleTextFigure (SerializationInfo info, StreamingContext context) : base (info, context) {
+		protected TextFigure (SerializationInfo info, StreamingContext context) : base (info, context) {
 			FontColor     = (Cairo.Color) info.GetValue ("FontColor", typeof (Cairo.Color));
 			FontAlignment = (Pango.Alignment) info.GetValue ("FontAlignment", typeof (Pango.Alignment));
 			FontFamily    = (string) info.GetValue ("FontFamily", typeof (string));
@@ -135,7 +135,7 @@ namespace MonoHotDraw.Figures {
 			}
 		}
 
-		public override RectangleD BasicDisplayBox {
+		protected override RectangleD BasicDisplayBox {
 			get { return _displayBox; }
 			set {
 				WillChange ();
@@ -144,7 +144,7 @@ namespace MonoHotDraw.Figures {
 			}
 		}
 
-		public override void BasicDraw (Cairo.Context context) {
+		protected override void BasicDraw (Cairo.Context context) {
 			SetupLayout (context);
 			DrawText (context);
 			if (_usingDummy) {

@@ -48,7 +48,7 @@ namespace MonoHotDraw.Samples {
 			_minuteSeparator.TextEditable = false;
 			_second          = new DigitalClockTextFigure (DigitalClockValueType.Second, "XX");
 
-			_list = new List <SimpleTextFigure> ();
+			_list = new List <TextFigure> ();
 			_list.Add (_hour);
 			_list.Add (_hourSeparator);
 			_list.Add (_minute);
@@ -211,12 +211,12 @@ namespace MonoHotDraw.Samples {
 			_now = new DateTime (_now.Year, _now.Month, _now.Day, hour, minute, second);
 		}
 
-		private SimpleTextFigure       _hour;
-		private SimpleTextFigure       _hourSeparator;
-		private List<SimpleTextFigure> _list;
-		private SimpleTextFigure       _minute;
-		private SimpleTextFigure       _minuteSeparator;
+		private TextFigure       _hour;
+		private TextFigure       _hourSeparator;
+		private List<TextFigure> _list;
+		private TextFigure       _minute;
+		private TextFigure       _minuteSeparator;
 		private DateTime               _now;
-		private SimpleTextFigure       _second;
+		private TextFigure       _second;
 	}
 }

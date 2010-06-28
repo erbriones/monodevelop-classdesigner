@@ -36,7 +36,7 @@ namespace MonoHotDraw.Tools {
 	// TODO: Catch enter key
 	public class SimpleTextTool: TextTool	{
 
-		public SimpleTextTool (IDrawingEditor editor, SimpleTextFigure fig, ITool dt) 
+		public SimpleTextTool (IDrawingEditor editor, TextFigure fig, ITool dt) 
 			: base (editor, fig, dt) {
 			_entry = new Gtk.Entry ();
 			_entry.HasFrame = false;
@@ -46,12 +46,12 @@ namespace MonoHotDraw.Tools {
 		}
 		
 		private void ChangedHandler (object sender, EventArgs args) {
-			((SimpleTextFigure) Figure).Text = _entry.Text;
+			((TextFigure) Figure).Text = _entry.Text;
 			CalculateSizeEntry ();
 		}
 		
 		private void CalculateSizeEntry () {
-			int padding = (int)(Figure as SimpleTextFigure).Padding;
+			int padding = (int)(Figure as TextFigure).Padding;
 			RectangleD r = Figure.DisplayBox;
 			r.Inflate(-padding, -padding);
 			r.Inflate(5, 5);
@@ -76,7 +76,7 @@ namespace MonoHotDraw.Tools {
 			if (type == EventType.TwoButtonPress) {
 				CreateUndoActivity();
 				_showingWidget = true;
-				_entry.Text = (Figure as SimpleTextFigure).Text;
+				_entry.Text = (Figure as TextFigure).Text;
 				
 				View.AddWidget (_entry, 0,0);
 				CalculateSizeEntry ();

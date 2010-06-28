@@ -33,7 +33,7 @@ using MonoHotDraw.Util;
 
 namespace MonoHotDraw.Samples {
 
-	public class LabelFigure: SimpleTextFigure {
+	public class LabelFigure: TextFigure {
 	
 		public LabelFigure(string text): base(text) {
 		}

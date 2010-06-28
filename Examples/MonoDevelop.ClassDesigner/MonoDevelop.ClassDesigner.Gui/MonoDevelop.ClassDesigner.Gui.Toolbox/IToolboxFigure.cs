@@ -1,21 +1,21 @@
-// MonoHotDraw. Diagramming Framework
-//
-// Authors:
-//	Manuel Cerón <ceronman@gmail.com>
-//	Mario Carrión <mario@monouml.org>
-//
-// Copyright (C) 2006, 2007, 2008, 2009 MonoUML Team (http://www.monouml.org)
-//
+// 
+// IToolboxFigure.cs
+//  
+// Author:
+//       Evan Briones <erbriones@gmail.com>
+// 
+// Copyright (c) 2010 Evan Briones
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-//
+// 
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-//
+// 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,32 +23,17 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
-using Cairo;
 using System;
-using Pango;
-using MonoHotDraw.Tools;
+using MonoDevelop.Projects.Dom;
 
-namespace MonoHotDraw.Figures
+namespace MonoDevelop.ClassDesigner.Gui.Toolbox
 {
-
-	[Serializable]
-	public class MultiLineTextFigure: TextFigure
+	public interface IToolboxFigure
 	{
-	
-		public MultiLineTextFigure (string text):  base (text)
-		{
-		}
-		
-		public override ITool CreateFigureTool (IDrawingEditor editor, ITool dt)
-		{
-			return TextEditable ? new MultiLineTextTool (editor, this, dt) : dt;
-		}
-		
-		protected override void SetupLayout (Cairo.Context context)
-		{
-			base.SetupLayout (context);
-			PangoLayout.SingleParagraphMode = false;
-		}
+		string Name { get; }
+		string Namespace { get; }
+		bool IsAbstract { get; }
+		ClassType ClassType { get; }	
 	}
 }
+

@@ -27,21 +27,23 @@ using Cairo;
 using System;
 using MonoHotDraw.Util;
 
-namespace MonoHotDraw.Figures {
-
+namespace MonoHotDraw.Figures
+{
 	[Serializable]
-	public class RectangleFigure: BaseBoxFigure	{
-	
-		public RectangleFigure (): base () {
+	public class RectangleFigure : BaseBoxFigure
+	{
+		public RectangleFigure () : base ()
+		{
 		}
 
-		public override void BasicDraw (Context context) {
+		protected override void BasicDraw (Context context)
+		{
 			RectangleD displayBox = DisplayBox;
 
 			context.LineWidth = LineWidth;
 			context.Save ();
 			displayBox.OffsetDot5 ();
-			context.Rectangle (GdkCairoHelper.CairoRectangle(displayBox));
+			context.Rectangle (GdkCairoHelper.CairoRectangle (displayBox));
 			context.Restore ();
 			context.Color = FillColor;
 			context.FillPreserve ();

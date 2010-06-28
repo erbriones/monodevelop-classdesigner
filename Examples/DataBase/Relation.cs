@@ -38,7 +38,7 @@ using System.Runtime.Serialization;
 namespace MonoHotDraw.Database {
 	
 	[Serializable]
-	public class Relation : SimpleTextFigure {
+	public class Relation : TextFigure {
 		
 		public Relation () : this ("Relation") {
 		}

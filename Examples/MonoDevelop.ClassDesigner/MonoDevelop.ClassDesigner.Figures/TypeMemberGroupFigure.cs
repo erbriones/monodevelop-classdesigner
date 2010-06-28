@@ -37,7 +37,7 @@ namespace MonoDevelop.ClassDesigner.Figures {
 	{
 		string _name;
 		bool _collapsed;
-		SimpleTextFigure compartmentName;
+		TextFigure compartmentName;
 		VStackFigure membersStack;
 		List<TypeMemberFigure> hidden;
 		ToggleButtonHandle expandHandle;
@@ -49,7 +49,7 @@ namespace MonoDevelop.ClassDesigner.Figures {
 			
 			_name = name;
 			hidden = new List<TypeMemberFigure> ();
-			compartmentName = new SimpleTextFigure (name);
+			compartmentName = new TextFigure (name);
 			compartmentName.Padding = 0;
 			compartmentName.FontSize = 10;
 			compartmentName.FontColor = new Cairo.Color(0.3, 0.0, 0.0);			
@@ -62,9 +62,11 @@ namespace MonoDevelop.ClassDesigner.Figures {
 			expandHandle = new ToggleButtonHandle(this, new AbsoluteLocator(-10, 7.5));
 			expandHandle.Toggled += delegate(object sender, ToggleEventArgs e) {
 				if (e.Active) {
+					_collapsed = false;
 					Add(membersStack);
 				}
 				else {
+					_collapsed = true;
 					Remove(membersStack);
 				}
 			};
@@ -103,9 +105,6 @@ namespace MonoDevelop.ClassDesigner.Figures {
 		public bool Collapsed {
 			get { return _collapsed; }
 			set {
-				if (_collapsed == value)
-					return;
-				
 				if (value)
 					expandHandle.Active = false;
 				else

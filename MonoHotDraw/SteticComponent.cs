@@ -35,6 +35,7 @@ namespace MonoHotDraw
 	[System.ComponentModel.ToolboxItem(true)]
 	public partial class SteticComponent : Gtk.Bin, IDrawingEditor
 	{
+		ITool _tool;
 		
 		public SteticComponent()
 		{
@@ -57,45 +58,46 @@ namespace MonoHotDraw
 		public ITool Tool {
 			get { return _tool; }
 			set {
-				if (_tool != null && _tool.Activated) {
+				if (_tool != null && _tool.Activated)
 					_tool.Deactivate();
-				}
 				
 				_tool = value;
-				if (value != null) {
+				if (value != null)
 					_tool.Activate();
-				}
 			}
 		}
 		
-		public void Undo() {
-			ICommand command = new UndoCommand("Undo", this);
+		public void Undo ()
+		{
+			var command = new UndoCommand("Undo", this);
 			command.Execute();
 		}
 		
-		public void Redo() {
-			ICommand command = new RedoCommand("Redo", this);
+		public void Redo ()
+		{
+			var command = new RedoCommand("Redo", this);
 			command.Execute();
 		}
 		
-		public void AddWithDragging(IFigure figure) {
+		public void AddWithDragging (IFigure figure)
+		{
 			Tool = new DragCreationTool(this, figure);
 		}
 		
-		public void AddWithResizing(IFigure figure) {
+		public void AddWithResizing(IFigure figure)
+		{
 			Tool = new ResizeCreationTool(this, figure);
 		}
 		
-		public void AddConnection(IConnectionFigure figure) {
+		public void AddConnection(IConnectionFigure figure)
+		{
 			Tool = new ConnectionCreationTool(this, figure);
 		}
 		
-		protected void OnUndoStackChanged() {
-			if (UndoStackChanged != null) {
-				UndoStackChanged(this, new EventArgs());
-			}
+		protected void OnUndoStackChanged()
+		{
+			if (UndoStackChanged != null)
+				UndoStackChanged(this, EventArgs.Empty);
 		}
-		
-		private ITool _tool;
 	}
 }

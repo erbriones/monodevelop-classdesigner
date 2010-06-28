@@ -29,25 +29,26 @@ using System.Linq;
 using Cairo;
 using MonoHotDraw.Util;
 
-namespace MonoHotDraw.Figures {
-	
+namespace MonoHotDraw.Figures
+{	
 	public enum VStackAlignment {
 		Center,
 		Left,
 		Right,
 	}
 	
-	public class VStackFigure: StackFigure {
-		
-		public VStackFigure(): base() {
+	public class VStackFigure: StackFigure
+	{	
+		public VStackFigure () : base ()
+		{
 			Alignment = VStackAlignment.Left;
 		}
 		
 		public VStackAlignment Alignment { get; set; }
 		
-		protected override double CalculateHeight()
+		protected override double CalculateHeight ()
 		{
-			int count = Figures.Count();
+			int count = Figures.Count ();
 			
 			if (count == 0)
 				return 0.0;
@@ -56,7 +57,8 @@ namespace MonoHotDraw.Figures {
 			        select fig.DisplayBox.Height).Sum() + Spacing * (count-1);
 		}
 		
-		protected override double CalculateWidth() {
+		protected override double CalculateWidth ()
+		{
 			if (Figures.Count() == 0)
 				return 0.0;
 			
@@ -64,19 +66,22 @@ namespace MonoHotDraw.Figures {
 			        select fig.DisplayBox.Width).Max();
 		}
 		
-		protected override void UpdateFiguresPosition() {
-			double height = 0.0;
+		protected override void UpdateFiguresPosition ()
+		{
+			var height = 0.0;
+			
 			foreach (IFigure figure in Figures) {
 				RectangleD r = figure.DisplayBox;
 				r.X = CalculateFigureX(figure);
 				r.Y = Position.Y + height;
-				AbstractFigure af = figure as AbstractFigure;
-				af.BasicDisplayBox = r;
+				var af = figure as AbstractFigure;
+				af.DisplayBox = r;
 				height += r.Height + Spacing;
 			}
 		}
 		
-		private double CalculateFigureX(IFigure figure) {
+		private double CalculateFigureX (IFigure figure)
+		{
 			
 			switch (Alignment) {
 			case VStackAlignment.Center:

@@ -8,6 +8,7 @@
     <ProjectGuid>{A82476FD-9BAC-470C-AD56-F12DACC6A62E}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AssemblyName>Demo</AssemblyName>
+    <RootNamespace>Demo</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

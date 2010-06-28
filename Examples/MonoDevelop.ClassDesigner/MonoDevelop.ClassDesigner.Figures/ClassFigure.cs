@@ -28,11 +28,10 @@ using System.Collections.Generic;
 using MonoHotDraw.Figures;
 using MonoDevelop.Core;
 using MonoDevelop.Projects.Dom;
-using MonoDevelop.Core.Gui;
 
 namespace MonoDevelop.ClassDesigner.Figures {
 	
-	public class ClassFigure: TypeFigure, IAssociation {
+	public sealed class ClassFigure: TypeFigure, IAssociation {
 		bool hideInheritance;
 		bool hideAssociations;
 		

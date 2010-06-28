@@ -32,16 +32,20 @@ using MonoHotDraw.Commands;
 using MonoHotDraw.Figures;
 using MonoHotDraw.Util;
 
-namespace MonoHotDraw.Connectors{
-
+namespace MonoHotDraw.Connectors
+{
 	[Serializable]
-	public abstract class AbstractConnector : IConnector {
-	
-		protected AbstractConnector (IFigure owner) {
+	public abstract class AbstractConnector : IConnector
+	{
+		IFigure _owner;
+		
+		protected AbstractConnector (IFigure owner)
+		{
 			Owner = owner;
 		}
 
-		protected AbstractConnector (SerializationInfo info, StreamingContext context) {
+		protected AbstractConnector (SerializationInfo info, StreamingContext context)
+		{
 			_owner = (IFigure) info.GetValue ("Owner", typeof (IFigure));
 		}
 
@@ -54,29 +58,33 @@ namespace MonoHotDraw.Connectors{
 			get { return Owner.DisplayBox; }
 		}
 		
-		public virtual object Clone () {
+		public virtual object Clone ()
+		{
 			return GenericCloner.Clone <AbstractConnector> (this);
 		}
 
-		public virtual bool ContainsPoint (double x, double y) {
+		public virtual bool ContainsPoint (double x, double y)
+		{
 			return Owner.ContainsPoint (x, y);
 		}
 
-		public virtual void Draw (Context context) {
+		public virtual void Draw (Context context)
+		{
 		}
 
-		public virtual PointD FindStart (IConnectionFigure connection) {
+		public virtual PointD FindStart (IConnectionFigure connection)
+		{
 			return DisplayBox.Center;
 		}
 
-		public virtual PointD FindEnd (IConnectionFigure connection) {
+		public virtual PointD FindEnd (IConnectionFigure connection)
+		{
 			return DisplayBox.Center;
 		}
 		
-		public virtual void GetObjectData (SerializationInfo info, StreamingContext context) {
+		public virtual void GetObjectData (SerializationInfo info, StreamingContext context)
+		{
 			info.AddValue ("Owner", Owner);
 		}
-
-		private IFigure _owner;
 	}
 }

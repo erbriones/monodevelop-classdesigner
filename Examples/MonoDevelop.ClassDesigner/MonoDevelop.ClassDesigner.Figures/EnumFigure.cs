@@ -29,12 +29,12 @@ using System.Collections.Generic;
 using System.Linq;
 using MonoHotDraw.Figures;
 using MonoDevelop.Core;
+using MonoDevelop.Ide;
 using MonoDevelop.Projects.Dom;
-using MonoDevelop.Core.Gui;
 
 namespace MonoDevelop.ClassDesigner.Figures {
 	
-	public class EnumFigure: TypeFigure {
+	public sealed class EnumFigure: TypeFigure {
 
 		public EnumFigure(IType domtype): base(domtype) {
 			FigureColor = new Cairo.Color (0.1, 0.9, 0.2, 0.4);

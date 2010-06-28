@@ -33,23 +33,26 @@ using MonoHotDraw.Handles;
 using MonoHotDraw.Connectors;
 using MonoHotDraw.Util;
 
-namespace MonoHotDraw.Tools {
-
-	public class ConnectionCreationTool: CreationTool {
+namespace MonoHotDraw.Tools
+{
+	public class ConnectionCreationTool : CreationTool
+	{
 	
-		public ConnectionCreationTool (IDrawingEditor editor, IConnectionFigure fig): base (editor, fig) {
+		public ConnectionCreationTool (IDrawingEditor editor, IConnectionFigure fig): base (editor, fig)
+		{
 			_connection = fig;
 			_connection.DisconnectStart ();
 			_connection.DisconnectEnd ();
 		}
 		
-		public override void MouseDrag (MouseEvent ev) {
-			if (_handle != null) {
+		public override void MouseDrag (MouseEvent ev)
+		{
+			if (_handle != null)
 				_handle.InvokeStep (ev.X, ev.Y, ev.View);
-			}
 		}
 		
-		public override void MouseDown (MouseEvent ev) {
+		public override void MouseDown (MouseEvent ev)
+		{
 			IDrawingView view = ev.View;
 			IFigure figure = view.Drawing.FindFigure (ev.X, ev.Y);
 
@@ -63,16 +66,14 @@ namespace MonoHotDraw.Tools {
 				view.AddToSelection (_connection);
 				_handle = _connection.EndHandle;
 				CreateUndoActivity();
-			}
-			else {
+			} else {
 				Editor.Tool = new SelectionTool(Editor);
 			}
 		}
 		
 		public override void MouseUp (MouseEvent ev) {
-			if (_handle != null) {
+			if (_handle != null)
 				_handle.InvokeEnd (ev.X, ev.Y, ev.View);
-			}
 						
 			if (_connection.EndConnector == null) {
 				_connection.DisconnectStart ();
@@ -80,47 +81,55 @@ namespace MonoHotDraw.Tools {
 				ev.View.Drawing.Remove (_connection);
 				ev.View.ClearSelection ();
 				UndoActivity = null;
-			}
-			else {
-				ConnectionCreationToolUndoActivity activity = UndoActivity as ConnectionCreationToolUndoActivity;
+			} else {
+				var activity = (ConnectionCreationToolUndoActivity) UndoActivity;
 				activity.EndConnector = _connection.EndConnector;
 			}
+			
 			base.MouseUp(ev);
 		}
 		
-		public override void MouseMove (MouseEvent ev) {
-			Widget widget = (Widget) ev.View;
-			IFigure figure = ev.View.Drawing.FindFigure (ev.X, ev.Y);
-			if (figure != null) {
+		public override void MouseMove (MouseEvent ev)
+		{
+			var widget = (Widget) ev.View;
+			var figure = ev.View.Drawing.FindFigure (ev.X, ev.Y);
+			
+			if (figure != null)
 				widget.GdkWindow.Cursor = CursorFactory.GetCursorFromType (Gdk.CursorType.SbHDoubleArrow);
-			}
-			else {
+			else
 				widget.GdkWindow.Cursor = CursorFactory.GetCursorFromType (Gdk.CursorType.Crosshair);
-			}
 		}
 		
-		public class ConnectionCreationToolUndoActivity: AbstractUndoActivity {
-			public ConnectionCreationToolUndoActivity(IDrawingView view): base(view) {
+		public class ConnectionCreationToolUndoActivity : AbstractUndoActivity
+		{
+			public ConnectionCreationToolUndoActivity (IDrawingView view) : base (view)
+			{
 				Undoable = true;
 				Redoable = true;
 			}
 			
-			public override bool Undo () {
-				if (!base.Undo()  )
+			public override bool Undo ()
+			{
+				if (!base.Undo ())
 					return false;
-				Connection.DisconnectStart();
-				Connection.DisconnectEnd();
-				DrawingView.Drawing.Remove(Connection);
-				DrawingView.RemoveFromSelection(Connection);
+				
+				Connection.DisconnectStart ();
+				Connection.DisconnectEnd ();
+				DrawingView.Drawing.Remove (Connection);
+				DrawingView.RemoveFromSelection (Connection);
+				
 				return true;
 			}
 			
-			public override bool Redo () {
-				if (!base.Redo() )
+			public override bool Redo ()
+			{
+				if (!base.Redo ())
 					return false;
-				DrawingView.Drawing.Add(Connection);
-				Connection.ConnectStart(StartConnector);
-				Connection.ConnectEnd(EndConnector);
+				
+				DrawingView.Drawing.Add (Connection);
+				Connection.ConnectStart (StartConnector);
+				Connection.ConnectEnd (EndConnector);
+				
 				return true;
 			}
 			
@@ -129,8 +138,9 @@ namespace MonoHotDraw.Tools {
 			public IConnector EndConnector { set; get; }
 		}
 		
-		protected void CreateUndoActivity(){
-			ConnectionCreationToolUndoActivity activity = new ConnectionCreationToolUndoActivity(Editor.View);
+		protected override void CreateUndoActivity ()
+		{
+			var activity = new ConnectionCreationToolUndoActivity (Editor.View);
 			activity.Connection = _connection;
 			activity.StartConnector = _connection.StartConnector;
 			UndoActivity = activity;

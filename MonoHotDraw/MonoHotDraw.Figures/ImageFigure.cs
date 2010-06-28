@@ -28,11 +28,15 @@ using Cairo;
 using Gdk;
 using MonoHotDraw.Util;
 
-namespace MonoHotDraw.Figures {
-	
-	public class PixbufFigure: AbstractFigure {
+namespace MonoHotDraw.Figures
+{	
+	public class ImageFigure : AbstractFigure
+	{
+		Pixbuf _pixbuf;
+		ImageSurface _image;
 		
-		public PixbufFigure(Pixbuf pixbuf): base() {
+		public ImageFigure (Pixbuf pixbuf) : base ()
+		{
 			Image = pixbuf;
 		}
 		
@@ -40,14 +44,13 @@ namespace MonoHotDraw.Figures {
 			get {
 				return _pixbuf;
 			}
-			
 			set {
 				_pixbuf = value;
-				_image = GdkCairoHelper.PixbufToImageSurface(_pixbuf);
+				_image = GdkCairoHelper.PixbufToImageSurface (_pixbuf);
 			}
 		}
 		
-		public override RectangleD BasicDisplayBox {
+		protected override RectangleD BasicDisplayBox {
 			get {
 				return new RectangleD {
 					X = Position.X,
@@ -57,25 +60,20 @@ namespace MonoHotDraw.Figures {
 				};
 			}
 			
-			set {
-				Position = value.TopLeft;
-			}
+			set { Position = value.TopLeft; }
 		}
 		
-		public override void BasicDraw(Context context) {
+		protected override void BasicDraw(Context context)
+		{
 			RectangleD r = DisplayBox;
 			_image.Show (context, Math.Round (r.X), Math.Round (r.Y));
 		}
 		
 		public override void BasicDrawSelected (Cairo.Context context)
 		{
-			context.Rectangle(GdkCairoHelper.CairoRectangle(DisplayBox));
+			context.Rectangle (GdkCairoHelper.CairoRectangle (DisplayBox));
 		}
-
 		
 		protected PointD Position { get; set; }
-		
-		private Pixbuf _pixbuf;
-		private ImageSurface _image;
 	}
 }

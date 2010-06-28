@@ -30,29 +30,36 @@ using System.Runtime.Serialization;
 using MonoHotDraw.Commands;
 using MonoHotDraw.Util;
 
-namespace MonoHotDraw.Figures {
-
+namespace MonoHotDraw.Figures
+{
 	[Serializable]
-	public abstract class LineTerminal : ICloneable, ISerializable {
+	public abstract class LineTerminal : ICloneable, ISerializable
+	{
 	
-		protected LineTerminal () {
+		protected LineTerminal ()
+		{
 		}
 		
-		protected LineTerminal (SerializationInfo info, StreamingContext context) {
+		protected LineTerminal (SerializationInfo info, StreamingContext context)
+		{
 		}
 		
-		public virtual object Clone () {
+		public virtual object Clone ()
+		{
 			return GenericCloner.Clone <LineTerminal> (this);
 		}		
 		
 		public abstract PointD Draw (Context context, PointD a, PointD b);
 		
-		public virtual void GetObjectData (SerializationInfo info, StreamingContext context) {
+		public virtual void GetObjectData (SerializationInfo info, StreamingContext context)
+		{
 		}
 		
-		public virtual RectangleD InvalidateRect (PointD b) {
-			RectangleD r = new RectangleD (b.X, b.Y, 0.0, 0.0);
+		public virtual RectangleD InvalidateRect (PointD b)
+		{
+			var r = new RectangleD (b.X, b.Y, 0.0, 0.0);
 			r.Inflate (15.0, 15.0);
+			
 			return r;
 		}
 	}

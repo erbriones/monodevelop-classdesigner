@@ -34,124 +34,145 @@ using MonoHotDraw.Connectors;
 using MonoHotDraw.Handles;
 using MonoHotDraw.Locators;
 
-namespace MonoHotDraw.Figures {
-
+namespace MonoHotDraw.Figures
+{
 	[Serializable]
-	public class LineConnection : PolyLineFigure, IConnectionFigure, IDeserializationCallback {
+	public class LineConnection : PolyLineFigure, IConnectionFigure, IDeserializationCallback
+	{
 	
-		public LineConnection () : base () {
+		public LineConnection () : base ()
+		{
 			AddPoint (0.0, 0.0);
 			AddPoint (0.0, 0.0);
 		}
 
-		protected LineConnection (SerializationInfo info, StreamingContext context) : base (info, context) {
+		protected LineConnection (SerializationInfo info, StreamingContext context) : base (info, context)
+		{
 			_endConnector = (IConnector) info.GetValue ("EndConnector", typeof (IConnector));
 			_startConnector = (IConnector) info.GetValue ("StartConnector", typeof (IConnector));
 		}
 		
 		public event EventHandler ConnectionChanged;
 
-		public LineConnection (IFigure fig1, IFigure fig2): this ()	{
-			if (fig1 != null) {
+		public LineConnection (IFigure fig1, IFigure fig2) : this ()
+		{
+			if (fig1 != null)
 				ConnectStart (fig1.ConnectorAt (0.0, 0.0));
-			}
 
-			if (fig2 != null) {
+			if (fig2 != null)
 				ConnectEnd (fig2.ConnectorAt (0.0, 0.0));
-			}
 		}
 
-		public virtual IConnector StartConnector {
+		public virtual IConnector StartConnector
+		{
 			get { return _startConnector; }
 			protected set { _startConnector = value; }
 		}
 
-		public virtual IConnector EndConnector {
+		public virtual IConnector EndConnector
+		{
 			get { return _endConnector; }
 			protected set {	_endConnector = value; }
 		}
-
-		public void OnDeserialization (Object sender) {
+		
+		#region Serialization
+		public void OnDeserialization (Object sender)
+		{
 			ConnectFigure (_startConnector);
 			StartConnector = _startConnector;
 			
 			ConnectFigure (_endConnector);
 			EndConnector = _endConnector;
 		}
+		
+		public override void GetObjectData (SerializationInfo info, StreamingContext context)
+		{
+			info.AddValue ("EndConnector",   EndConnector);
+			info.AddValue ("StartConnector", StartConnector);
+			
+			base.GetObjectData (info, context);
+		}
+		
+		#endregion
 
-		public virtual void ConnectStart (IConnector start)	{
-			if (StartConnector == start) {
+		public virtual void ConnectStart (IConnector start)
+		{
+			if (StartConnector == start)
 				return;
-			}
 
 			DisconnectStart ();
 			StartConnector = start;
 			ConnectFigure (StartConnector);
-			OnConnectionChanged();
+			OnConnectionChanged ();
 		}
 
-		public virtual void ConnectEnd (IConnector end)	{
-			if (EndConnector == end) {
+		public virtual void ConnectEnd (IConnector end)
+		{
+			if (EndConnector == end)
 				return;
-			}
 			
 			DisconnectEnd ();
 			EndConnector = end;
 			ConnectFigure (EndConnector);
-			OnConnectionChanged();
+			OnConnectionChanged ();
 		}
 
-		public virtual void DisconnectStart () {
-			if (StartConnector == null) {
+		public virtual void DisconnectStart ()
+		{
+			if (StartConnector == null)
 				return;
-			}
+			
 			DisconnectFigure (StartConnector);
 			StartConnector = null;
 			OnConnectionChanged();
 		}
 
-		public virtual void DisconnectEnd () {
-			if (EndConnector == null) {
+		public virtual void DisconnectEnd ()
+		{
+			if (EndConnector == null)
 				return;
-			}
+			
 			DisconnectFigure (EndConnector);
 			EndConnector = null;
 			OnConnectionChanged();
 		}
 
-		public virtual bool CanConnectEnd (IFigure figure) {
+		public virtual bool CanConnectEnd (IFigure figure)
+		{
 			return true;
 		}
 
-		public virtual bool CanConnectStart (IFigure figure) {
+		public virtual bool CanConnectStart (IFigure figure)
+		{
 			return true;
 		}
 
-		public virtual IFigure StartFigure {
+		public virtual IFigure StartFigure
+		{
 			get {
-				if (StartConnector != null) {
+				if (StartConnector != null)
 					return StartConnector.Owner;
-				}
-				return null;
-			}
-		}
-		public virtual IFigure EndFigure {
-			get {
-				if (EndConnector != null) {
-					return EndConnector.Owner;
-				}
+				
 				return null;
 			}
 		}
 		
-		public virtual void UpdateConnection ()	{	
-			if (StartConnector != null) {
-				StartPoint = StartConnector.FindStart (this);
-			}
+		public virtual IFigure EndFigure {
+			get {
+				if (EndConnector != null)
+					return EndConnector.Owner;
 
-			if (EndConnector != null) {
-				EndPoint = EndConnector.FindEnd (this);
+				return null;
 			}
+		}
+		
+		public virtual void UpdateConnection ()
+		{	
+			if (StartConnector != null)
+				StartPoint = StartConnector.FindStart (this);
+
+			if (EndConnector != null)
+				EndPoint = EndConnector.FindEnd (this);
 		}
 		
 		public virtual IHandle StartHandle {
@@ -162,13 +183,15 @@ namespace MonoHotDraw.Figures {
 			get { return new ChangeConnectionEndHandle (this); }
 		}
 
-		public override void BasicMoveBy (double x, double y) {
+		public override void BasicMoveBy (double x, double y)
+		{
 			for (int i = 1; i < PointCount - 1; i++) {
 				PointD newpoint = PointAt (i);
 				newpoint.X += x;
 				newpoint.Y += y;
 				SetPointAt (i, newpoint.X, newpoint.Y);
 			}
+		
 			UpdateConnection ();
 		}
 		
@@ -176,64 +199,63 @@ namespace MonoHotDraw.Figures {
 			get { return false; }
 		}
 
-		public override void SetPointAt (int index, double x, double y) {
+		public override void SetPointAt (int index, double x, double y)
+		{
 			base.SetPointAt (index, x, y);
 			UpdateConnection ();
 		}
 		
-		public override void RemovePointAt (int i) {
+		public override void RemovePointAt (int i)
+		{
 			base.RemovePointAt (i);
-			UpdateConnection();
+			UpdateConnection ();
 		}
 		
-		public override void InsertPointAt (int index, double x, double y) {
+		public override void InsertPointAt (int index, double x, double y)
+		{
 			base.InsertPointAt (index, x, y);
-			UpdateConnection();
+			UpdateConnection ();
 		}
 
 		public override IEnumerable <IHandle> HandlesEnumerator {
 			get {
-				if (PointCount < 2) {
+				if (PointCount < 2)
 					yield break;
-				}
 
 				yield return StartHandle;
 				
-				for (int i = 1; i < PointCount - 1; i++) {
+				for (int i = 1; i < PointCount - 1; i++)
 					yield return new LineConnectionHandle (this, new PolyLineLocator (i), i);
-				}
 
 				yield return EndHandle;
 			}
 		}
 		
-		public override void GetObjectData (SerializationInfo info, StreamingContext context) {
-			info.AddValue ("EndConnector",   EndConnector);
-			info.AddValue ("StartConnector", StartConnector);
+		protected virtual void OnConnectionChanged ()
+		{
+			if (ConnectionChanged != null)
+				ConnectionChanged (this, EventArgs.Empty);
+		}
+		
+		private void ConnectFigure (IConnector connector)
+		{
+			if (connector == null)
+				return;
 			
-			base.GetObjectData (info, context);
+			connector.Owner.FigureChanged += FigureChangedHandler;
+			UpdateConnection ();
 		}
 		
-		protected virtual void OnConnectionChanged() {
-			if (ConnectionChanged != null) {
-				ConnectionChanged(this, new EventArgs());
-			}
-		}
-		
-		private void ConnectFigure (IConnector connector) {
-			if (connector != null) {
-				connector.Owner.FigureChanged += FigureChangedHandler;
-				UpdateConnection ();
-			}
-		}
-		
-		private void DisconnectFigure (IConnector connector) {
-			if (connector != null) {
-				connector.Owner.FigureChanged -= FigureChangedHandler;
-			}
+		private void DisconnectFigure (IConnector connector)
+		{
+			if (connector == null)
+				return;
+			
+			connector.Owner.FigureChanged -= FigureChangedHandler;
 		}
 
-		private void FigureChangedHandler (object sender, FigureEventArgs args)	{
+		private void FigureChangedHandler (object sender, FigureEventArgs args)
+		{
 			UpdateConnection ();
 		}
 		

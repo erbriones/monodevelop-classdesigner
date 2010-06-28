@@ -38,7 +38,7 @@ using System.Runtime.Serialization;
 namespace MonoHotDraw.Database {
 	
 	[Serializable]
-	public class Entity : SimpleTextFigure, IPopupMenuFigure {
+	public class Entity : TextFigure, IPopupMenuFigure {
 		
 		public Entity () : this ("Entity") {
 		}

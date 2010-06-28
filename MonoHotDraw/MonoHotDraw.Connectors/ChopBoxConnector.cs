@@ -29,46 +29,47 @@ using System.Runtime.Serialization;
 using MonoHotDraw.Figures;
 using MonoHotDraw.Util;
 
-namespace MonoHotDraw.Connectors {
-
+namespace MonoHotDraw.Connectors
+{
 	[Serializable]
-	public class ChopBoxConnector: AbstractConnector {
+	public class ChopBoxConnector: AbstractConnector
+	{
 	
-		public ChopBoxConnector (IFigure figure): base (figure) {
+		public ChopBoxConnector (IFigure figure): base (figure)
+		{
 		}
 
-		protected ChopBoxConnector (SerializationInfo info, StreamingContext context) : base (info, context) {
+		protected ChopBoxConnector (SerializationInfo info, StreamingContext context) : base (info, context)
+		{
 		}
 
-		public override PointD FindStart (IConnectionFigure connection) {
-			if (connection == null) {
+		public override PointD FindStart (IConnectionFigure connection)
+		{
+			if (connection == null)
 				return DisplayBox.Center;
-			}
 				
 			PointD point = connection.PointAt (1);
 	
 			return Chop (Owner, point);
 		}
 
-		public override PointD FindEnd (IConnectionFigure connection) {
+		public override PointD FindEnd (IConnectionFigure connection)
+		{
 		
-			if (connection == null) {
+			if (connection == null)
 				return DisplayBox.Center;
-			}
 
 			PointD point = connection.PointAt (connection.PointCount - 2);
 
 			return Chop (Owner, point);
 		}
 
-		protected virtual PointD Chop (IFigure target, PointD point) {	
-			if (target == null) {
+		protected virtual PointD Chop (IFigure target, PointD point)
+		{	
+			if (target == null)
 				return new PointD (0, 0);
-			}
-			
-			else if (target.ContainsPoint (point.X, point.Y)) {
+			else if (target.ContainsPoint (point.X, point.Y))
 				return target.DisplayBox.Center;
-			}
 
 			double angle = Geometry.AngleFromPoint (DisplayBox, point);
 			return Geometry.EdgePointFromAngle (DisplayBox, angle);

@@ -27,20 +27,23 @@ using Cairo;
 using Gdk;
 using System; 
 
-namespace MonoHotDraw.Util {
-
-	public sealed class GdkCairoHelper {
-	
-		private GdkCairoHelper () {
+namespace MonoHotDraw.Util
+{
+	public sealed class GdkCairoHelper
+	{	
+		GdkCairoHelper ()
+		{
 		}
 		
-		public static Cairo.ImageSurface PixbufToImageSurface (Gdk.Pixbuf pixbuf) {
-			Cairo.Format format = Cairo.Format.RGB24;
-			if (pixbuf.HasAlpha) {
-				format = Cairo.Format.ARGB32;
-			}
+		public static Cairo.ImageSurface PixbufToImageSurface (Gdk.Pixbuf pixbuf)
+		{
+			var format = Cairo.Format.RGB24;
 			
-			Cairo.ImageSurface surface = new ImageSurface (format, pixbuf.Width, pixbuf.Height);
+			if (pixbuf.HasAlpha)
+				format = Cairo.Format.ARGB32;
+			
+			var surface = new ImageSurface (format, pixbuf.Width, pixbuf.Height);
+			
 			using (Cairo.Context context = new Cairo.Context (surface)) {
 				Gdk.CairoHelper.SetSourcePixbuf (context, pixbuf, 0.0, 0.0);
 				context.Paint ();
@@ -49,27 +52,30 @@ namespace MonoHotDraw.Util {
 			return surface;
 		}
 		
-		public static Gdk.Color GdkColor (Cairo.Color color) {
-			Gdk.Color gdk = new Gdk.Color ((byte) (color.R * System.Byte.MaxValue),
-			                               (byte) (color.G * System.Byte.MaxValue),
-			                               (byte) (color.B * System.Byte.MaxValue));
+		public static Gdk.Color GdkColor (Cairo.Color color)
+		{
+			var gdk = new Gdk.Color ((byte) (color.R * System.Byte.MaxValue),
+			                         (byte) (color.G * System.Byte.MaxValue),
+			                         (byte) (color.B * System.Byte.MaxValue));
 			return gdk;
 		}
 		
-		public static Cairo.Color CairoColor (Gdk.Color color) {
-			double blue = (double)color.Blue / System.UInt16.MaxValue;
-			double green = (double)color.Green / System.UInt16.MaxValue;
-			double red   = (double)color.Red / System.UInt16.MaxValue;
+		public static Cairo.Color CairoColor (Gdk.Color color)
+		{
+			var blue = (double) color.Blue / System.UInt16.MaxValue;
+			var green = (double) color.Green / System.UInt16.MaxValue;
+			var red   = (double) color.Red / System.UInt16.MaxValue;
 			
 			blue  = Convert.ToDouble (decimal.Round ((decimal) blue, 2));
 			green = Convert.ToDouble (decimal.Round ((decimal) green, 2));
 			red   = Convert.ToDouble (decimal.Round ((decimal) red, 2));
 
-			Cairo.Color cairo = new Cairo.Color (red, green, blue);
+			var cairo = new Cairo.Color (red, green, blue);
 			return cairo;
 		}
 		
-		public static bool RectangleInsideGdkRegion (RectangleD r, Gdk.Region region) {
+		public static bool RectangleInsideGdkRegion (RectangleD r, Gdk.Region region)
+		{
 			r.Inflate (1.0, 1.0);
 			Gdk.Rectangle gdkRect = GdkRectangle (r);
 			Gdk.OverlapType type = region.RectIn (gdkRect);
@@ -77,19 +83,23 @@ namespace MonoHotDraw.Util {
 			return (type == Gdk.OverlapType.In || type == Gdk.OverlapType.Part);
 		}
 		
-		public static Cairo.Rectangle CairoRectangle (RectangleD r) {
+		public static Cairo.Rectangle CairoRectangle (RectangleD r)
+		{
 			return new Cairo.Rectangle (r.X, r.Y, r.Width, r.Height); 
 		}
 		
-		public static Cairo.Rectangle CairoRectangle (Gdk.Rectangle r) {
+		public static Cairo.Rectangle CairoRectangle (Gdk.Rectangle r)
+		{
 			return new Cairo.Rectangle ((double)r.X, (double)r.Y, (double)r.Width, (double)r.Height); 
 		}
 		
-		public static Gdk.Rectangle GdkRectangle (RectangleD r) {
+		public static Gdk.Rectangle GdkRectangle (RectangleD r)
+		{
 			return new Gdk.Rectangle ((int) r.X, (int) r.Y, (int) r.Width, (int) r.Height);
 		}
 		
-		public static PointD OffsetDot5(PointD point) {
+		public static PointD OffsetDot5(PointD point)
+		{
 			return new PointD {
 				X = Math.Truncate(point.X) + 0.5,
 				Y = Math.Truncate(point.Y) + 0.5

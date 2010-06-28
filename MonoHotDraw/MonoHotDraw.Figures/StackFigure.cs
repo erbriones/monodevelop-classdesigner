@@ -38,7 +38,7 @@ namespace MonoHotDraw.Figures {
 			Spacing = 5.0;
 		}
 		
-		public override RectangleD BasicDisplayBox {
+		protected override RectangleD BasicDisplayBox {
 			get {
 				return new RectangleD {
 					X = Position.X,

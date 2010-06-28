@@ -28,15 +28,15 @@ using Gtk;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using MonoDevelop.Core;
-using MonoDevelop.Core.Gui;
+//using MonoDevelop.Core;
+using MonoDevelop.Ide;
 using MonoDevelop.Projects;
 using MonoDevelop.Projects.Dom;
 using MonoDevelop.Projects.Dom.Parser;
 
 namespace MonoDevelop.ClassDesigner.Figures
 {
-	public class DelegateFigure : TypeFigure
+	public sealed class DelegateFigure : TypeFigure
 	{
 		public DelegateFigure (IType domType) : base (domType)
 		{

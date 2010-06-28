@@ -1,3 +1,13 @@
+2010-06-28  Evan Briones  <erbriones@gmail.com>
+	* CircularLineTerminal.cs: Added a new line terminal.
+	Still needs work.
+
+	* SimpleTextFigure.cs:
+	* TextFigure.cs: Renamed to better reflect the figure.	
+
+	* PixbufFigure.cs:
+	* ImageFigure.cs: Renamed to better reflect the figure.
+
 2010-06-18  Evan Briones  <erbriones@gmail.com>
 
 	* StackFigure.cs: Added public method to clear the stack.

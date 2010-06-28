@@ -31,13 +31,13 @@ using MonoHotDraw.Util;
 
 namespace MonoDevelop.ClassDesigner.Figures
 {
-	public class CommentFigure : MultiLineTextFigure
+	public sealed class CommentFigure : MultiLineTextFigure
 	{		
 		public CommentFigure (string comment) : base (comment)
 		{
 		}
 		
-		public override void BasicDraw (Cairo.Context context)
+		protected override void BasicDraw (Cairo.Context context)
 		{
 			RectangleD rect = DisplayBox;
 			

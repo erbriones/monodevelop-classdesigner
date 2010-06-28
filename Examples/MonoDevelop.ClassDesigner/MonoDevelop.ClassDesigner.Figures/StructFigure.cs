@@ -31,7 +31,7 @@ using MonoDevelop.Projects.Dom;
 namespace MonoDevelop.ClassDesigner.Figures
 {
 
-	public class StructFigure : TypeFigure, IAssociation
+	public sealed class StructFigure : TypeFigure, IAssociation
 	{
 		bool hideAssociations;
 		

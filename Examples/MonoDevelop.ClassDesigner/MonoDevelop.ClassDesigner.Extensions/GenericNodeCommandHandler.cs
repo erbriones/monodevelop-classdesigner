@@ -30,12 +30,10 @@ using MonoDevelop.ClassDesigner;
 using MonoDevelop.Core;
 using MonoDevelop.Components.Commands;
 using MonoDevelop.Projects;
-using MonoDevelop.Projects.Dom;
-using MonoDevelop.Projects.Dom.Parser;
+using MonoDevelop.Ide;
 using MonoDevelop.Ide.Gui.Components;
 using MonoDevelop.Ide.Gui.Pads.ProjectPad;
 using MonoDevelop.Ide.Gui.Pads.ClassPad;
-using MonoDevelop.Ide.Gui;
 
 namespace MonoDevelop.ClassDesigner.Extensions
 {

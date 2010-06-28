@@ -28,10 +28,10 @@ using Cairo;
 using MonoHotDraw.Connectors;
 using MonoHotDraw.Handles;
 
-namespace MonoHotDraw.Figures {
-
-	public interface IConnectionFigure : IFigure {
-	
+namespace MonoHotDraw.Figures
+{
+	public interface IConnectionFigure : IFigure
+	{
 		void ConnectStart (IConnector start);
 		void ConnectEnd (IConnector end);
 		void UpdateConnection ();

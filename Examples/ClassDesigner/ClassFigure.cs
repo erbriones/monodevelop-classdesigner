@@ -12,7 +12,7 @@ namespace ClassDesigner
 		{
 			FillColor = new Cairo.Color(0.8, 0.0, 0.0, 0.8);
 			
-			classname = new SimpleTextFigure("ClassName");
+			classname = new TextFigure("ClassName");
 		}
 		
 		public override void BasicDraw(Cairo.Context context)
@@ -43,6 +43,6 @@ namespace ClassDesigner
 			classname.MoveTo(DisplayBox.X, DisplayBox.Y);
 		}
 		
-		private SimpleTextFigure classname;
+		private TextFigure classname;
 	}
 }

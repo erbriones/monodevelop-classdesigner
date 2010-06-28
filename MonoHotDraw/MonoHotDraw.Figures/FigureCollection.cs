@@ -28,31 +28,35 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using MonoHotDraw.Commands;
 
-namespace MonoHotDraw.Figures {
-
-	public class FigureCollection: List <IFigure>, System.ICloneable {
+namespace MonoHotDraw.Figures
+{
+	public class FigureCollection : List <IFigure>, System.ICloneable
+	{
 	
-		public FigureCollection (): base()
-		{
-		}
-		public FigureCollection (IEnumerable <IFigure> enumeration):
-			base (enumeration)
+		public FigureCollection () : base ()
 		{
 		}
 		
-		object System.ICloneable.Clone () {
+		public FigureCollection (IEnumerable <IFigure> enumeration) : base (enumeration)
+		{
+		}
+		
+		object System.ICloneable.Clone ()
+		{
 			return GenericCloner.Clone<FigureCollection> (this); 
 		}
 		
-		public FigureCollection Clone () {
+		public FigureCollection Clone ()
+		{
 			return (FigureCollection) GenericCloner.Clone<FigureCollection> (this); 
 		}
 	}
 
-	public static class FigureCollectionExtensions {
-	     public static FigureCollection ToFigures( this IEnumerable<IFigure> collection )
-	     {
-	          return new FigureCollection( collection );
-	     }
+	public static class FigureCollectionExtensions
+	{
+		public static FigureCollection ToFigures (this IEnumerable<IFigure> collection)
+	    {
+	          return new FigureCollection (collection);
+	    }
 	}
 }

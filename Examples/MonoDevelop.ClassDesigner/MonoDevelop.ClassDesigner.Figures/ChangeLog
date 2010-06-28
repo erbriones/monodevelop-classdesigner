@@ -1,3 +1,6 @@
+2010-06-27  Evan Briones  <erbriones@gmail.com>
+	* AssociationConnection.cs: Added association connector support.
+
 2010-06-18  Evan Briones  <erbriones@gmail.com>
 	
 	* ICollapsable.cs: New interface for supporting collapse.

@@ -36,7 +36,7 @@ namespace MonoHotDraw.Figures {
 		public EllipseFigure (): base () {
 		}
 
-		public override void BasicDraw (Context context) {
+		protected override void BasicDraw (Context context) {
 			double midwidth  = DisplayBox.Width / 2.0;
 			double midheight = DisplayBox.Height / 2.0;
 

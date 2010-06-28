@@ -1,0 +1,9 @@
+2010-06-27  Evan Briones  <erbriones@gmail.com>
+
+	* MonoDevelop.ClassDesigner.Gui.PropertyPad:
+	* MonoDevelop.ClassDesigner.Gui.Toolbox: Added new folders
+	
+	* ZoomWidget.cs: Namespace changed.
+
+2010-06-13  Evan Briones  <erbriones@gmail.com>
+	* ZoomWidget.cs: Added widget.

@@ -42,7 +42,7 @@ public partial class MainWindow: Gtk.Window
 
 	protected virtual void OnAddSimpleTextFigureActionActivated (object sender, System.EventArgs e)
 	{
-		SimpleTextFigure figure = new SimpleTextFigure("Hello World");
+		TextFigure figure = new TextFigure("Hello World");
 		figure.Padding = 0;
 		mhdcanvas.AddWithDragging(figure);
 	}

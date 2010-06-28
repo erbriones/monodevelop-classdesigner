@@ -34,12 +34,13 @@ using MonoHotDraw.Handles;
 using MonoHotDraw.Util;
 using MonoHotDraw.Locators;
 using MonoDevelop.Core;
+using MonoDevelop.Ide;
 using MonoDevelop.Projects.Dom;
-using MonoDevelop.Core.Gui;
 
 namespace MonoDevelop.ClassDesigner.Figures {
 
-	public abstract class TypeFigure: VStackFigure, ICollapsable {
+	public abstract class TypeFigure: VStackFigure, ICollapsable
+	{
 		public static MembersFormat format = MembersFormat.FullSignature;
 		public static GroupingSetting grouping = GroupingSetting.Member;
 
@@ -50,12 +51,13 @@ namespace MonoDevelop.ClassDesigner.Figures {
 		bool collapsed;
 		Cairo.Color color;
 		
-		public TypeFigure (): base () {
+		public TypeFigure () : base ()
+		{
 			Spacing = 10.0;
 			Header = new TypeHeaderFigure ();
 			compartments = new List<TypeMemberGroupFigure> ();
 			memberGroups = new VStackFigure ();
-			Add(Header);
+			Add (Header);
 
 			expandHandle = new ToggleButtonHandle (this, new AbsoluteLocator (10, 20));
 			expandHandle.Toggled += delegate (object sender, ToggleEventArgs e) {
@@ -70,10 +72,10 @@ namespace MonoDevelop.ClassDesigner.Figures {
 			expandHandle.Active = true;
 		}
 		
-		public TypeFigure(IType domtype): this() {
-			if (domtype == null || domtype.ClassType != this.ClassType) {
+		public TypeFigure (IType domtype) : this ()
+		{
+			if (domtype == null || domtype.ClassType != this.ClassType)
 				throw new ArgumentException();
-			}
 			
 			_domtype = domtype;
 			collapsed = false;
@@ -110,7 +112,7 @@ namespace MonoDevelop.ClassDesigner.Figures {
 			base.BasicDraw (context);
 		}
 
-		public override void BasicDraw (Cairo.Context context)
+		protected override void BasicDraw (Cairo.Context context)
 		{
 			RectangleD rect = DisplayBox;
 			
@@ -119,14 +121,14 @@ namespace MonoDevelop.ClassDesigner.Figures {
 			DrawPattern (context);
 			
 			context.LineWidth = 1.0;
-			context.Color = new Cairo.Color(0.0, 0.0, 0.0, 1.0);
-			context.Stroke();
+			context.Color = new Cairo.Color (0.0, 0.0, 0.0, 1.0);
+			context.Stroke ();
 			
 			base.BasicDraw (context);
 		}
 		
 		public override bool ContainsPoint (double x, double y) {
-			return DisplayBox.Contains(x, y);
+			return DisplayBox.Contains (x, y);
 		}
 		
 		public override RectangleD DisplayBox {
@@ -165,19 +167,8 @@ namespace MonoDevelop.ClassDesigner.Figures {
 				color = value;
 			}
 		}
-		
-		protected void AddMemberGroup (TypeMemberGroupFigure compartment)
-		{
-			if (compartment.IsEmpty)
-				return;
-			
-			memberGroups.Add (compartment);
-		}
-		
-		protected void RemoveMemberGroup (TypeMemberGroupFigure compartment)
-		{
-			memberGroups.Remove (compartment);
-		}
+
+		protected TypeHeaderFigure Header { get; set; }
 
 		protected void AddCompartment (TypeMemberGroupFigure newCompartment)
 		{
@@ -185,6 +176,14 @@ namespace MonoDevelop.ClassDesigner.Figures {
 				return;
 			
 			compartments.Add (newCompartment);
+		}
+		
+		protected void AddMemberGroup (TypeMemberGroupFigure compartment)
+		{
+			if (compartment.IsEmpty)
+				return;
+			
+			memberGroups.Add (compartment);
 		}
 		
 		protected void RemoveCompartment (string name)
@@ -196,8 +195,11 @@ namespace MonoDevelop.ClassDesigner.Figures {
 			compartments.Remove (comp);
 		}
 		
-		protected TypeHeaderFigure Header { get; set; }
-		
+		protected void RemoveMemberGroup (TypeMemberGroupFigure compartment)
+		{
+			memberGroups.Remove (compartment);
+		}
+
 		public virtual void Update ()
 		{
 			var members = new List<TypeMemberFigure> ();
@@ -373,14 +375,11 @@ namespace MonoDevelop.ClassDesigner.Figures {
 		public bool Collapsed {
 			get { return collapsed;}
 			set {
-				if (collapsed == value)
-					return;
-				
-				if (collapsed)
+				if (value)
 					expandHandle.Active = false;
 				else
 					expandHandle.Active = true;
-				
+
 				collapsed = value;
 			}
 		}		

@@ -29,25 +29,28 @@ using System.Runtime.Serialization;
 using MonoHotDraw.Figures;
 using MonoHotDraw.Util;
 
-namespace MonoHotDraw.Connectors {
-
+namespace MonoHotDraw.Connectors
+{
 	[Serializable]
-	public class ChopEllipseConnector : ChopBoxConnector {
+	public class ChopEllipseConnector : ChopBoxConnector
+	{
 	
-		public ChopEllipseConnector (IFigure figure): base (figure) {
+		public ChopEllipseConnector (IFigure figure): base (figure)
+		{
 		}
 		
-		protected ChopEllipseConnector (SerializationInfo info, StreamingContext context) : base (info, context) {
+		protected ChopEllipseConnector (SerializationInfo info, StreamingContext context) : base (info, context)
+		{
 		}
 		
-		protected override PointD Chop (IFigure target, PointD point) {
-			if (target.ContainsPoint (point.X, point.Y)) {
+		protected override PointD Chop (IFigure target, PointD point)
+		{
+			if (target.ContainsPoint (point.X, point.Y))
 				return target.DisplayBox.Center;
-			}
 
 			double angle = Geometry.AngleFromPoint (DisplayBox, point);
 			
-			PointD p = new PointD (0.0, 0.0);
+			var p = new PointD (0.0, 0.0);
 			RectangleD r = target.DisplayBox;
 			
 			p.X = r.Center.X + r.Width/2 * Math.Cos (angle);

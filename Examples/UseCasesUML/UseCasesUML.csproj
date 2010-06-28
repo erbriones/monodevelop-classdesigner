@@ -8,6 +8,7 @@
     <ProjectGuid>{81FBC7F9-96A0-4D63-AFC5-D79BAD277443}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AssemblyName>UseCases</AssemblyName>
+    <RootNamespace>UseCasesUML</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

@@ -28,16 +28,14 @@ using Gtk;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using MonoDevelop.Core;
-using MonoDevelop.Core.Gui;
+using MonoDevelop.Ide;
 using MonoDevelop.Projects.Dom;
 
 namespace MonoDevelop.ClassDesigner.Figures
 {
-
-	public class InterfaceFigure : TypeFigure
+	public sealed class InterfaceFigure : TypeFigure
 	{
-		public InterfaceFigure (IType domType) : base(domType)
+		public InterfaceFigure (IType domType) : base (domType)
 		{
 			FigureColor = new Cairo.Color (0.8, 0.8, 0.8, 0.4);
 		}

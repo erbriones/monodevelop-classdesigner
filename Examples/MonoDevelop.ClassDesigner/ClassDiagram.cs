@@ -35,12 +35,12 @@ using MonoDevelop.ClassDesigner.Figures;
 using MonoDevelop.Projects;
 using MonoDevelop.Projects.Dom;
 using MonoDevelop.Projects.Dom.Parser;
-using MonoDevelop.Ide.Gui;
+using MonoDevelop.Ide;
 using MonoHotDraw;
 using MonoHotDraw.Figures;
 using MonoHotDraw.Util;
 
-namespace MonoDevelop.ClassDesigner.Designer
+namespace MonoDevelop.ClassDesigner
 {
 	public class ClassDiagram 
 	{	
@@ -101,7 +101,7 @@ namespace MonoDevelop.ClassDesigner.Designer
 		public IEnumerable<IFigure> Figures {
 			get { return figures; }
 		}
-		
+
 		bool HasFigure (string fullName)
 		{		
 			return figures.Where (f => f is TypeFigure).Any (tf => ((TypeFigure) tf).Name.FullName == fullName);
@@ -142,15 +142,16 @@ namespace MonoDevelop.ClassDesigner.Designer
 			
 			return figure;
 		}
-		
-		public TypeFigure GetFigure (string fullName, Type type)
+
+		public TypeFigure GetFigure (string fullName)
 		{			
-			if (fullName == null || type == null)
+			if (fullName == null)
 				return null;
 			
 			var figure = figures
-				.Where (f => type.IsAssignableFrom (f.GetType ()))
-				.Select (tf => ((TypeFigure) tf).Name.FullName == fullName);
+				.Where (f => f is TypeFigure)
+				.Where (tf => ((TypeFigure) tf).Name.FullName == fullName)
+				.SingleOrDefault ();
 			
 			return (TypeFigure) figure;
 		}
@@ -158,8 +159,6 @@ namespace MonoDevelop.ClassDesigner.Designer
 		public void Load (string fileName, ProjectDom dom)
 		{
 			var root = XElement.Load(fileName);
-			IFigure figure = null;
-
 			var grouping = root.Attributes ()
 				.Where (a => a.Name == "GroupingSetting")
 				.SingleOrDefault ();
@@ -269,7 +268,8 @@ namespace MonoDevelop.ClassDesigner.Designer
 				.Where (a => a.Name == "Name")
 				.SingleOrDefault ();
 			
-			figure = (TypeFigure) CreateFigure (dom.GetType(typeName.Value));
+			var type = dom.GetType(typeName.Value);
+			figure = (TypeFigure) CreateFigure (type);
 			
 			if (figure == null)
 				return;
@@ -309,6 +309,23 @@ namespace MonoDevelop.ClassDesigner.Designer
 				.Where (e => e.Name == "Members")
 				.SingleOrDefault ();
 			
+			if (members != null) {
+				foreach (var e in members.Elements ()) {
+					var name = e.Attribute ("Name");
+					
+					if (name == null)
+						return;
+					
+					var member = type.SearchMember (name.Value, true)
+						.SingleOrDefault ();
+					
+					if (member == null)
+						return;
+					
+					//type.HideMember (name.Value);
+				}
+			}
+					
 			//
 			// Associations Element
 			//
@@ -317,6 +334,31 @@ namespace MonoDevelop.ClassDesigner.Designer
 				.Where (e => e.Name == "ShowAsAssociation")
 				.SingleOrDefault ();
 			
+			if (associations != null) {
+				foreach (var e in associations.Elements ("Property")) {
+					var name = e.Attribute ("Name");
+										
+					if (name == null)
+						continue;
+					
+					var property = type.Properties
+						.Where (p => p.Name == name.Value)
+						.SingleOrDefault ();
+					
+					if (property == null)
+						continue;
+					
+					IFigure startfig;
+										
+					if (HasFigure (property.ReturnType.FullName))
+						startfig = GetFigure (property.ReturnType.FullName);
+					else
+						startfig = CreateFigure (property.ReturnType.Type);
+					
+					figures.Add (new AssociationConnection (name.Value, startfig, figure));
+				}
+			}
+			
 			//
 			// Association Collections Element
 			//
@@ -324,6 +366,31 @@ namespace MonoDevelop.ClassDesigner.Designer
 			var collection = element.Elements ()
 				.Where (e => e.Name == "ShowAsAssociationCollection")
 				.SingleOrDefault ();
+			
+			if (collection != null) {
+					foreach (var e in collection.Elements ("Property")) {
+					var name = e.Attribute ("Name");
+										
+					if (name == null)
+						continue;
+					
+					var property = type.Properties
+						.Where (p => p.Name == name.Value)
+						.SingleOrDefault ();
+					
+					if (property == null)
+						continue;
+					
+					IFigure startfig;
+										
+					if (HasFigure (property.ReturnType.FullName))
+						startfig = GetFigure (property.ReturnType.FullName);
+					else
+						startfig = CreateFigure (property.ReturnType.Type);
+					
+					figures.Add (new AssociationConnection (name.Value, startfig, figure));
+				}
+			}
 			
 			//
 			// Compartments Element
@@ -334,7 +401,6 @@ namespace MonoDevelop.ClassDesigner.Designer
 				.SingleOrDefault ();
 			
 			if (compartments != null) {							
-				Console.WriteLine ("Compartments");
 				foreach (var e in compartments.Elements ("Compartment")) {
 					var name = e.Attribute ("Name");
 					
@@ -470,6 +536,24 @@ namespace MonoDevelop.ClassDesigner.Designer
 				element.Add (position);
 				
 				if (tf != null) {
+					var clist = tf.Compartments.Where (c => c.Collapsed);
+										
+					if (clist.Count () > 0) {
+						foreach (var c in clist)
+							Console.WriteLine (c.Name);
+							
+						var compartments = new XElement ("Compartments",
+							from c in clist
+						    select
+							new XElement ("Compartment",
+								new XAttribute ("Name", c.Name),
+								new XAttribute ("Collapsed", "true") 
+							)
+						);		
+						
+						element.Add (compartments);
+					}
+					
 					string name = null;
 					var project = IdeApp.Workspace.GetProjectContainingFile (fileName);
 					var dom = ProjectDomService.GetProjectDom (project);

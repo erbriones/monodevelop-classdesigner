@@ -31,7 +31,7 @@ using System.Collections.Generic;
 
 namespace MonoHotDraw.Samples {
 	
-	public class DigitalClockTextFigure : SimpleTextFigure {
+	public class DigitalClockTextFigure : TextFigure {
 	
 		public DigitalClockTextFigure (DigitalClockValueType type) : this (type, ":") {
 		}

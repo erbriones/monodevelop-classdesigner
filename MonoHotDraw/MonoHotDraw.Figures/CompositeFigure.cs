@@ -58,7 +58,7 @@ namespace MonoHotDraw.Figures {
 			}
 		}
 		
-		public override RectangleD BasicDisplayBox {
+		protected override RectangleD BasicDisplayBox {
 			get { 
 				RectangleD r = new RectangleD (0.0, 0.0);
 				bool first_flag = true;
@@ -128,7 +128,7 @@ namespace MonoHotDraw.Figures {
 			return false;
 		}
 
-		public override void BasicDraw (Context context)	{
+		protected override void BasicDraw (Context context)	{
 			foreach (IFigure fig in FiguresEnumerator) {
 				fig.Draw (context);
 			}

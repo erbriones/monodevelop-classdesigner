@@ -27,20 +27,52 @@ using Cairo;
 using System;
 using System.Collections.Generic;
 
-namespace MonoHotDraw.Util {
-
-	public sealed class Geometry {
+namespace MonoHotDraw.Util
+{
+	public sealed class Geometry
+	{
 	
-		private Geometry () {
+		Geometry ()
+		{
 		}
 	
-		public static double AngleFromPoint (RectangleD r, PointD point) {
+		public static double AngleFromPoint (RectangleD r, PointD point)
+		{
 			double rx = point.X - r.Center.X;
 			double ry = point.Y - r.Center.Y;
 			return Math.Atan2 (ry * r.Width, rx * r.Height);
 		}
-
-		public static PointD EdgePointFromAngle (RectangleD r, double angle) {
+		
+		
+		//FIXME: Fix so point stays on edge of circle
+		public static PointD EdgePointOfCircle (PointD midpoint, double radius, PointD endpoint)
+		{
+			var x_vector = endpoint.X - midpoint.X;
+			var y_vector = endpoint.Y - midpoint.Y;
+			
+			var sin = y_vector / radius;
+			var cos = x_vector / radius;
+			var x = 0.0;
+			var y = 0.0;
+			var e = 0.0001;
+			
+			if (Math.Abs (sin) > e) {
+				y = radius * (-sin);
+				y = Range (-radius, radius, y);
+			} else
+				x = radius;
+			
+			if (Math.Abs (cos) > e) {
+				x = radius * (-cos);
+				x = Range (-radius, radius, x);
+			} else
+				y = radius;
+			
+			return new PointD (midpoint.X + x, midpoint.Y + y);
+		}
+		
+		public static PointD EdgePointFromAngle (RectangleD r, double angle)
+		{
 			double sin = Math.Sin (angle);
 			double cos = Math.Cos (angle);
 			double e = 0.0001;
@@ -65,13 +97,27 @@ namespace MonoHotDraw.Util {
 
 			return new PointD (r.X + x, r.Y + y);
 		}
+		
+		public static PointD MidPoint (PointD a, PointD b)
+		{
+			if (LineSize (a, b) == 0)
+				return a;
+			
+			var midX = (a.X + b.X) / 2.0;
+			var midY = (a.Y + b.Y) / 2.0;
+			
+			return new PointD (midX, midY);
+		}
+		
 
-		public static double Range (double min, double max, double num)	{
+		public static double Range (double min, double max, double num)
+		{
 			return num < min ? min : (num > max ? max: num);
 		}
 	
-		public static bool LineContainsPoint (double x1, double y1, double x2, double y2, double px, double py) {
-			RectangleD r = new RectangleD (new PointD (x1, y1));
+		public static bool LineContainsPoint (double x1, double y1, double x2, double y2, double px, double py)
+		{
+			var r = new RectangleD (new PointD (x1, y1));
 			r.Add (x2, y2);
 			r.Inflate (2.0, 2.0);
 			if (!r.Contains (px, py)) {
@@ -80,13 +126,12 @@ namespace MonoHotDraw.Util {
 
 			double a, b, x, y;
 
-			if (x1 == x2) {
+			if (x1 == x2)
 				return (Math.Abs (px - x1) < 3.0);
-			}
 
-			if (y1 == y2) {
+			if (y1 == y2)
 				return (Math.Abs (py - y1) < 3.0);
-			}
+		
 			a = (y1 - y2) / (x1 - x2);
 			b = y1 - a * x1;
 			x = (py - b) / a;
@@ -95,18 +140,20 @@ namespace MonoHotDraw.Util {
 			return (Math.Min (Math.Abs (x - px), Math.Abs (y - py)) < 4.0);
 		}
 		
-		public static double LineSize (PointD point1, PointD point2) {
+		public static double LineSize (PointD point1, PointD point2)
+		{
 			double w = point1.X - point2.X;
 			double h = point1.Y - point2.Y;
 			
 			return Math.Sqrt (w*w + h*h);
 		}
 		
-		public static double PolyLineSize (List <PointD> points) {
-			double len = 0.0;
-			for (int i=0; i<points.Count-1; i++) {
+		public static double PolyLineSize (List <PointD> points)
+		{
+			var len = 0.0;
+			for (int i=0; i<points.Count-1; i++)
 				len += Geometry.LineSize (points [i], points [i+1]);
-			}
+			
 			return len;
 		}
 		
@@ -166,19 +213,19 @@ namespace MonoHotDraw.Util {
 		public static void GetArrowPoints (PointD a, PointD b, 
 											double lineDistance, double pointDistance,
 											out PointD p, out PointD p2,
-											out PointD m) {
+											out PointD m)
+		{
 											
-			PointD ab_vector = new PointD (b.X - a.X, b.Y - a.Y);
+			var ab_vector = new PointD (b.X - a.X, b.Y - a.Y);
 			
 			double length = Geometry.LineSize (a, b);
 			
-			if (length == 0) {
+			if (length == 0)
 				m = p = a;
-			}
 				
 			double proportion = pointDistance / length;
 			
-			PointD normal = new PointD (0.0, 0.0);
+			var normal = new PointD (0.0, 0.0);
 			normal.X = -ab_vector.Y / length;
 			normal.Y = ab_vector.X / length;
 			
@@ -198,7 +245,8 @@ namespace MonoHotDraw.Util {
 		// This method does the oposite to GetArrowPoint it gets
 		// lineDistence and pointDistance from (a), (b) and (p)
 		public static void GetArrowDistances (PointD a, PointD b, PointD p, 
-											out double lineDistance, out double pointDistance) {
+											out double lineDistance, out double pointDistance)
+		{
 											
 			double length = Geometry.LineSize (a, b);
 			
@@ -206,23 +254,25 @@ namespace MonoHotDraw.Util {
 				pointDistance = 0.0;
 				lineDistance = 0.0;
 			}
+			
 			pointDistance = ((p.X - a.X) * (b.X - a.X) + (p.Y - a.Y) * (b.Y - a.Y)) / length;
 			lineDistance =  ((a.X - p.X) * (b.Y - a.Y) - (a.Y - p.Y) * (b.X - a.X)) / length;
 		}
 		
-		public static PointD? LineIntersection (PointD l1p1, PointD l1p2, PointD l2p1, PointD l2p2) {
+		public static PointD? LineIntersection (PointD l1p1, PointD l1p2, PointD l2p1, PointD l2p2)
+		{
 			return LineIntersection (l1p1.X, l1p1.Y, l1p2.X, l1p2.Y, l2p1.X, l2p1.Y, l2p2.X, l2p2.Y);
 		}
 		
-		public static PointD? LineIntersection ( double xa,   // line 1 point 1 x
+		public static PointD? LineIntersection (double xa,   // line 1 point 1 x
 												double ya,   // line 1 point 1 y
 												double xb,   // line 1 point 2 x
 												double yb,   // line 1 point 2 y
 												double xc,   // line 2 point 1 x
 												double yc,   // line 2 point 1 y
 												double xd,   // line 2 point 2 x
-												double yd) { // line 2 point 2 y
-												
+												double yd) // line 2 point 2 y
+		 {
 			// source: http://vision.dai.ed.ac.uk/andrewfg/c-g-a-faq.html
 			// eq: for lines AB and CD
 			//     (YA-YC)(XD-XC)-(XA-XC)(YD-YC)

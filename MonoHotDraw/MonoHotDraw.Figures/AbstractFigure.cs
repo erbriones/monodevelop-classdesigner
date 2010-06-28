@@ -33,17 +33,23 @@ using MonoHotDraw.Handles;
 using MonoHotDraw.Tools;
 using MonoHotDraw.Util;
 
-namespace MonoHotDraw.Figures {
-
+namespace MonoHotDraw.Figures
+{
 	[Serializable]
-	public abstract class AbstractFigure : IFigure {
+	public abstract class AbstractFigure : IFigure
+	{
+		List <IFigure> _dependentFigures;
+		Cairo.Color    _fillColor;
+		Cairo.Color    _lineColor;
 	
-		protected AbstractFigure () {
+		protected AbstractFigure ()
+		{
 			FillColor = new Cairo.Color (1.0, 1.0, 0.2, 0.8);
 			LineColor = (Color) AttributeFigure.GetDefaultAttribute (FigureAttribute.LineColor);
 		}
 
-		protected AbstractFigure (SerializationInfo info, StreamingContext context) {
+		protected AbstractFigure (SerializationInfo info, StreamingContext context)
+		{
 			FillColor = (Cairo.Color) info.GetValue ("FillColor", typeof (Cairo.Color));
 			LineColor = (Cairo.Color) info.GetValue ("LineColor", typeof (Cairo.Color));
 		}
@@ -59,8 +65,7 @@ namespace MonoHotDraw.Figures {
 			}
 		}
 		
-		//TODO: This needs to be protected
-		public abstract RectangleD BasicDisplayBox { get; set; }
+		protected abstract RectangleD BasicDisplayBox { get; set; }
 		
 		public virtual bool CanConnect {
 			get { return true; }
@@ -83,17 +88,18 @@ namespace MonoHotDraw.Figures {
 		public virtual double LineWidth {
 			get { return (double) GetAttribute (FigureAttribute.LineWidth); }
 			set {
-				if (value >= 0) {
+				if (value >= 0)
 					SetAttribute (FigureAttribute.LineWidth, value);
-				}
 			}
 		}
 		
-		public virtual ITool CreateFigureTool (IDrawingEditor editor, ITool defaultTool) {
+		public virtual ITool CreateFigureTool (IDrawingEditor editor, ITool defaultTool)
+		{
 			return defaultTool;
 		}
 		
-		public virtual void GetObjectData (SerializationInfo info, StreamingContext context) {
+		public virtual void GetObjectData (SerializationInfo info, StreamingContext context)
+		{
 			info.AddValue ("FillColor", FillColor);
 			info.AddValue ("LineColor", LineColor);
 		}
@@ -102,41 +108,47 @@ namespace MonoHotDraw.Figures {
 			get { yield break; }
 		}
 
-		public virtual void Draw (Context context) {
+		public virtual void Draw (Context context)
+		{
 			context.Save ();
 			BasicDraw (context);
 			context.Restore ();
 		}
 		
-		// TODO: This needs to be protected
-		public virtual void BasicDraw (Context context) {
+		protected virtual void BasicDraw (Context context)
+		{
 		}
 		
-		public virtual void DrawSelected (Context context) {
+		public virtual void DrawSelected (Context context)
+		{
 			context.Save ();
 			BasicDrawSelected (context);
 			context.Restore ();
 		}
 		
-		public virtual void BasicDrawSelected (Context context)  {
+		public virtual void BasicDrawSelected (Context context)
+		{
 		}
 		
-		public virtual bool Includes (IFigure figure) {
+		public virtual bool Includes (IFigure figure)
+		{
 			return (this == figure);
 		}
 
-		public virtual object GetAttribute (FigureAttribute attribute) {
+		public virtual object GetAttribute (FigureAttribute attribute)
+		{
 			switch (attribute) {
-				case FigureAttribute.FillColor:
-					return FillColor;
-				case FigureAttribute.LineColor:
-					return LineColor;
-				default:
-					return null;
+			case FigureAttribute.FillColor:
+				return FillColor;
+			case FigureAttribute.LineColor:
+				return LineColor;
+			default:
+				return null;
 			}
 		}
 		
-		public virtual void SetAttribute (FigureAttribute attribute, object value) {
+		public virtual void SetAttribute (FigureAttribute attribute, object value)
+		{
 			switch (attribute) {
 				case FigureAttribute.FillColor:
 					FillColor = (Cairo.Color) value;
@@ -227,8 +239,6 @@ namespace MonoHotDraw.Figures {
 			}
 		}
 
-		private List <IFigure> _dependentFigures;
-		private Cairo.Color    _fillColor;
-		private Cairo.Color    _lineColor;
+		
 	}
 }

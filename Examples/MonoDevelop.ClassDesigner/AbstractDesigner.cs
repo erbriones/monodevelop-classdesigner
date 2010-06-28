@@ -25,7 +25,6 @@
 // THE SOFTWARE.
 
 using System;
-using System.Xml;
 using System.Collections.Generic;
 using Gtk;
 using MonoDevelop.Core.Logging;
@@ -36,8 +35,7 @@ using MonoDevelop.Projects.Dom.Parser;
 using MonoHotDraw;
 using MonoHotDraw.Figures;
 
-
-namespace MonoDevelop.ClassDesigner.Designer 
+namespace MonoDevelop.ClassDesigner 
 {
 	public abstract class AbstractDesigner : IZoomable, IPrintable
 	{
@@ -115,17 +113,21 @@ namespace MonoDevelop.ClassDesigner.Designer
 		public abstract void AddFromProject (Project project);
 		
 		#region IPrintable implementation
-		public void PrintDocument ()
+		public void PrintDocument (PrintingSettings settings)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException ();
 		}
-		
-		
-		public void PrintPreviewDocument ()
+
+		public void PrintPreviewDocument (PrintingSettings settings)
 		{
-			throw new System.NotImplementedException();
+			throw new NotImplementedException ();
 		}
-		
+
+		public bool CanPrint {
+			get {
+				throw new NotImplementedException ();
+			}
+		}
 		#endregion
 		
 		#region IZoomable implementation

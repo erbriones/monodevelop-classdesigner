@@ -8,6 +8,7 @@
     <ProjectGuid>{C9D17E96-DC3C-4AB6-8A89-3F7CC64489D2}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AssemblyName>MonoDevelop.ClassDesigner.Tester</AssemblyName>
+    <RootNamespace>MonoDevelop.ClassDesigner.Tester</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

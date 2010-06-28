@@ -26,9 +26,10 @@
 using System;
 using MonoHotDraw.Handles;
 
-namespace MonoHotDraw.Figures {	
-	
-	public interface IFigureVisitor {
+namespace MonoHotDraw.Figures
+{		
+	public interface IFigureVisitor
+	{
 		void VisitFigure (IFigure hostFigure);
 		void VisitHandle (IHandle hostHandle);
 	}

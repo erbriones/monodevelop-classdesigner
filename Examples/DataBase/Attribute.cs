@@ -37,7 +37,7 @@ using System.Runtime.Serialization;
 namespace MonoHotDraw.Database {
 
 	[Serializable]
-	public class Attribute : SimpleTextFigure, IPopupMenuFigure {
+	public class Attribute : TextFigure, IPopupMenuFigure {
 		
 		public Attribute () : this ("Attribute") {
 		}

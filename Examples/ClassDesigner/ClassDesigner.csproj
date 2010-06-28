@@ -8,6 +8,7 @@
     <ProjectGuid>{28D36BB4-47B8-4907-8919-1A5038AE932D}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AssemblyName>ClassDesigner</AssemblyName>
+    <RootNamespace>ClassDesigner</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

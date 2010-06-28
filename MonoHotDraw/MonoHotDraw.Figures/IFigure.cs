@@ -33,10 +33,10 @@ using MonoHotDraw.Handles;
 using MonoHotDraw.Tools;
 using MonoHotDraw.Util;
 
-namespace MonoHotDraw.Figures { 
-
-	public interface IFigure : ICloneable, ISerializable {
-	
+namespace MonoHotDraw.Figures
+{ 
+	public interface IFigure : ICloneable, ISerializable
+	{
 		void MoveBy (double x, double y);
 		void MoveTo (double x, double y);
 		bool Includes (IFigure figure);

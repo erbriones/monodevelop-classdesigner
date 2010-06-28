@@ -30,29 +30,37 @@ using MonoHotDraw.Figures;
 using MonoHotDraw.Util;
 using MonoHotDraw.Commands;
 
-namespace MonoHotDraw.Tools {
-
-	public class CreationTool: AbstractTool {
-	
-		public CreationTool (IDrawingEditor editor, IFigure ptype): base (editor) {
+namespace MonoHotDraw.Tools
+{
+	public class CreationTool: AbstractTool
+	{
+		public CreationTool (IDrawingEditor editor, IFigure ptype): base (editor)
+		{
 			Prototype = ptype;
 		}
 		
-		public override void Activate () {
+		public override void Activate ()
+		{
 			base.Activate ();
-			Gtk.Widget widget = Editor.View as Gtk.Widget;
+			
+			var widget = (Gtk.Widget) Editor.View;
 			widget.GdkWindow.Cursor = CursorFactory.GetCursorFromType (CursorType.Crosshair);
 		}
 		
-		public override void Deactivate () {
+		public override void Deactivate ()
+		{
 			base.Deactivate ();
-			Gtk.Widget widget = Editor.View as Gtk.Widget;
+			
+			var widget = (Gtk.Widget) Editor.View;
 			widget.GdkWindow.Cursor = null;
 		}
 		
-		public override void MouseDown (MouseEvent ev)	{
+		public override void MouseDown (MouseEvent ev)
+		{
 			IDrawingView view = ev.View;
+
 			base.MouseDown (ev);
+			
 			view.Drawing.Add (Prototype);
 			Prototype.MoveTo (ev.X, ev.Y);
 			view.ClearSelection ();
@@ -60,38 +68,48 @@ namespace MonoHotDraw.Tools {
 			CreateUndoActivity();
 		}
 		
-		public override void MouseUp (MouseEvent ev) {
+		public override void MouseUp (MouseEvent ev)
+		{
 			Editor.Tool = new SelectionTool (Editor);
 			PushUndoActivity();
 		}
 		
-		public class CreationToolUndoActivity: AbstractUndoActivity {
-			public CreationToolUndoActivity(IDrawingView view, IFigure prototype): base(view) {
+		public class CreationToolUndoActivity: AbstractUndoActivity
+		{
+			public CreationToolUndoActivity(IDrawingView view, IFigure prototype): base(view)
+			{
 				Undoable = true;
 				Redoable = true;
 				Prototype = prototype;
 			}
 			
-			public override bool Undo () {
-				if (!base.Undo()  )
+			public override bool Undo ()
+			{
+				if (!base.Undo ())
 					return false;
-				DrawingView.Drawing.Remove(Prototype);
-				DrawingView.RemoveFromSelection(Prototype);
+				
+				DrawingView.Drawing.Remove (Prototype);
+				DrawingView.RemoveFromSelection (Prototype);
+				
 				return true;
 			}
 			
-			public override bool Redo () {
-				if (!base.Redo() )
+			public override bool Redo ()
+			{
+				if (!base.Redo ())
 					return false;
-				DrawingView.Drawing.Add(Prototype);
+				
+				DrawingView.Drawing.Add (Prototype);
+				
 				return true;
 			}
 			
 			public IFigure Prototype { set; get; }
 		}
 		
-		protected void CreateUndoActivity(){
-			UndoActivity = new CreationToolUndoActivity(Editor.View, Prototype);
+		protected virtual void CreateUndoActivity ()
+		{
+			UndoActivity = new CreationToolUndoActivity (Editor.View, Prototype);
 		}
 		
 		protected IFigure Prototype { get; set; }

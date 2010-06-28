@@ -24,9 +24,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using MonoDevelop.Core.Gui;
+using MonoDevelop.Ide;
 using MonoDevelop.Ide.Gui;
-
 using System;
 using System.IO;
 using System.Xml;
@@ -34,7 +33,7 @@ using System.Xml;
 namespace MonoDevelop.ClassDesigner
 {
 
-	public class ClassDiagramDisplayBinding : DefaultDisplayBinding
+	public class ClassDiagramDisplayBinding : DisplayBinding
 	{
 		// Constructor
 		public ClassDiagramDisplayBinding ()

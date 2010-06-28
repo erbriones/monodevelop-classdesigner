@@ -36,15 +36,7 @@
       <Package>monodevelop</Package>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
-    <Reference Include="MonoDevelop.Core.Gui, Version=2.0.0.0, Culture=neutral">
-      <Package>monodevelop</Package>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
     <Reference Include="MonoDevelop.Ide, Version=2.0.0.0, Culture=neutral">
-      <Package>monodevelop</Package>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="MonoDevelop.Projects, Version=2.0.0.0, Culture=neutral">
       <Package>monodevelop</Package>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
@@ -52,19 +44,16 @@
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="gdk-sharp, Version=2.10.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Package>gtk-sharp-2.0</Package>
       <SpecificVersion>False</SpecificVersion>
+      <Package>gtk-sharp-2.0</Package>
     </Reference>
     <Reference Include="gtk-sharp, Version=2.10.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Package>gtk-sharp-2.0</Package>
       <SpecificVersion>False</SpecificVersion>
+      <Package>gtk-sharp-2.0</Package>
     </Reference>
     <Reference Include="pango-sharp, Version=2.10.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Package>gtk-sharp-2.0</Package>
       <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="MonoDevelop.Components, Version=2.2.0.0, Culture=neutral">
-      <Package>monodevelop</Package>
+      <Package>gtk-sharp-2.0</Package>
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
@@ -74,6 +63,7 @@
     </Reference>
     <Reference Include="MonoDevelop.DesignerSupport, Version=2.2.0.0, Culture=neutral">
       <Package>monodevelop-core-addins</Package>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -94,16 +84,22 @@
     <Compile Include="MonoDevelop.ClassDesigner.Figures\CommentFigure.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Extensions\GenericNodeCommandHandler.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Extensions\GenericNodeBuilderExtension.cs" />
-    <Compile Include="MonoDevelop.ClassDesigner.Designer\ClassDiagram.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Figures\IAssociation.cs" />
-    <Compile Include="MonoDevelop.ClassDesigner.Designer\AbstractDesigner.cs" />
-    <Compile Include="MonoDevelop.ClassDesigner.Designer\Designer.cs" />
-    <Compile Include="MonoDevelop.ClassDesigner.Designer\DiagramEventArgs.cs" />
-    <Compile Include="MonoDevelop.ClassDesigner.Components\ZoomWidget.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Figures\GroupingSetting.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Figures\MembersFormat.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Figures\ICollapsable.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Figures\TypeMemberGroupFigure.cs" />
+    <Compile Include="MonoDevelop.ClassDesigner.Figures\AssociationConnection.cs" />
+    <Compile Include="MonoDevelop.ClassDesigner.Gui\ZoomWidget.cs" />
+    <Compile Include="MonoDevelop.ClassDesigner.Gui\MonoDevelop.ClassDesigner.Gui.Toolbox\IToolboxConnector.cs" />
+    <Compile Include="MonoDevelop.ClassDesigner.Gui\MonoDevelop.ClassDesigner.Gui.Toolbox\IToolboxFigure.cs" />
+    <Compile Include="MonoDevelop.ClassDesigner.Gui\MonoDevelop.ClassDesigner.Gui.Toolbox\ConnectorToolboxItemNode.cs" />
+    <Compile Include="MonoDevelop.ClassDesigner.Gui\MonoDevelop.ClassDesigner.Gui.Toolbox\FigureToolboxItemNode.cs" />
+    <Compile Include="MonoDevelop.ClassDesigner.Gui\MonoDevelop.ClassDesigner.Gui.Toolbox\ConnectorType.cs" />
+    <Compile Include="ClassDiagram.cs" />
+    <Compile Include="Designer.cs" />
+    <Compile Include="DiagramEventArgs.cs" />
+    <Compile Include="AbstractDesigner.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -112,8 +108,19 @@
   <ItemGroup>
     <Folder Include="MonoDevelop.ClassDesigner.Figures\" />
     <Folder Include="MonoDevelop.ClassDesigner.Extensions\" />
-    <Folder Include="MonoDevelop.ClassDesigner.Designer\" />
-    <Folder Include="MonoDevelop.ClassDesigner.Components\" />
+    <Folder Include="MonoDevelop.ClassDesigner.Gui\" />
+    <Folder Include="MonoDevelop.ClassDesigner.Gui\MonoDevelop.ClassDesigner.Gui.Toolbox\" />
+    <Folder Include="MonoDevelop.ClassDesigner.Gui\" />
+    <Folder Include="MonoDevelop.ClassDesigner.Gui\" />
+    <Folder Include="MonoDevelop.ClassDesigner.Gui\" />
+    <Folder Include="MonoDevelop.ClassDesigner.Gui\MonoDevelop.ClassDesigner.Gui.PropertyPad\" />
+    <Folder Include="MonoDevelop.ClassDesigner.Gui\" />
+    <Folder Include="MonoDevelop.ClassDesigner.Gui\" />
+    <Folder Include="MonoDevelop.ClassDesigner.Gui\" />
+    <Folder Include="MonoDevelop.ClassDesigner.Gui\" />
+    <Folder Include="MonoDevelop.ClassDesigner.Gui\" />
+    <Folder Include="MonoDevelop.ClassDesigner.Gui\" />
+    <Folder Include="MonoDevelop.ClassDesigner.Gui\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\MonoHotDraw\MonoHotDraw.csproj">
