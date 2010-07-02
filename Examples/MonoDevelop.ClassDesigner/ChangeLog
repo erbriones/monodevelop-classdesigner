@@ -1,3 +1,8 @@
+2010-07-02  Evan Briones  <erbriones@gmail.com>
+
+	* Designer.cs:
+	* ClassDesigner.cs: Renamed Designer to ClassDesigner.
+	
 2010-06-27  Evan Briones  <erbriones@gmail.com>	
 
 	* ShowClassDesignerHandler.cs: Modified to compile against monodevelop trunk.

@@ -31,38 +31,47 @@ using MonoHotDraw.Figures;
 
 namespace MonoDevelop.ClassDesigner.Figures
 {
-	public class InheritanceConnectionFigure : LineConnection
+	public class InheritanceConnectionFigure : AbstractConnectionFigure
 	{
-		public InheritanceConnectionFigure() : base ()
+		public InheritanceConnectionFigure (IFigure subClass, IFigure superClass)
 		{
-			EndTerminal = new TriangleArrowLineTerminal ();
+			ConnectionLine = new InheritanceLine ();
+			Type = ConnectionType.Inheritance;
 		}
 		
-		public InheritanceConnectionFigure (IFigure fig1, IFigure fig2) : base (fig1, fig2)
+		public class InheritanceLine : LineConnection
 		{
-			EndTerminal = new TriangleArrowLineTerminal ();
-		}
-		
-		public override bool CanConnectEnd (IFigure figure)
-		{
-			if (!(figure is ClassFigure))
-				return false;
+			public InheritanceLine () : base ()
+			{
+				EndTerminal = new TriangleArrowLineTerminal ();
+			}
 			
-			if (figure.Includes (StartFigure))
-				return false;
+			public InheritanceLine (IFigure fig1, IFigure fig2) : base (fig1, fig2)
+			{
+				EndTerminal = new TriangleArrowLineTerminal ();
+			}
 			
-			return true;
-		}
-		
-		public override bool CanConnectStart (IFigure figure)
-		{
-			if (!(figure is ClassFigure))
-				return false;
+			public override bool CanConnectEnd (IFigure figure)
+			{
+				if (!(figure is ClassFigure))
+					return false;
+				
+				if (figure.Includes (StartFigure))
+					return false;
+				
+				return true;
+			}
 			
-			if (figure.Includes (EndFigure))
-				return false;
-			
-			return true;
+			public override bool CanConnectStart (IFigure figure)
+			{
+				if (!(figure is ClassFigure))
+					return false;
+				
+				if (figure.Includes (EndFigure))
+					return false;
+				
+				return true;
+			}
 		}
 	}
 }

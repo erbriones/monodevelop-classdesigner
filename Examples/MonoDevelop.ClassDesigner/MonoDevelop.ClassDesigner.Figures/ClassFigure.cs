@@ -2,8 +2,10 @@
 //
 // Authors:
 //	Manuel Cerón <ceronman@gmail.com>
+//  Evan Briones <erbriones@gmail.com>
 //
 // Copyright (C) 2009 Manuel Cerón
+// Copyright (C) 2010 Evan Briones
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,13 +27,16 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using MonoHotDraw.Figures;
 using MonoDevelop.Core;
 using MonoDevelop.Projects.Dom;
 
-namespace MonoDevelop.ClassDesigner.Figures {
-	
-	public sealed class ClassFigure: TypeFigure, IAssociation {
+namespace MonoDevelop.ClassDesigner.Figures
+{	
+	public sealed class ClassFigure: TypeFigure, IAssociation, INestedTypeSupport
+	{
+		List<IFigure> nestedFigures;
 		bool hideInheritance;
 		bool hideAssociations;
 		
@@ -39,6 +44,7 @@ namespace MonoDevelop.ClassDesigner.Figures {
 		{
 			hideInheritance = false;
 			HideAssociations = false;
+			nestedFigures = new List<IFigure> ();
 			FigureColor = new Cairo.Color (0.1, 0.1, 0.9, 0.4);
 		}
 		
@@ -47,12 +53,59 @@ namespace MonoDevelop.ClassDesigner.Figures {
 			set { hideInheritance = value; }
 		}
 		
+		// FIXME need to probably add to compartment
+		#region INestedTypeSupport implementation
+		public void AddNestedType (IFigure figure)
+		{
+			nestedFigures.Add (figure);
+		}
+
+		public void RemoveNestedType (IFigure figure)
+		{
+			nestedFigures.Remove (figure);
+		}
+
+		public IEnumerable<IFigure> NestedTypes {
+			get { return nestedFigures; }
+		}
+		#endregion
+		
+		#region IAssociation
 		public bool HideAssociations {
 			get { return hideAssociations; }
 			set {
+				if (hideAssociations == value)
+					return;
+				
 				hideAssociations = value;
+				
 			}
 		}
+
+		public bool HideCollectionAssocations {
+			get {
+				throw new NotImplementedException ();
+			}
+			set {
+				throw new NotImplementedException ();
+			}
+		}
+
+		public IEnumerable<IFigure> AssociationFigures {
+			get {
+				throw new NotImplementedException ();
+			}
+		}
+
+		public void AddAssociation (IBaseMember memberInfo, IFigure associatedFigure, bool AsCollection)
+		{
+		}
+
+		public void RemoveAssociation (IBaseMember memberInfo)
+		{
+			throw new NotImplementedException ();
+		}
+		#endregion
 		
 		protected override ClassType ClassType {
 			get {

@@ -2,9 +2,9 @@
 // ClassDiagramDisplayBinding.cs
 //  
 // Author:
-//       Evan <erbriones@gmail.com>
+//       Evan Briones <erbriones@gmail.com>
 // 
-// Copyright (c) 2010 Evan
+// Copyright (c) 2010 Evan Briones
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal

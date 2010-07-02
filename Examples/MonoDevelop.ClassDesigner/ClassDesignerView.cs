@@ -2,8 +2,10 @@
 //
 // Authors:
 //	Manuel Cerón <ceronman@gmail.com>
+//  Evan Briones <erbriones@gmail.com>
 //
 // Copyright (C) 2009 Manuel Cerón
+// Copyright (C) 2010 Evan Briones
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -46,7 +48,7 @@ namespace MonoDevelop.ClassDesigner
 {	
 	public class ClassDesignerView: AbstractViewContent, IToolboxDynamicProvider, IToolboxConsumer
 	{
-		Designer designer;
+		ClassDesigner designer;
 		ItemToolboxNode drag_item;
 		Gtk.Widget _source;
 		ToolboxList tools;
@@ -62,7 +64,7 @@ namespace MonoDevelop.ClassDesigner
 			this.UntitledName = "ClassDiagram.cd";
 			this.IsViewOnly = false;	
 				
-			designer = new Designer (project, new SteticComponent ());
+			designer = new ClassDesigner (project, new SteticComponent ());
 			designer.Editor.View.VisibleAreaChanged += OnDiagramChanged;
 			SetupTools ();
 			Control.ShowAll ();
@@ -75,7 +77,7 @@ namespace MonoDevelop.ClassDesigner
 			
 			this.ContentName = fileName;
 			
-			designer = new Designer (IdeApp.Workspace.GetProjectContainingFile (fileName));
+			designer = new ClassDesigner (IdeApp.Workspace.GetProjectContainingFile (fileName));
 			designer.Project = this.Project;
 			designer.Editor.View.VisibleAreaChanged += OnDiagramChanged;
 			
@@ -89,23 +91,18 @@ namespace MonoDevelop.ClassDesigner
 			}
 		}
 		
-		public Designer Designer {
+		public ClassDesigner Designer {
 			get { return designer; }
 		}
 		
 		public override Project Project {
-			get {
-				return designer.Project;
-			}
-			set {
-				designer.Project = value;
-			}
+			get { return designer.Project; }
+			set { designer.Project = value; }
 		}
 		
 		public override void Load (string fileName)
 		{
 			Designer.Load (fileName);
-			
 			IsDirty = false;
 		}
 		
@@ -245,10 +242,10 @@ namespace MonoDevelop.ClassDesigner
 			tools.Add (new FigureToolboxItemNode ("Struct", ClassType.Struct, false, icon));
 			
 			icon = ImageService.GetPixbuf (Stock.SplitWindow, Gtk.IconSize.SmallToolbar);
-			tools.Add (new ConnectorToolboxItemNode ("Association", ConnectorType.Association, icon));
+			tools.Add (new ConnectorToolboxItemNode ("Association", ConnectionType.Association, icon));
 			
 			icon = ImageService.GetPixbuf (Stock.MiscFiles, Gtk.IconSize.SmallToolbar);
-			tools.Add (new ConnectorToolboxItemNode ("Inheritance", ConnectorType.Inheritance, icon));
+			tools.Add (new ConnectorToolboxItemNode ("Inheritance", ConnectionType.Inheritance, icon));
 		}
 	}
 }

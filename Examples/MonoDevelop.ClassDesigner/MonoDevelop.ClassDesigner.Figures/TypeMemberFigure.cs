@@ -2,8 +2,10 @@
 //
 // Authors:
 //	Manuel Cerón <ceronman@gmail.com>
+//  Evan Briones <erbriones@gmail.com>
 //
 // Copyright (C) 2009 Manuel Cerón
+// Copyright (C) 2010 Evan Briones
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -30,11 +32,40 @@ using MonoHotDraw.Figures;
 using MonoHotDraw.Util;
 using MonoDevelop.Projects.Dom;
 
-namespace MonoDevelop.ClassDesigner.Figures {
-	
-	public class TypeMemberFigure: HStackFigure {
+namespace MonoDevelop.ClassDesigner.Figures
+{	
+	public class TypeMemberFigure: HStackFigure, IMemberFigure
+	{
+		bool allow_formatting;
+		bool _hidden;
+		IBaseMember _memberInfo;
+		TextFigure _retvalue;
+		TextFigure _name;
+		ImageFigure _icon;
 		
-		public TypeMemberFigure(Pixbuf icon, IBaseMember memberInfo, bool hidden): base ()
+		// For testing purposes
+		public TypeMemberFigure (Pixbuf icon, string name, string retval, bool hidden)
+		{
+			_icon = new ImageFigure (icon);
+			_name = new TextFigure (name);
+			_retvalue = new TextFigure (retval);
+			
+			_name.Padding = 0.0;
+			_name.FontSize = 10;
+			_retvalue.Padding = 0.0;
+			_retvalue.FontSize = 10;
+			_retvalue.FontColor = new Cairo.Color(0, 0, 1.0);
+			
+			Hidden = hidden;
+			AllowFormatting = true;
+			Alignment = HStackAlignment.Bottom;
+			
+			Add (_icon);
+			Add (_retvalue);
+			Add (_name);
+		}
+		
+		public TypeMemberFigure (Pixbuf icon, IBaseMember memberInfo, bool hidden) : base ()
 		{
 			_icon = new ImageFigure (icon);
 			_memberInfo = memberInfo;
@@ -53,30 +84,45 @@ namespace MonoDevelop.ClassDesigner.Figures {
 			_retvalue.FontSize = 10;
 			_retvalue.FontColor = new Cairo.Color(0, 0, 1.0);
 			
+			AllowFormatting = true;
 			Alignment = HStackAlignment.Bottom;
 			
 			Add(_icon);
 			Add(_retvalue);
 			Add(_name);
 		}
-		
-		public string Name {
-			get { return _name.Text; }
+
+		internal bool AllowFormatting {
+			get { return allow_formatting; }
+			set { allow_formatting = value; }
 		}
-		
 		public bool Hidden {
 			get { return _hidden; }
 			set { _hidden = value; }
 		}
 		
+		public string Name {
+			get { return _name.Text; }
+		}
+		
 		public IBaseMember MemberInfo {
 			get { return _memberInfo; }
 		}
+		
+		public void UpdateFormat (MembersFormat format)
+		{
+			if (!AllowFormatting)
+				return;
 			
-		bool _hidden;
-		IBaseMember _memberInfo;
-		TextFigure _retvalue;
-		TextFigure _name;
-		ImageFigure _icon;
+			Remove (_retvalue);
+			
+			if (format == MembersFormat.Name)
+				return;
+			
+			Remove (_name);
+			Add (_retvalue);
+			Add (_name);
+		}
+
 	}
 }

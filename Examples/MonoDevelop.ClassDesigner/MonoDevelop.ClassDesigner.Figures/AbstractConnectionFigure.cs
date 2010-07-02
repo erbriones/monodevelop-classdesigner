@@ -1,5 +1,5 @@
 // 
-// ConnectorType.cs
+// AbstractConnection.cs
 //  
 // Author:
 //       Evan Briones <erbriones@gmail.com>
@@ -23,14 +23,30 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-using System;
 
-namespace MonoDevelop.ClassDesigner.Gui.Toolbox
+using System;
+using MonoHotDraw.Figures;
+
+namespace MonoDevelop.ClassDesigner.Figures
 {
-	public enum ConnectorType
+	public abstract class AbstractConnectionFigure : CompositeFigure
 	{
-		Association,
-		Inheritance
+		IConnectionFigure _line;
+		ConnectionType _type;
+		
+		protected AbstractConnectionFigure ()
+		{
+		}
+		
+		protected ConnectionType Type {
+			get { return _type; }
+			set { _type = value; }
+		}
+		
+		protected IConnectionFigure ConnectionLine {
+			get { return _line; }
+			set { _line = value; }
+		}
 	}
 }
 

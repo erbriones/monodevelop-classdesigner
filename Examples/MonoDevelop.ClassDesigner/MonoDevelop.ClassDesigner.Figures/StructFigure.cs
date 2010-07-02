@@ -2,9 +2,9 @@
 // StructFigure.cs
 //  
 // Author:
-//       Evan <erbriones@gmail.com>
+//       Evan Briones <erbriones@gmail.com>
 // 
-// Copyright (c) 2010 Evan
+// Copyright (C) 2010 Evan Briones
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,31 +25,85 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
+using MonoHotDraw.Figures;
 using MonoDevelop.Core;
 using MonoDevelop.Projects.Dom;
 
 namespace MonoDevelop.ClassDesigner.Figures
 {
 
-	public sealed class StructFigure : TypeFigure, IAssociation
+	public sealed class StructFigure : TypeFigure, IAssociation, INestedTypeSupport
 	{
 		bool hideAssociations;
+		List<IFigure> nestedFigures;
 		
 		public StructFigure (IType domType) : base(domType)
 		{
 			FigureColor = new Cairo.Color (0.0, 0.2, 0.9, 0.4);
+			nestedFigures = new List<IFigure> ();
 			HideAssociations = false;
-		}
-		
-		public bool HideAssociations {
-			get { return hideAssociations; }
-			set {
-				hideAssociations = value;
-			}
 		}
 		
 		protected override ClassType ClassType {
 			get { return ClassType.Struct; }
 		}
+	
+		#region IAssociation
+		public bool HideAssociations {
+			get { return hideAssociations; }
+			set {
+				if (hideAssociations == value)
+					return;
+				
+				hideAssociations = value;
+				
+			}
+		}
+
+		public bool HideCollectionAssocations {
+			get {
+				throw new NotImplementedException ();
+			}
+			set {
+				throw new NotImplementedException ();
+			}
+		}
+
+		public IEnumerable<IFigure> AssociationFigures {
+			get {
+				throw new NotImplementedException ();
+			}
+		}
+
+		public void AddAssociation (IBaseMember memberInfo, IFigure associatedFigure, bool AsCollection)
+		{
+			throw new NotImplementedException ();
+		}
+
+		public void RemoveAssociation (IBaseMember memberInfo)
+		{
+			throw new NotImplementedException ();
+		}
+
+		#endregion
+
+		
+		//FIXME: Add to compartment correctly
+		#region INestedTypeSupport implementation
+		public void AddNestedType (IFigure figure)
+		{
+			nestedFigures.Add (figure);
+		}
+
+		public void RemoveNestedType (IFigure figure)
+		{
+			nestedFigures.Remove (figure);
+		}
+
+		public IEnumerable<IFigure> NestedTypes {
+			get { return nestedFigures; }
+		}
+		#endregion
 	}
 }

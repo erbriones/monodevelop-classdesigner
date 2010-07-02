@@ -40,6 +40,11 @@ namespace MonoHotDraw.Figures
 			Image = pixbuf;
 		}
 		
+		public ImageFigure (Gtk.Image image) : base ()
+		{
+			Image = image.Pixbuf;
+		}
+		
 		public Pixbuf Image {
 			get {
 				return _pixbuf;

@@ -42,21 +42,21 @@ using MonoHotDraw.Figures;
 
 namespace MonoDevelop.ClassDesigner
 {
-	public class Designer : AbstractDesigner
+	public class ClassDesigner : AbstractDesigner
 	{
 		ClassDiagram diagram;
 		
-		public Designer () : base ()
+		public ClassDesigner () : base ()
 		{
 			diagram = new ClassDiagram ();
 		}
 		
-		public Designer (Project project) : this ()
+		public ClassDesigner (Project project) : this ()
 		{
 			this.Project = project;
 		}
 		
-		public Designer (Project project, IDrawingEditor editor) : base (editor)
+		public ClassDesigner (Project project, IDrawingEditor editor) : base (editor)
 		{
 			diagram = new ClassDiagram ();
 			this.Project = project;

@@ -1,4 +1,38 @@
+2010-07-02  Evan Briones  <erbriones@gmail.com>
+
+	* IAssociation.cs: Added new members for supporting Associations. 	
+	
+	* AbstractConnectionFigure.cs: New base connection figure.
+	
+	* AssociationConnection.cs:
+	* AssociationConnectionFigure.cs: Renamed class and
+	now derives from AbstractConnectionFigure.
+	Added member label. 
+	
+	* AssociationLine.cs: Added a new AssociationLine.
+	Line will be used for both types of associations.
+
+	* InheritanceConnection.cs: Now derives from AbstractConnection Figure.
+	InheritanceConnectionFigure was renamed to InheritanceLine and is a nested type
+	in the new InheritanceConnectionFigure. 
+	
+	* INestedTypeSupport.cs: A new interface to denote a type that supports nested figures.
+	
+	* ClassFigure.cs:
+	* StructFigure.cs: Now Implements INestedTypeSupport.
+	Initial work for adding nested types.
+	
+	* IMemberFigure.cs: A new interface with member specific properties.  
+	
+	* TypeFigure.cs: Has a new internal update method. Added UpdateStatus enum to denote type of updates.
+	TypeFigures can override UpdateGroups
+	and UpdateMembersFormat  
+	
+	* TypeMemberFigure.cs: Now Implements IMemberFigure.
+	Formatting is now partially in place.
+	
 2010-06-27  Evan Briones  <erbriones@gmail.com>
+
 	* AssociationConnection.cs: Added association connector support.
 
 2010-06-18  Evan Briones  <erbriones@gmail.com>

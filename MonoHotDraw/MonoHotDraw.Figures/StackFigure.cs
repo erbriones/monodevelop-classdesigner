@@ -29,13 +29,24 @@ using System.Linq;
 using Cairo;
 using MonoHotDraw.Util;
 
-namespace MonoHotDraw.Figures {
-	
-	public abstract class StackFigure: CompositeFigure {
+namespace MonoHotDraw.Figures
+{	
+	public abstract class StackFigure : CompositeFigure
+	{
+		double _spacing;
 		
-		protected StackFigure(): base() {
-			Position = new PointD(0.0, 0.0);
+		protected StackFigure () : base ()
+		{
+			Position = new PointD (0.0, 0.0);
 			Spacing = 5.0;
+		}
+		
+		public double Spacing {
+			get { return _spacing; }
+			set { 
+				_spacing = value;
+				CalculateDimensions ();
+			}
 		}
 		
 		protected override RectangleD BasicDisplayBox {
@@ -49,10 +60,16 @@ namespace MonoHotDraw.Figures {
 			}
 			set {
 				Position = value.TopLeft;
-				UpdateFiguresPosition();
+				UpdateFiguresPosition ();
 			}
 		}
 		
+		protected PointD Position { get; set; }
+		
+		protected double Width { get; set; } 
+		
+		protected double Height { get; set; }
+
 		public virtual void Clear ()	
 		{
 			Figures.ForEach (f => Remove (f));
@@ -60,46 +77,34 @@ namespace MonoHotDraw.Figures {
 		
 		public override void Add (IFigure figure)
 		{
-			base.Add(figure);
+			base.Add (figure);
 			figure.FigureChanged += FigureChangedHandler;
-			CalculateDimensions();
+			CalculateDimensions ();
 		}
 		
 		public override void Remove (IFigure figure)
 		{
 			base.Remove (figure);
 			figure.FigureChanged -= FigureChangedHandler;
-			CalculateDimensions();
+			CalculateDimensions ();
 		}
 		
-		public double Spacing {
-			get { return _spacing; }
-			set { 
-				_spacing = value;
-				CalculateDimensions();
-			}
-		}
-		
-		protected void FigureChangedHandler (object sender, FigureEventArgs args) {
-			CalculateDimensions();
-		}
-		
-		protected abstract double CalculateWidth();
-		protected abstract double CalculateHeight();
-		protected abstract void UpdateFiguresPosition();
-		
-		private void CalculateDimensions()
+		protected void FigureChangedHandler (object sender, FigureEventArgs args)
 		{
-			WillChange();
-			Width = CalculateWidth();
-			Height = CalculateHeight();
-			UpdateFiguresPosition();
-			Changed();
+			CalculateDimensions ();
 		}
 		
-		protected PointD Position { get; set; }
-		protected double Width { get; set; } 
-		protected double Height { get; set; }
-		private double _spacing;
+		protected abstract double CalculateWidth ();
+		protected abstract double CalculateHeight ();
+		protected abstract void UpdateFiguresPosition ();
+		
+		void CalculateDimensions ()
+		{
+			WillChange ();
+			Width = CalculateWidth ();
+			Height = CalculateHeight( );
+			UpdateFiguresPosition ();
+			Changed ();
+		}		
 	}
 }

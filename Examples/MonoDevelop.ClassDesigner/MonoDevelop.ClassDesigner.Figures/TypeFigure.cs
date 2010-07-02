@@ -39,7 +39,7 @@ using MonoDevelop.Projects.Dom;
 
 namespace MonoDevelop.ClassDesigner.Figures {
 
-	public abstract class TypeFigure: VStackFigure, ICollapsable
+	public abstract class TypeFigure : VStackFigure, ICollapsable
 	{
 		public static MembersFormat format = MembersFormat.FullSignature;
 		public static GroupingSetting grouping = GroupingSetting.Member;
@@ -50,6 +50,13 @@ namespace MonoDevelop.ClassDesigner.Figures {
 		IType _domtype;
 		bool collapsed;
 		Cairo.Color color;
+		
+		internal enum UpdateStatus
+		{
+			MEMBERS_FORMAT,
+			GROUPING,
+			ALL
+		}
 		
 		public TypeFigure () : base ()
 		{
@@ -199,10 +206,22 @@ namespace MonoDevelop.ClassDesigner.Figures {
 		{
 			memberGroups.Remove (compartment);
 		}
-
-		public virtual void Update ()
+		
+		internal void Update (UpdateStatus status)
 		{
-			var members = new List<TypeMemberFigure> ();
+			if (status == UpdateStatus.MEMBERS_FORMAT)
+				UpdateMembersFormat ();
+			else if (status == UpdateStatus.GROUPING)
+				UpdateGroups ();
+			else {
+				UpdateGroups ();
+				UpdateMembersFormat ();
+			}
+		}
+		
+		public virtual void UpdateGroups ()
+		{
+			var members = new List<IMemberFigure> ();
 			
 			memberGroups.Clear ();
 			
@@ -325,7 +344,15 @@ namespace MonoDevelop.ClassDesigner.Figures {
 					compartment.AddMembers (members.Where (m => m.MemberInfo.MemberType == MemberType.Type));
 					AddMemberGroup (compartment);
 				}
-			}
+			}			
+		}
+		
+		public virtual void UpdateMembersFormat ()
+		{
+			var members = new List<IMemberFigure> ();
+			
+			compartments.ForEach (c => members.AddRange (c.FiguresEnumerator));
+			members.ForEach (m => m.UpdateFormat (format));
 		}
 				
 		protected virtual void CreateCompartments ()

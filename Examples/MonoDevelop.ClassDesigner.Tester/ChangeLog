@@ -1,3 +1,7 @@
+2010-07-02  Eavn Briones  <erbriones@gmail.com>
+
+	* MainWindow.cs: Made change to get tester compiling.
+	
 2009-07-09  Manuel Cerón  <ceronman@gmail.com>
 
 	* MainWindow.cs: Added helper actions

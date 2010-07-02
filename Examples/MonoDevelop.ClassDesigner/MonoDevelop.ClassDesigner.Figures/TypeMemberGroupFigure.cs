@@ -2,8 +2,10 @@
 //
 // Authors:
 //	Manuel Cerón <ceronman@gmail.com>
+//  Evan Briones <erbriones@gmail.com>
 //
 // Copyright (C) 2009 Manuel Cerón
+// Copyright (C) 2010 Evan Briones
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -25,6 +27,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Gdk;
 using MonoHotDraw.Figures;
 using MonoHotDraw.Handles;
@@ -39,16 +42,16 @@ namespace MonoDevelop.ClassDesigner.Figures {
 		bool _collapsed;
 		TextFigure compartmentName;
 		VStackFigure membersStack;
-		List<TypeMemberFigure> hidden;
+		List<IMemberFigure> hidden;
 		ToggleButtonHandle expandHandle;
-		
+			
 		public TypeMemberGroupFigure (string name) : base ()
 		{
 			Spacing = 5;
 			Alignment = VStackAlignment.Left;
 			
 			_name = name;
-			hidden = new List<TypeMemberFigure> ();
+			hidden = new List<IMemberFigure> ();
 			compartmentName = new TextFigure (name);
 			compartmentName.Padding = 0;
 			compartmentName.FontSize = 10;
@@ -88,10 +91,10 @@ namespace MonoDevelop.ClassDesigner.Figures {
 			}
 		}
 		
-		public new IEnumerable<TypeMemberFigure> FiguresEnumerator {
+		public new IEnumerable<IMemberFigure> FiguresEnumerator {
 			get {
 				foreach (var f in membersStack.FiguresEnumerator)
-					yield return (TypeMemberFigure) f;
+					yield return (IMemberFigure) f;
 				
 				foreach (var f in hidden)
 					yield return f;
@@ -120,7 +123,7 @@ namespace MonoDevelop.ClassDesigner.Figures {
 			}
 		}
 				
-		public void AddMembers (IEnumerable<TypeMemberFigure> members)
+		public void AddMembers (IEnumerable<IMemberFigure> members)
 		{
 			if (members == null)
 				return;
@@ -129,39 +132,35 @@ namespace MonoDevelop.ClassDesigner.Figures {
 				AddMember (member);
 		}
 		
-		public void AddMember(TypeMemberFigure member) {		
+		public void AddMember(IMemberFigure member) {		
 			if (member.Hidden)
 				hidden.Add (member);
 			else
-				membersStack.Add(member);
+				membersStack.Add ((IFigure) member);
 		}
 		
-		public void Hide (TypeMemberFigure figure)
+		public void Hide (IMemberFigure figure)
 		{
 			if (hidden.Contains (figure))
 				return;
 			
 			figure.Hidden = true;
-			membersStack.Remove (figure);
+			membersStack.Remove ((IFigure) figure);
 			hidden.Add (figure);
 		}
 		
-		public void Show (TypeMemberFigure figure)
+		public void Show (IMemberFigure figure)
 		{
 			figure.Hidden = false;
-			membersStack.Add (figure);
+			membersStack.Add ((IFigure) figure);
 			
-			if (!hidden.Contains (figure))
-				return;
-			
-			hidden.Remove (figure);
+			if (hidden.Contains (figure))
+				hidden.Remove (figure);
 		}
 		
 		public override void Clear ()
 		{
-			foreach (var m in membersStack.FiguresEnumerator)
-				membersStack.Remove (m);
-			
+			membersStack.Clear ();
 			hidden.Clear ();
 		}
 	}

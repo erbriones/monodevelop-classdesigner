@@ -2,9 +2,9 @@
 // InterfaceFigure.cs
 //  
 // Author:
-//       Evan <erbriones@gmail.com>
+//       Evan Briones <erbriones@gmail.com>
 // 
-// Copyright (c) 2010 Evan
+// Copyright (c) 2010 Evan Briones
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -30,13 +30,18 @@ using System.Collections.Generic;
 using System.Linq;
 using MonoDevelop.Ide;
 using MonoDevelop.Projects.Dom;
+using MonoHotDraw.Figures;
 
 namespace MonoDevelop.ClassDesigner.Figures
 {
-	public sealed class InterfaceFigure : TypeFigure
+	public sealed class InterfaceFigure : TypeFigure, IAssociation
 	{
+		List<IFigure> associationFigures;
+		bool hideAssociations;		
+		
 		public InterfaceFigure (IType domType) : base (domType)
 		{
+			hideAssociations = false;
 			FigureColor = new Cairo.Color (0.8, 0.8, 0.8, 0.4);
 		}
 
@@ -44,22 +49,72 @@ namespace MonoDevelop.ClassDesigner.Figures
 			get { return ClassType.Interface; }
 		}
 		
+		#region IAssociation
+		public bool HideAssociations {
+			get { return hideAssociations; }
+			set {
+				if (hideAssociations == value)
+					return;
+				
+				hideAssociations = value;
+				
+			}
+		}
+
+		public bool HideCollectionAssocations {
+			get {
+				throw new NotImplementedException ();
+			}
+			set {
+				throw new NotImplementedException ();
+			}
+		}
+
+		public IEnumerable<IFigure> AssociationFigures {
+			get {
+				throw new NotImplementedException ();
+			}
+		}
+
+		public void AddAssociation (IBaseMember memberInfo, IFigure associatedFigure, bool AsCollection)
+		{
+			throw new NotImplementedException ();
+		}
+
+		public void RemoveAssociation (IBaseMember memberInfo)
+		{
+			throw new NotImplementedException ();
+		}
+
+		#endregion
 		
-		// FIXME: Figure out how this works for access
-		public override void Update ()
+		public override void UpdateGroups ()
 		{
 			if (grouping != GroupingSetting.Access) {
-				base.Update ();
+				base.UpdateGroups ();
 				return;
 			}
 			
-			var compartment = Compartments.Where (c => c.Name == "Members").SingleOrDefault ();
-			var members = new List<TypeMemberFigure> ();
+			string name;
+			
+			if (Name.IsPublic)
+				name = "Public";
+			else if (Name.IsPrivate)
+				name = "Private";
+			else if (Name.IsPrivate)
+				name = "Protected";
+			else if (Name.IsInternal)
+				name = "Internal";
+			else
+				name = "Protected Internal";
+			
+			var compartment = Compartments.Where (c => c.Name == name).SingleOrDefault ();
+			var members = new List<IMemberFigure> ();
 				
 			
 			members.AddRange (Compartments
 			                  .Select (c => c.FiguresEnumerator.Where (m => m != null))
-			                  .OfType<TypeMemberFigure> ());
+			                  .OfType<IMemberFigure> ());
 			                  
 			foreach (var c in Compartments) {
 				RemoveMemberGroup (c);

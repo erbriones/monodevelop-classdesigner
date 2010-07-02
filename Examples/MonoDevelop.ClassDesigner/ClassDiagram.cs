@@ -2,9 +2,9 @@
 // ClassDiagram.cs
 //  
 // Author:
-//       Evan <erbriones@gmail.com>
+//       Evan Briones <erbriones@gmail.com>
 // 
-// Copyright (c) 2010 Evan
+// Copyright (c) 2010 Evan Briones
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -81,7 +81,7 @@ namespace MonoDevelop.ClassDesigner
 					return;
 				
 				membersFormat = value;
-				figures.ForEach (f => ((TypeFigure) f).Update ());
+				figures.ForEach (f => ((TypeFigure) f).Update (TypeFigure.UpdateStatus.MEMBERS_FORMAT));
 			}	
 		}
 		
@@ -94,7 +94,7 @@ namespace MonoDevelop.ClassDesigner
 					return;
 				
 				groupSetting = value;
-				figures.ForEach (f => ((TypeFigure) f).Update ());
+				figures.ForEach (f => ((TypeFigure) f).Update (TypeFigure.UpdateStatus.GROUPING));
 			}
 		}
 		
@@ -137,7 +137,7 @@ namespace MonoDevelop.ClassDesigner
 			}
 
 			
-			figure.Update ();
+			figure.Update (TypeFigure.UpdateStatus.ALL);
 			figures.Add (figure);
 			
 			return figure;
@@ -256,6 +256,8 @@ namespace MonoDevelop.ClassDesigner
 			PositionFigure (position, figure, true);
 		}
 				
+		
+		//FIXME: Add proper exceptions or dialog for missing types, etc..
 		void LoadType (XElement element, ProjectDom dom)
 		{	
 			TypeFigure figure = null;
@@ -315,15 +317,26 @@ namespace MonoDevelop.ClassDesigner
 					
 					if (name == null)
 						return;
-					
+					Console.WriteLine ("hide member {0}", name.Value);
 					var member = type.SearchMember (name.Value, true)
 						.SingleOrDefault ();
 					
 					if (member == null)
 						return;
 					
-					//type.HideMember (name.Value);
+					foreach (var c in figure.Compartments) {
+						var memberFigure = c.FiguresEnumerator
+							.Where (f => f.Name == member.Name)
+							.SingleOrDefault ();
+						
+						if (memberFigure == null)
+							continue;
+						
+						c.Hide (memberFigure);
+						
+					}
 				}
+				figure.UpdateGroups (); // Update to remove empty groups
 			}
 					
 			//
@@ -355,7 +368,7 @@ namespace MonoDevelop.ClassDesigner
 					else
 						startfig = CreateFigure (property.ReturnType.Type);
 					
-					figures.Add (new AssociationConnection (name.Value, startfig, figure));
+					figures.Add (new AssociationConnectionFigure (property, ConnectionType.Association, startfig, figure));
 				}
 			}
 			
@@ -388,7 +401,11 @@ namespace MonoDevelop.ClassDesigner
 					else
 						startfig = CreateFigure (property.ReturnType.Type);
 					
-					figures.Add (new AssociationConnection (name.Value, startfig, figure));
+					if (startfig is System.Collections.ICollection)
+						figures.Add (new AssociationConnectionFigure (property, ConnectionType.CollectionAssociation,
+						                                  startfig, figure));
+					else
+						throw new ArgumentException ("The type is not a valid collection.");
 				}
 			}
 			
@@ -422,6 +439,7 @@ namespace MonoDevelop.ClassDesigner
 					compartment.Collapsed = Boolean.Parse (collapsed.Value);
 				}
 			}
+			
 			//
 			// NestedTypes Element
 			//
@@ -430,7 +448,28 @@ namespace MonoDevelop.ClassDesigner
 				.Where (e => e.Name == "NestedTypes")
 				.SingleOrDefault ();
 			
+			if (nestedTypes != null) {
+				var nsupport = figure as INestedTypeSupport;
+					
+				//FIXME: probably should give a dialog or exception.
+				if (nsupport == null)
+					return;
+				
+				foreach (var nt in nestedTypes.Elements ("NestedType")) {
+					var name = nt.Attribute("Name");
+					
+					if (name == null)
+						continue;
+					
+					var nestedFigure = CreateFigure (dom.GetType(name.Value));
+					
+					if (nestedFigure == null)
+						continue;
+					
+					nsupport.AddNestedType (nestedFigure);
+				}
 			}
+		}
 		
 		// A position must have an x, y and width attribute.
 		static void PositionFigure (XElement position, IFigure figure, bool hasHeightAttribute)

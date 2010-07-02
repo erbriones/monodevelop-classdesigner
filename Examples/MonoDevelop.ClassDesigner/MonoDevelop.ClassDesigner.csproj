@@ -45,21 +45,17 @@
     </Reference>
     <Reference Include="gdk-sharp, Version=2.10.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
       <SpecificVersion>False</SpecificVersion>
-      <Package>gtk-sharp-2.0</Package>
     </Reference>
     <Reference Include="gtk-sharp, Version=2.10.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
       <SpecificVersion>False</SpecificVersion>
-      <Package>gtk-sharp-2.0</Package>
     </Reference>
     <Reference Include="pango-sharp, Version=2.10.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
       <SpecificVersion>False</SpecificVersion>
-      <Package>gtk-sharp-2.0</Package>
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Core" />
     <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-      <Package>glib-sharp-2.0</Package>
     </Reference>
     <Reference Include="MonoDevelop.DesignerSupport, Version=2.2.0.0, Culture=neutral">
       <Package>monodevelop-core-addins</Package>
@@ -89,17 +85,21 @@
     <Compile Include="MonoDevelop.ClassDesigner.Figures\MembersFormat.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Figures\ICollapsable.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Figures\TypeMemberGroupFigure.cs" />
-    <Compile Include="MonoDevelop.ClassDesigner.Figures\AssociationConnection.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Gui\ZoomWidget.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Gui\MonoDevelop.ClassDesigner.Gui.Toolbox\IToolboxConnector.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Gui\MonoDevelop.ClassDesigner.Gui.Toolbox\IToolboxFigure.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Gui\MonoDevelop.ClassDesigner.Gui.Toolbox\ConnectorToolboxItemNode.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Gui\MonoDevelop.ClassDesigner.Gui.Toolbox\FigureToolboxItemNode.cs" />
-    <Compile Include="MonoDevelop.ClassDesigner.Gui\MonoDevelop.ClassDesigner.Gui.Toolbox\ConnectorType.cs" />
     <Compile Include="ClassDiagram.cs" />
-    <Compile Include="Designer.cs" />
     <Compile Include="DiagramEventArgs.cs" />
     <Compile Include="AbstractDesigner.cs" />
+    <Compile Include="MonoDevelop.ClassDesigner.Figures\IMemberFigure.cs" />
+    <Compile Include="MonoDevelop.ClassDesigner.Figures\INestedTypeSupport.cs" />
+    <Compile Include="ClassDesigner.cs" />
+    <Compile Include="MonoDevelop.ClassDesigner.Figures\AssociationConnectionFigure.cs" />
+    <Compile Include="MonoDevelop.ClassDesigner.Figures\ConnectionType.cs" />
+    <Compile Include="MonoDevelop.ClassDesigner.Figures\AbstractConnectionFigure.cs" />
+    <Compile Include="MonoDevelop.ClassDesigner.Figures\AssociationLine.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

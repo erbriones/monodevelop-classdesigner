@@ -1,3 +1,9 @@
+2010-07-02  Evan Briones  <erbriones@gmail.com>
+
+	* ImageFigure.cs: Added Gtk.Image constructor.
+
+	* StackFigure.cs: Cleaned up code style
+	
 2010-06-28  Evan Briones  <erbriones@gmail.com>
 	* CircularLineTerminal.cs: Added a new line terminal.
 	Still needs work.

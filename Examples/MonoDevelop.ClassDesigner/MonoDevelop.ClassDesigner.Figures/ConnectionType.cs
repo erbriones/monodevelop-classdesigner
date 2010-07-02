@@ -1,5 +1,5 @@
 // 
-// GroupingSetting.cs
+// ConnectorType.cs
 //  
 // Author:
 //       Evan Briones <erbriones@gmail.com>
@@ -26,10 +26,10 @@
 
 namespace MonoDevelop.ClassDesigner.Figures
 {
-	public enum GroupingSetting
+	public enum ConnectionType
 	{
-		Access,
-		Alphabetical,
-		Member
+		Association,
+		CollectionAssociation,
+		Inheritance
 	}
 }

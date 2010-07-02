@@ -1,5 +1,5 @@
 // 
-// ConnectorItemNode.cs
+// AssociationLine.cs
 //  
 // Author:
 //       Evan Briones <erbriones@gmail.com>
@@ -24,33 +24,62 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using Cairo;
 using System;
 using MonoDevelop.ClassDesigner.Figures;
-using MonoDevelop.DesignerSupport.Toolbox;
+using MonoHotDraw.Figures;
 
-namespace MonoDevelop.ClassDesigner.Gui.Toolbox
+namespace MonoDevelop.ClassDesigner
 {
-	[System.ComponentModel.ToolboxItem(true)]
-	public sealed class ConnectorToolboxItemNode : ItemToolboxNode, IToolboxConnector
+	internal sealed class AssociationLine : LineConnection
 	{
-		PointD point;
-		ConnectionType _connectorType;
-		
-		public ConnectorToolboxItemNode (string name, ConnectionType connectorType, Gdk.Pixbuf icon) : base ()
+		bool route_manually;	
+				
+		internal AssociationLine () : base ()
 		{
-			Icon = icon;
-			Name = name;
-			_connectorType = connectorType;
-			point = new PointD (0.0, 0.0);
+			route_manually = false;
+			EndTerminal = new TriangleArrowLineTerminal (5.0, 10.0);
 		}
 		
-		public PointD Point {
-			get { return point; }
+		internal AssociationLine (IFigure fig1, IFigure fig2) : base (fig1, fig2)
+		{
+			route_manually = false;
+			EndTerminal = new TriangleArrowLineTerminal (5.0, 10.0);
 		}
 		
-		public ConnectionType ConnectorType {
-			get { return _connectorType; }
+		public bool RouteManually {
+			get { return route_manually; }
+			set {
+				if (route_manually == value)
+					return;
+				
+				route_manually = value;
+			}
+		}
+		
+		public override bool CanConnectStart (IFigure figure)
+		{
+			if (figure is CommentFigure)
+				return false;
+			else if (figure.Includes (EndFigure))
+				return false;
+			else if (figure is TypeFigure)
+				return true;
+			
+			return false;
+		}
+		
+		public override bool CanConnectEnd (IFigure figure)
+		{
+			if (figure is CommentFigure)
+				return false;
+			else if (figure is DelegateFigure)
+				return false;
+			else if (figure.Includes (StartFigure))
+				return false;
+			else if (figure is TypeFigure)
+				return true;
+			
+			return false;
 		}
 	}
 }

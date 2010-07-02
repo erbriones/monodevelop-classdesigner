@@ -1,5 +1,5 @@
 // 
-// GroupingSetting.cs
+// IMemberFigure.cs
 //  
 // Author:
 //       Evan Briones <erbriones@gmail.com>
@@ -24,12 +24,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System;
+using MonoDevelop.Projects.Dom;
+
 namespace MonoDevelop.ClassDesigner.Figures
 {
-	public enum GroupingSetting
+	public interface IMemberFigure
 	{
-		Access,
-		Alphabetical,
-		Member
+		
+		string Name { get; }
+		bool Hidden { get; set; }
+		IBaseMember MemberInfo { get; }
+		
+		void UpdateFormat (MembersFormat format);
 	}
 }
+

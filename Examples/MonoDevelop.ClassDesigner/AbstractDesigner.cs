@@ -1,4 +1,4 @@
-	// 
+// 
 // AbstractDesigner.cs
 //  
 // Author:

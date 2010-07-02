@@ -2,8 +2,10 @@
 //
 // Authors:
 //	Manuel Cerón <ceronman@gmail.com>
+//  Evan Briones <erbriones@gmail.com
 //
 // Copyright (C) 2009 Manuel Cerón
+// Copyright (C) 2010 Evan Briones
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -32,29 +34,29 @@ using MonoDevelop.Core;
 using MonoDevelop.Ide;
 using MonoDevelop.Projects.Dom;
 
-namespace MonoDevelop.ClassDesigner.Figures {
-	
-	public sealed class EnumFigure: TypeFigure {
+namespace MonoDevelop.ClassDesigner.Figures
+{	
+	public sealed class EnumFigure: TypeFigure
+	{
 
-		public EnumFigure(IType domtype): base(domtype) {
+		public EnumFigure (IType domtype): base (domtype)
+		{
 			FigureColor = new Cairo.Color (0.1, 0.9, 0.2, 0.4);
 		}
 		
 		protected override ClassType ClassType {
-			get {
-				return ClassType.Enum;
-			}
+			get { return ClassType.Enum; }
 		}
 		
 		// FIXME: Set up correct compartments
-		public override void Update ()
+		public override void UpdateGroups ()
 		{
-			List<TypeMemberFigure> members = new List<TypeMemberFigure> ();
+			List<IMemberFigure> members = new List<IMemberFigure> ();
 			TypeMemberGroupFigure compartment = Compartments
 				.Where (c => c.Name == "Fields")
 				.SingleOrDefault ();
 			
-			members.AddRange (Compartments.Select(c => c.FiguresEnumerator).OfType<TypeMemberFigure> ());
+			members.AddRange (Compartments.Select(c => c.FiguresEnumerator).OfType<IMemberFigure> ());
 			
 			if (members.Count () != Name.FieldCount) {
 				foreach (var f in Name.Fields) {

@@ -24,15 +24,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
+using System.Collections.Generic;
+using MonoHotDraw.Figures;
+using MonoDevelop.Projects.Dom;
 
 namespace MonoDevelop.ClassDesigner.Figures
 {
 	public interface IAssociation
-	{
-		bool HideAssociations {
-			get;
-			set;
-		}
+	{	
+		bool HideCollectionAssocations { get; set; }
+		bool HideAssociations { get; set; }
+		IEnumerable<IFigure> AssociationFigures { get; }
+		
+		void AddAssociation (IBaseMember memberInfo, IFigure associatedFigure, bool AsCollection);
+		void RemoveAssociation (IBaseMember memberInfo);
 	}
 }

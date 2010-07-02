@@ -1,5 +1,5 @@
 // 
-// AssociationConnection.cs
+// INestedTypeSupport.cs
 //  
 // Author:
 //       Evan Briones <erbriones@gmail.com>
@@ -25,62 +25,16 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
 using MonoHotDraw.Figures;
-using MonoHotDraw.Util;
 
 namespace MonoDevelop.ClassDesigner.Figures
 {
-	public class AssociationConnection : LineConnection
+	public interface INestedTypeSupport
 	{
-		TextFigure memberName;
+		void AddNestedType (IFigure figure);
+		void RemoveNestedType (IFigure figure);
 		
-		public AssociationConnection (string name) : base ()
-		{
-			memberName = new TextFigure (name);
-			EndTerminal = new TriangleArrowLineTerminal (5.0, 10.0);
-		}
-		
-		public AssociationConnection (string name, IFigure fig1, IFigure fig2) : base (fig1, fig2)
-		{
-			memberName = new TextFigure (name);
-			EndTerminal = new TriangleArrowLineTerminal (5.0, 10.0);
-		}
-		
-		public string MemberName {
-			get { return memberName.Text; }
-			set {
-				if (String.IsNullOrEmpty (value))
-					return;
-				
-				memberName.Text = value;
-			}
-		}
-		
-		public override bool CanConnectStart (IFigure figure)
-		{
-			if (figure is CommentFigure)
-				return false;
-			else if (figure.Includes (EndFigure))
-				return false;
-			else if (figure is TypeFigure)
-				return true;
-			
-			return false;
-		}
-		
-		public override bool CanConnectEnd (IFigure figure)
-		{
-			if (figure is CommentFigure)
-				return false;
-			else if (figure is DelegateFigure)
-				return false;
-			else if (figure.Includes (StartFigure))
-				return false;
-			else if (figure is TypeFigure)
-				return true;
-			
-			return false;
-		}
+		IEnumerable<IFigure> NestedTypes { get; }
 	}
-}
-
+}	

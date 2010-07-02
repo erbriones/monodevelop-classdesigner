@@ -25,12 +25,13 @@
 // THE SOFTWARE.
 using System;
 using Cairo;
+using MonoDevelop.ClassDesigner.Figures;
 
 namespace MonoDevelop.ClassDesigner.Gui.Toolbox
 {
 	public interface IToolboxConnector
 	{
-		ConnectorType ConnectorType { get; }
+		ConnectionType ConnectorType { get; }
 		PointD Point { get; }
 	}
 }
