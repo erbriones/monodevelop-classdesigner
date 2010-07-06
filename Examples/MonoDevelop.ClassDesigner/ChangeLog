@@ -1,4 +1,12 @@
 2010-07-02  Evan Briones  <erbriones@gmail.com>
+	
+	* ClassDesigner.cs: AddInheritance renamed to
+	AddInheritanceLines and made public. 
+	
+	* ClassDiagram.cs: Added showing base inheritance line
+	Added showing derived inheritance lines
+	
+2010-07-02  Evan Briones  <erbriones@gmail.com>
 
 	* Designer.cs:
 	* ClassDesigner.cs: Renamed Designer to ClassDesigner.

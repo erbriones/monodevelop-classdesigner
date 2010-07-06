@@ -32,15 +32,9 @@ namespace MonoDevelop.ClassDesigner.Figures
 	public abstract class AbstractConnectionFigure : CompositeFigure
 	{
 		IConnectionFigure _line;
-		ConnectionType _type;
 		
 		protected AbstractConnectionFigure ()
 		{
-		}
-		
-		protected ConnectionType Type {
-			get { return _type; }
-			set { _type = value; }
 		}
 		
 		protected IConnectionFigure ConnectionLine {

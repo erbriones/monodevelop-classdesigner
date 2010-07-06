@@ -41,6 +41,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 		HStackFigure member_label;
 		ImageFigure image;
 		TextFigure name;
+		ConnectionType type;
 		
 		public AssociationConnectionFigure (IBaseMember memberName,
 		                                    ConnectionType connectionType,
@@ -49,13 +50,16 @@ namespace MonoDevelop.ClassDesigner.Figures
 		{
 			if (connectionType == ConnectionType.Inheritance)
 				throw new ArgumentException ("Connection must be of type association or collection");
-					
+			
+			type = connectionType;
 			manual_label_size = false;
 			manual_label_position = false;
 			
 			ConnectionLine = new AssociationLine ();
-			//if (ConnectionLine.CanConnectStart (startFigure) && ConnectionLine.CanConnectEnd (endFigure))
-			//	throw new ArgumentException ("One or more of the figures is not valid");
+			if (!ConnectionLine.CanConnectStart (startFigure) && 
+			    !ConnectionLine.CanConnectEnd (endFigure)) {
+				return;
+			}
 			
 			var pixbuf = ImageService.GetPixbuf (memberName.StockIcon, IconSize.Menu);
 			
@@ -68,7 +72,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 			ConnectionLine.ConnectStart (startFigure.ConnectorAt (0.0, 0.0));
 			ConnectionLine.ConnectEnd (endFigure.ConnectorAt (0.0, 0.0));
 			
-			Type = connectionType;
+			type = connectionType;
 			
 			if (Type == ConnectionType.CollectionAssociation)
 				throw new NotImplementedException ();
@@ -76,7 +80,23 @@ namespace MonoDevelop.ClassDesigner.Figures
 			Add (MemberLabel);
 			Add (ConnectionLine);
 			
-			MemberLabel.MoveTo (ConnectionLine.EndPoint.X - 10.0, ConnectionLine.EndPoint.Y + 10.0);
+			MemberLabel.MoveTo (ConnectionLine.EndPoint.X - 5.0, ConnectionLine.EndPoint.Y + 10.0);
+		}
+		
+		public ConnectionType Type {
+			get { return type; }
+		}
+		
+		public void Show ()
+		{
+			ConnectionLine.ConnectStart (ConnectionLine.StartConnector);
+			ConnectionLine.ConnectEnd (ConnectionLine.EndConnector);
+		}
+		
+		public void Hide ()
+		{
+			ConnectionLine.DisconnectStart ();
+			ConnectionLine.DisconnectEnd ();
 		}
 		
 		HStackFigure MemberLabel {

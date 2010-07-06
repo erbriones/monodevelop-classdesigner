@@ -107,6 +107,45 @@ namespace MonoDevelop.ClassDesigner
 			return figures.Where (f => f is TypeFigure).Any (tf => ((TypeFigure) tf).Name.FullName == fullName);
 		}
 		
+		public IFigure BaseInheritanceLineFromDiagram (IType superClass)
+		{
+			var superFigure = GetFigure (superClass.FullName) as ClassFigure;
+			var subFigure = GetFigure (superClass.BaseType.FullName) as ClassFigure;
+			
+			if(superFigure == null || subFigure == null)
+				return null;
+			
+			var line = new InheritanceConnectionFigure (subFigure, superFigure);
+			figures.Add(line);
+			
+			return line;
+		}
+		
+		public IEnumerable<IFigure> DerivedInheritanceLinesFromDiagram (IType subClass)
+		{
+			var tmp = new List<IFigure> ();
+			var subFigure = GetFigure (subClass.FullName) as ClassFigure;
+			
+			if (subFigure == null)
+				return null;
+			
+			foreach (IFigure f in figures) {
+				var tf = f as ClassFigure;
+				
+				if (tf == null)
+					continue;
+				
+				if (tf.Name.BaseType.FullName != subClass.FullName)
+					continue;
+				
+				var line = new InheritanceConnectionFigure (subFigure, tf);
+				figures.Add (line);
+				tmp.Add (line);
+			}
+			
+			return tmp.DefaultIfEmpty ();
+		}
+		
 		public IFigure CreateFigure (IType type)
 		{
 			TypeFigure figure;
@@ -338,7 +377,26 @@ namespace MonoDevelop.ClassDesigner
 				}
 				figure.UpdateGroups (); // Update to remove empty groups
 			}
+			
+			//
+			// AssociationLine Element
+			//
+			
+			var association_lines = element.Elements ()
+				.Where (e =>element.Name == "AssociationLine");
+			
+			if (association_lines != null) {
+				foreach (var e in association_lines) {
+					var name = e.Attribute ("Name");
+					var t = e.Attribute ("Type");
 					
+				}
+			}
+			
+			//
+			// InheritanceLine
+			//
+			
 			//
 			// Associations Element
 			//
@@ -366,7 +424,7 @@ namespace MonoDevelop.ClassDesigner
 					if (HasFigure (property.ReturnType.FullName))
 						startfig = GetFigure (property.ReturnType.FullName);
 					else
-						startfig = CreateFigure (property.ReturnType.Type);
+						startfig = CreateFigure (property.ReturnType.Type);					
 					
 					figures.Add (new AssociationConnectionFigure (property, ConnectionType.Association, startfig, figure));
 				}

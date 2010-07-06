@@ -32,7 +32,14 @@ namespace MonoDevelop.ClassDesigner
 {
 	internal sealed class AssociationLine : LineConnection
 	{
-		bool route_manually;	
+		bool route_manually;
+		
+		internal enum PointTypes
+		{
+			JumpStart,
+			JumpEnd,
+			Normal
+		}
 				
 		internal AssociationLine () : base ()
 		{
@@ -55,7 +62,7 @@ namespace MonoDevelop.ClassDesigner
 				route_manually = value;
 			}
 		}
-		
+						
 		public override bool CanConnectStart (IFigure figure)
 		{
 			if (figure is CommentFigure)
@@ -80,6 +87,11 @@ namespace MonoDevelop.ClassDesigner
 				return true;
 			
 			return false;
+		}
+
+		public override void DisconnectStart ()
+		{
+			base.DisconnectStart ();
 		}
 	}
 }

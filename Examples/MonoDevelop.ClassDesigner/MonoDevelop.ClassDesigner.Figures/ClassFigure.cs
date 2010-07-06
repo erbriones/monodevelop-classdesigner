@@ -37,8 +37,10 @@ namespace MonoDevelop.ClassDesigner.Figures
 	public sealed class ClassFigure: TypeFigure, IAssociation, INestedTypeSupport
 	{
 		List<IFigure> nestedFigures;
+		List<AssociationConnectionFigure> associations;
 		bool hideInheritance;
 		bool hideAssociations;
+		bool hideCollection;
 		
 		public ClassFigure (IType domType) : base (domType)
 		{
@@ -79,15 +81,39 @@ namespace MonoDevelop.ClassDesigner.Figures
 				
 				hideAssociations = value;
 				
+				if (hideAssociations) {
+					associations.ForEach ((a) => {
+						if (a.Type == ConnectionType.Association)
+							a.Hide ();
+					});
+				} else {
+					associations.ForEach ((a) => {
+						if (a.Type == ConnectionType.Association)
+							a.Show ();
+					});
+				}
 			}
 		}
 
 		public bool HideCollectionAssocations {
-			get {
-				throw new NotImplementedException ();
-			}
+			get { return hideCollection; }
 			set {
-				throw new NotImplementedException ();
+				if (hideCollection == value)
+					return;
+				
+				hideCollection = value;
+				
+				if (hideCollection) {
+					associations.ForEach ((a) => {
+						if (a.Type == ConnectionType.CollectionAssociation)
+							a.Hide ();
+					});
+				} else {
+					associations.ForEach ((a) => {
+						if (a.Type == ConnectionType.CollectionAssociation)
+							a.Show ();
+					});
+				}
 			}
 		}
 
@@ -97,13 +123,22 @@ namespace MonoDevelop.ClassDesigner.Figures
 			}
 		}
 
-		public void AddAssociation (IBaseMember memberInfo, IFigure associatedFigure, bool AsCollection)
+		public void AddAssociation (IBaseMember member, IFigure associatedFigure, bool AsCollection)
 		{
+			AssociationConnectionFigure association; 
+			
+			if (AsCollection)
+				association = new AssociationConnectionFigure (member, ConnectionType.CollectionAssociation,
+				                                               this, associatedFigure);
+			else
+				association = new AssociationConnectionFigure (member, ConnectionType.Association,
+				                                               this, associatedFigure);
+				associations.Add (association);
 		}
 
-		public void RemoveAssociation (IBaseMember memberInfo)
+		public void RemoveAssociation (IBaseMember member)
 		{
-			throw new NotImplementedException ();
+			
 		}
 		#endregion
 		

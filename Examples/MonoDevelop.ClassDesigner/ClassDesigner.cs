@@ -73,7 +73,7 @@ namespace MonoDevelop.ClassDesigner
 			}
 		}
 		
-		void AddInheritance ()
+		public void AddInheritanceLines ()
 		{
 			ClassFigure subclass;
 			ClassFigure superclass;
@@ -97,12 +97,6 @@ namespace MonoDevelop.ClassDesigner
 					}
 				}
 			}	
-		}	
-		
-		
-		public void AddConnection ()
-		{
-
 		}
 		
 		public void AddFromDirectory (string directory)

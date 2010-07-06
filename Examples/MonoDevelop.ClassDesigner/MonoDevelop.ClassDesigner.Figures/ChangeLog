@@ -1,3 +1,18 @@
+2010-07-05  Evan Briones  <erbriones@gmail.com>
+	
+	* AssociationLine.cs: added enum minimal change.
+	
+	* AbstractConnectionFigure.cs: Removed connection type. 
+	Connection type will be specified in derived members.
+	
+	* AssociationConnectionFigure.cs: Will return if both figures
+	are not connectable. Basic show hide method added.
+	
+	* InheritanceFigure.cs:
+	* ClassFigure.cs: HideCollection and HideAssociation added.
+	
+	* InheritanceConnectionFigure.cs: Changed constructor for checking. 
+	
 2010-07-02  Evan Briones  <erbriones@gmail.com>
 
 	* IAssociation.cs: Added new members for supporting Associations. 	

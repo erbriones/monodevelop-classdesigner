@@ -33,13 +33,29 @@ namespace MonoDevelop.ClassDesigner.Figures
 {
 	public class InheritanceConnectionFigure : AbstractConnectionFigure
 	{
+		ConnectionType type;
+		
 		public InheritanceConnectionFigure (IFigure subClass, IFigure superClass)
 		{
+			type = ConnectionType.Inheritance;
 			ConnectionLine = new InheritanceLine ();
-			Type = ConnectionType.Inheritance;
+			
+			if (!ConnectionLine.CanConnectEnd (subClass) && 
+			    !ConnectionLine.CanConnectEnd (superClass))
+				
+			
+			ConnectionLine.DisconnectEnd ();
+			ConnectionLine.DisconnectStart ();
+			
+			ConnectionLine.ConnectStart (subClass.ConnectorAt (0.0, 0.0));
+			ConnectionLine.ConnectEnd (superClass.ConnectorAt (0.0, 0.0));
 		}
 		
-		public class InheritanceLine : LineConnection
+		public ConnectionType Type {
+			get { return type; }
+		}
+		
+		internal class InheritanceLine : LineConnection
 		{
 			public InheritanceLine () : base ()
 			{

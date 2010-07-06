@@ -88,7 +88,6 @@ namespace MonoDevelop.ClassDesigner.Figures
 
 		#endregion
 
-		
 		//FIXME: Add to compartment correctly
 		#region INestedTypeSupport implementation
 		public void AddNestedType (IFigure figure)

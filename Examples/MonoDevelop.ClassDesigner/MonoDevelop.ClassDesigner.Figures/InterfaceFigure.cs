@@ -36,11 +36,13 @@ namespace MonoDevelop.ClassDesigner.Figures
 {
 	public sealed class InterfaceFigure : TypeFigure, IAssociation
 	{
-		List<IFigure> associationFigures;
+		List<AssociationConnectionFigure> associations;
 		bool hideAssociations;		
+		bool hideCollection;
 		
 		public InterfaceFigure (IType domType) : base (domType)
 		{
+			hideCollection = false;
 			hideAssociations = false;
 			FigureColor = new Cairo.Color (0.8, 0.8, 0.8, 0.4);
 		}
@@ -58,15 +60,39 @@ namespace MonoDevelop.ClassDesigner.Figures
 				
 				hideAssociations = value;
 				
+				if (hideAssociations) {
+					associations.ForEach ((a) => {
+						if (a.Type == ConnectionType.Association)
+							a.Hide ();
+					});
+				} else {
+					associations.ForEach ((a) => {
+						if (a.Type == ConnectionType.Association)
+							a.Show ();
+					});
+				}
 			}
 		}
 
 		public bool HideCollectionAssocations {
-			get {
-				throw new NotImplementedException ();
-			}
+			get { return hideCollection; }
 			set {
-				throw new NotImplementedException ();
+				if (hideCollection == value)
+					return;
+				
+				hideCollection = value;
+				
+				if (hideCollection) {
+					associations.ForEach ((a) => {
+						if (a.Type == ConnectionType.CollectionAssociation)
+							a.Hide ();
+					});
+				} else {
+					associations.ForEach ((a) => {
+						if (a.Type == ConnectionType.CollectionAssociation)
+							a.Show ();
+					});
+				}
 			}
 		}
 
