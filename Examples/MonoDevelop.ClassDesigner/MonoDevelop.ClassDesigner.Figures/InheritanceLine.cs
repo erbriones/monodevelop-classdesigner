@@ -1,5 +1,5 @@
 // 
-// ProjectFileNodeBuilderExtension.cs
+// InheritanceLine.cs
 //  
 // Author:
 //       Evan Briones <erbriones@gmail.com>
@@ -24,34 +24,44 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
-using MonoDevelop.Ide.Gui.Components;
-using MonoDevelop.Ide.Gui.Pads.ClassPad;
-using MonoDevelop.Ide.Gui.Pads.ProjectPad;
-using MonoDevelop.Projects;
+using MonoHotDraw.Figures;
 
-namespace MonoDevelop.ClassDesigner.Extensions
+namespace MonoDevelop.ClassDesigner.Figures
 {
-	internal class GenericNodeBuilderExtension : NodeBuilderExtension
-	{
-		public override bool CanBuildNode (Type dataType)
+		internal sealed class InheritanceLine : LineConnection
 		{
-			if (typeof (Project).IsAssignableFrom (dataType))
+			public InheritanceLine () : base ()
+			{
+				EndTerminal = new TriangleArrowLineTerminal ();
+			}
+			
+			public InheritanceLine (IFigure fig1, IFigure fig2) : base (fig1, fig2)
+			{
+				EndTerminal = new TriangleArrowLineTerminal ();
+			}
+			
+			public override bool CanConnectEnd (IFigure figure)
+			{
+				if (!(figure is ClassFigure))
+					return false;
+				
+				if (figure.Includes (StartFigure))
+					return false;
+				
 				return true;
-			else if (typeof (ProjectFolder).IsAssignableFrom (dataType))
+			}
+			
+			public override bool CanConnectStart (IFigure figure)
+			{
+				if (!(figure is ClassFigure))
+					return false;
+				
+				if (figure.Includes (EndFigure))
+					return false;
+				
 				return true;
-			else if (typeof (ProjectFile).IsAssignableFrom (dataType))
-				return true;
-			else if (typeof (NamespaceData).IsAssignableFrom (dataType))
-				return true;
-			else if (typeof (ClassData).IsAssignableFrom (dataType))
-				return true;
-			else
-				return false;
+			}
 		}
-		
-		public override Type CommandHandlerType {
-			get { return typeof (GenericNodeCommandHandler); }
-		}
-	}
+
 }
+

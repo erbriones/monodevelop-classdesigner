@@ -1,3 +1,11 @@
+2010-07-13  Evan Briones  <erbriones@gmail.com>
+
+	* IDrawingEditor.cs: Added new DisplayMenu method.
+
+	* SteticComponent.cs: Added DisplayMenu for compilation. 
+
+	* StandDrawingView.cs: Added a generic target for drag and drop.
+
 2010-06-13  Evan Briones  <erbriones@gmail.com>
 
 	* ScaleRange.cs: Added new type.
@@ -10,6 +18,7 @@
 	Added new methods AddRange and RemoveRange. 
 
 2010-06-06  Evan Briones  <erbriones@gmail.com>
+
 	* StandardDrawing.cs: Added simple AutoLayout method.
  
 2010-05-27  Evan Briones  <erbriones@gmail.com>

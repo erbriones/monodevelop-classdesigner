@@ -55,22 +55,17 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Core" />
-    <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
-    </Reference>
     <Reference Include="MonoDevelop.DesignerSupport, Version=2.2.0.0, Culture=neutral">
       <Package>monodevelop-core-addins</Package>
       <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="glib-sharp, Version=2.10.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="Mono.Posix" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="Commands.cs" />
-    <Compile Include="ShowClassDesignerHandler.cs" />
-    <Compile Include="ClassDesignerView.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Figures\ClassFigure.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Figures\TypeHeaderFigure.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Figures\TypeMemberFigure.cs" />
-    <Compile Include="MonoDevelop.ClassDesigner.Figures\InheritanceConnection.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Figures\EnumFigure.cs" />
     <Compile Include="ClassDiagramDisplayBinding.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Figures\TypeFigure.cs" />
@@ -92,7 +87,6 @@
     <Compile Include="MonoDevelop.ClassDesigner.Gui\MonoDevelop.ClassDesigner.Gui.Toolbox\FigureToolboxItemNode.cs" />
     <Compile Include="ClassDiagram.cs" />
     <Compile Include="DiagramEventArgs.cs" />
-    <Compile Include="AbstractDesigner.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Figures\IMemberFigure.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Figures\INestedTypeSupport.cs" />
     <Compile Include="ClassDesigner.cs" />
@@ -100,10 +94,25 @@
     <Compile Include="MonoDevelop.ClassDesigner.Figures\ConnectionType.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Figures\AbstractConnectionFigure.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Figures\AssociationLine.cs" />
+    <Compile Include="MonoDevelop.ClassDesigner.Figures\AbstractLine.cs" />
+    <Compile Include="gtk-gui\generated.cs" />
+    <Compile Include="gtk-gui\MonoDevelop.ClassDesigner.Gui.Dialogs.AddFigureDialog.cs" />
+    <Compile Include="DesignerCommands.cs" />
+    <Compile Include="MonoDevelop.ClassDesigner.Gui\MonoDevelop.ClassDesigner.Gui.Dialogs\AddFigureDialog.cs" />
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="MonoDevelop.ClassDesigner.Extensions\ShowClassDesignerHandler.cs" />
+    <Compile Include="MonoDevelop.ClassDesigner.Commands\ClassCommands.cs" />
+    <Compile Include="MonoDevelop.ClassDesigner.Commands\AssociationCommands.cs" />
+    <Compile Include="MonoDevelop.ClassDesigner.Commands\CollapsableCommand.cs" />
+    <Compile Include="MonoDevelop.ClassDesigner.Figures\InheritanceLine.cs" />
+    <Compile Include="MonoDevelop.ClassDesigner.Figures\InheritanceConnectionFigure.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <EmbeddedResource Include="MonoDevelop.ClassDesigner.addin.xml" />
+    <EmbeddedResource Include="gtk-gui\gui.stetic">
+      <LogicalName>gui.stetic</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="MonoDevelop.ClassDesigner.Figures\" />
@@ -121,16 +130,26 @@
     <Folder Include="MonoDevelop.ClassDesigner.Gui\" />
     <Folder Include="MonoDevelop.ClassDesigner.Gui\" />
     <Folder Include="MonoDevelop.ClassDesigner.Gui\" />
+    <Folder Include="MonoDevelop.ClassDesigner.Gui\MonoDevelop.ClassDesigner.Dialogs\" />
+    <Folder Include="MonoDevelop.ClassDesigner.Commands\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\MonoHotDraw\MonoHotDraw.csproj">
       <Project>{D5D2EB0A-662A-471D-94C0-FD51C96E9429}</Project>
       <Name>MonoHotDraw</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MonoDevelop.Diagram\MonoDevelop.Diagram.csproj">
+      <Project>{C55FED98-1435-4066-89C3-CF0A7226335F}</Project>
+      <Name>MonoDevelop.Diagram</Name>
+    </ProjectReference>
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
-      <Properties InternalTargetFrameworkVersion="3.5" />
+      <Properties InternalTargetFrameworkVersion="3.5">
+        <Policies>
+          <DotNetNamingPolicy DirectoryNamespaceAssociation="Flat" ResourceNamePolicy="FileFormatDefault" />
+        </Policies>
+      </Properties>
     </MonoDevelop>
   </ProjectExtensions>
 </Project>

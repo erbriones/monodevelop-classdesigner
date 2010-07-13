@@ -44,9 +44,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 		}
 		
 		protected override ClassType ClassType {
-			get {
-				return ClassType.Delegate;
-			}
+			get { return ClassType.Delegate; }
 		}
 		
 		public override void UpdateGroups ()
@@ -57,6 +55,9 @@ namespace MonoDevelop.ClassDesigner.Figures
 				.SingleOrDefault ();
 			
 			var invoke = Name.Methods.Where (m => m.Name == "Invoke").SingleOrDefault ();
+			
+			if (invoke == null)
+				return;
 			
 			parameters.AddRange (compartment.FiguresEnumerator);
 			 
@@ -71,7 +72,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 			// FIXME: How does grouping change in vs.net class diagram?
 			if (grouping == GroupingSetting.Alphabetical)
 				compartment.AddMembers (parameters.OrderBy (p => p.Name));
-			else if (grouping == GroupingSetting.Access)
+			else if (grouping == GroupingSetting.Kind)
 				compartment.AddMembers (parameters);
 			else
 				compartment.AddMembers (parameters);

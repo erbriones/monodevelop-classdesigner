@@ -26,9 +26,9 @@
 
 using MonoDevelop.Ide;
 using MonoDevelop.Ide.Gui;
-using System;
+
 using System.IO;
-using System.Xml;
+using System;
 
 namespace MonoDevelop.ClassDesigner
 {
@@ -62,19 +62,19 @@ namespace MonoDevelop.ClassDesigner
 			return this.CanCreateContentForMimeType (mimetype);
 		}
 		
-		public override IViewContent CreateContentForMimeType (string mimeType, System.IO.Stream content)
+		public override IViewContent CreateContentForMimeType (string mimeType, Stream content)
 		{
 			FileStream fs = content as FileStream;
 			
 			if (fs == null)
 				return null;
 			
-			return new ClassDesignerView (fs.Name);		
+			return new ClassDesigner (fs.Name);		
  		}
 
 		public override IViewContent CreateContentForUri (string uri)
 		{	
-			return new ClassDesignerView (uri);			
+			return new ClassDesigner (uri);			
 		}
 	}
 }

@@ -15,39 +15,90 @@
 
 	<Dependencies>
 		<Addin id="Core" version="2.4"/>
-		<Addin id="Ide" version="2.4"/>
 		<Addin id="DesignerSupport" version="2.4"/>
+		<Addin id="Diagram" version="2.6" />
+		<Addin id="Ide" version="2.4"/>
 	</Dependencies>
-
-	<Extension path = "/MonoDevelop/Ide/Commands">
-		<Command id = "MonoDevelop.ClassDesigner.Commands.ShowClassDesigner"
-		         _label = "Class Designer"
-		         icon = "gtk-convert"/>
-	</Extension>
 	
-	<Extension path="/MonoDevelop/Ide/ContextMenu/ProjectPad">
-		<Condition id="ItemType" value="Project|ProjectFolder|ProjectFile">
-			<CommandItem id="MonoDevelop.ClassDesigner.Commands.ShowClassDesigner"
-			             _label = "_Show Class Diagram"
-			             insertafter = "Options"/>
-		</Condition>
-	</Extension>
-
-	<Extension path="/MonoDevelop/Ide/ContextMenu/ClassPad/Project">
-		<CommandItem id="MonoDevelop.ClassDesigner.Commands.ShowClassDesigner"
-			_label="_Show Class Diagram" insertafter="Options"/>
-	</Extension>
-
-	<Extension path="/MonoDevelop/Ide/ContextMenu/ClassPad/Namespace">
-		<CommandItem id="MonoDevelop.ClassDesigner.Commands.ShowClassDesigner"
-			_label="_Show Class Diagram" insertafter="Options"/>
-	</Extension>
-
-	<Extension path="/MonoDevelop/Ide/ContextMenu/ClassPad/Class">
-		<CommandItem id="MonoDevelop.ClassDesigner.Commands.ShowClassDesigner"
-			_label="_Show Class Diagram" insertafter="Options"/>
-	</Extension>
+	<!-- Extension Points -->
+	<ExtensionPoint path="/MonoDevelop/ClassDesigner/FigureCommandHandlers">
+		 <ExtensionNode  name="FigureCommand"> 
+		 	<Description>
+		 		Figure command handlers. Specified classes must subclass FigureCommandHandler
+		 	</Description>
+		 </ExtensionNode>
+	 </ExtensionPoint>
 	
+	<ExtensionPoint path = "/ClassDesigner/ContextMenu/Diagram">
+		<Description>Context menu for the diagram.</Description>
+		<ExtensionNodeSet id="MonoDevelop.Components.Commands.ItemSet" />
+		<ExtensionNode id="MonoDevelop.Components.Commands.SeparatorItem" />
+	</ExtensionPoint>
+	
+	<!-- Menu -->
+	<Extension path = "/ClassDesigner/ContextMenu/Diagram">
+		<ItemSet id="Add" _label="Add">
+			<CommandItem id="MonoDevelop.ClassDesigner.DesignerCommands.AddClass"/>
+			<CommandItem id="MonoDevelop.ClassDesigner.DesignerCommands.AddInterface"/>
+			<CommandItem id="MonoDevelop.ClassDesigner.DesignerCommands.AddStruct"/>
+			<CommandItem id="MonoDevelop.ClassDesigner.DesignerCommands.AddEnum"/>
+			<CommandItem id="MonoDevelop.ClassDesigner.DesignerCommands.AddDelegate"/>
+			<SeparatorItem id="ClassTypeSeperator" />
+			<CommandItem id="MonoDevelop.ClassDesigner.DesignerCommands.AddComment"/>
+		</ItemSet>
+		<ItemSet id="Zoom" _label="Zoom">
+			<CommandItem id="MonoDevelop.Ide.Commands.ViewCommands.ZoomIn" />
+			<CommandItem id="MonoDevelop.Ide.Commands.ViewCommands.ZoomOut" />
+			<SeparatorItem id="ZoomSeperator" />
+			<CommandItem id="MonoDevelop.Ide.Commands.ViewCommands.ZoomReset" />
+		</ItemSet>
+		<SeparatorItem id="AddAndZoomCommands" />
+		<ItemSet id="Grouping" _label="Group Members">
+			<CommandItem id="MonoDevelop.ClassDesigner.Figures.GroupingSetting.Kind"/>
+			<CommandItem id="MonoDevelop.ClassDesigner.Figures.GroupingSetting.Alphabetical"/>
+			<CommandItem id="MonoDevelop.ClassDesigner.Figures.GroupingSetting.Member"/>
+		</ItemSet>
+		<ItemSet id="Formatting" _label="Change Members Format">
+			<CommandItem id="MonoDevelop.ClassDesigner.Figures.MembersFormat.Name"/>
+			<CommandItem id="MonoDevelop.ClassDesigner.Figures.MembersFormat.NameAndType"/>
+			<CommandItem id="MonoDevelop.ClassDesigner.Figures.MembersFormat.FullSignature"/>
+		</ItemSet>
+		<CommandItem id="MonoDevelop.ClassDesigner.DesignerCommands.ShowAssociation" />
+		<CommandItem id="MonoDevelop.ClassDesigner.DesignerCommands.ShowAssociationCollection" />
+		<CommandItem id="MonoDevelop.ClassDesigner.DesignerCommands.ShowBase" />
+		<CommandItem id="MonoDevelop.ClassDesigner.DesignerCommands.ShowDerived" />
+		<SeparatorItem id="Separator2" />
+		<CommandItem id="MonoDevelop.ClassDesigner.DesignerCommands.Collapse" />
+		<CommandItem id="MonoDevelop.ClassDesigner.DesignerCommands.Expand" />
+		<!--
+		<CommandItem id="MonoDevelop.ClassDesigner.Commands.ShowAllMembers" />
+		<SeparatorItem id="Separator3" />
+		<CommandItem id="MonoDevelop.ClassDesigner.Commands.Hide" />
+		-->
+		<SeparatorItem id="Separator4" />
+		<CommandItem id="MonoDevelop.Ide.Commands.EditCommands.Undo"/>
+		<CommandItem id="MonoDevelop.Ide.Commands.EditCommands.Redo"/>
+		<SeparatorItem id="Separator5" />
+		<CommandItem id="MonoDevelop.Ide.Commands.EditCommands.Copy"/>
+		<CommandItem id="MonoDevelop.Ide.Commands.EditCommands.Cut"/>
+		<CommandItem id="MonoDevelop.Ide.Commands.EditCommands.Paste"/>
+		<CommandItem id="MonoDevelop.Ide.Commands.EditCommands.Delete" _label="Remove from Diagram"/>
+		<SeparatorItem id="Separator6" />
+		<CommandItem id="MonoDevelop.Ide.Commands.EditCommands.SelectAll"/>
+		<!--
+		<SeparatorItem id="Separator7" />
+		<CommandItem id="MonoDevelop.ClassDesigner.Commands.Properties" />
+		-->
+	</Extension>
+
+	<!-- Extensions -->
+	<Extension path="/MonoDevelop/ClassDesigner/FigureCommandHandlers">
+		<FigureCommand class="MonoDevelop.Diagram.Commands.EditingCommands" id="EditCommands" />
+		<FigureCommand class="MonoDevelop.ClassDesigner.Commands.AssociationCommands" id="IAssociation" />
+		<FigureCommand class="MonoDevelop.ClassDesigner.Commands.CollasableCommand" id="ICollaspable" />
+		<FigureCommand class="MonoDevelop.ClassDesigner.Commands.ClassCommands" id="ClassFigure" />
+		<FigureCommand class="MonoDevelop.Diagram.Commands.ZoomCommands" id="IZoomable" />
+	</Extension>
 	
 	<Extension path="/MonoDevelop/Ide/Pads/ProjectPad">
 		<NodeBuilder class="MonoDevelop.ClassDesigner.Extensions.GenericNodeBuilderExtension" />
@@ -59,6 +110,76 @@
 		<NodeBuilder class="MonoDevelop.ClassDesigner.Extensions.GenericNodeBuilderExtension" />
 		<NodeBuilder class="MonoDevelop.ClassDesigner.Extensions.GenericNodeBuilderExtension" />
 	</Extension>
+
+	<!-- Commands -->
+	<Extension path = "/MonoDevelop/Ide/Commands">
+		<Command id = "MonoDevelop.ClassDesigner.DesignerCommands.AddClass"
+				_label = "Add new Class" />
+		<Command id = "MonoDevelop.ClassDesigner.DesignerCommands.AddComment"
+				_label = "Add new Comment" />
+		<Command id = "MonoDevelop.ClassDesigner.DesignerCommands.AddDelegate"
+				_label = "Add new Delegate" />
+		<Command id = "MonoDevelop.ClassDesigner.DesignerCommands.AddEnum"
+				_label = "Add new Enum" />
+		<Command id = "MonoDevelop.ClassDesigner.DesignerCommands.AddInterface"
+				_label = "Add new Interface" />
+		<Command id = "MonoDevelop.ClassDesigner.DesignerCommands.AddStruct"
+				_label = "Add new Struct" />
+		<Command id = "MonoDevelop.ClassDesigner.DesignerCommands.Collapse"
+				_label = "Collapse" />			
+		<Command id = "MonoDevelop.ClassDesigner.DesignerCommands.Expand"
+				_label = "Expand" />
+		<Command id = "MonoDevelop.ClassDesigner.DesignerCommands.ShowDesigner"
+		         _label = "Class Designer" icon = "gtk-convert"/>
+		<Command id = "MonoDevelop.ClassDesigner.DesignerCommands.ShowBase"
+				_label = "Show Base Class" />
+		<Command id = "MonoDevelop.ClassDesigner.DesignerCommands.ShowDerived"
+				_label = "Show Derived Class" />
+		<Command id = "MonoDevelop.ClassDesigner.DesignerCommands.ShowAll"
+				_label = "Show All Members" />
+		<Command id = "MonoDevelop.ClassDesigner.DesignerCommands.ShowAssociation"
+				_label = "Show as Association" />
+		<Command id = "MonoDevelop.ClassDesigner.DesignerCommands.ShowAssociationCollection"
+				_label = "Show as Collection Association" />
+		<Command id = "MonoDevelop.ClassDesigner.Figures.GroupingSetting.Alphabetical"
+				_label = "Group Alphabetically" />
+		<Command id = "MonoDevelop.ClassDesigner.Figures.GroupingSetting.Member"
+				_label = "Group by Access" />
+		<Command id = "MonoDevelop.ClassDesigner.Figures.GroupingSetting.Kind"
+				_label = "Group by Kind" />
+		<Command id = "MonoDevelop.ClassDesigner.Figures.MembersFormat.Name"
+				_label = "Show Name" />
+		<Command id = "MonoDevelop.ClassDesigner.Figures.MembersFormat.NameAndType"
+				_label = "Show Name and Type" />
+		<Command id = "MonoDevelop.ClassDesigner.Figures.MembersFormat.FullSignature"
+				_label = "Show Full Signature." />
+	</Extension>
+	
+	<Extension path="/MonoDevelop/Ide/ContextMenu/ProjectPad">
+		<Condition id="ItemType" value="Project|ProjectFolder|ProjectFile">
+			<CommandItem id="MonoDevelop.ClassDesigner.DesignerCommands.ShowDesigner"
+			             _label = "_Show Class Diagram"
+			             insertafter = "Options"/>
+		</Condition>
+	</Extension>
+	
+	<Extension path="/MonoDevelop/Ide/ContextMenu/ClassPad/Project">
+		<CommandItem id="MonoDevelop.ClassDesigner.DesignerCommands.ShowDesigner"
+			defaulthandler="MonoDevelop.ClassDesigner.Extensions.ShowClassDesignerHandler"
+			_label="_Show Class Diagram" insertafter="Options"/>
+	</Extension>
+
+	<Extension path="/MonoDevelop/Ide/ContextMenu/ClassPad/Namespace">
+		<CommandItem id="MonoDevelop.ClassDesigner.DesignerCommands.ShowDesigner"
+			_label="_Show Class Diagram" insertafter="Options"/>
+	</Extension>
+
+	<Extension path="/MonoDevelop/Ide/ContextMenu/ClassPad/Class">
+		<CommandItem id="MonoDevelop.ClassDesigner.DesignerCommands.ShowDesigner"
+			_label="_Show Class Diagram" insertafter="Options"/>
+	</Extension>
+
+	<!-- Class Diagram File Support -->
 	
 	<Extension path="/MonoDevelop/Ide/FileFilters">
 		<FileFilter _label="Class Diagram Files" extensions="*.cd" />

@@ -37,7 +37,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 		{
 		}
 		
-		protected IConnectionFigure ConnectionLine {
+		public IConnectionFigure ConnectionLine {
 			get { return _line; }
 			set { _line = value; }
 		}

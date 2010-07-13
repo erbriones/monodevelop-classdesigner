@@ -35,6 +35,8 @@ namespace MonoDevelop.ClassDesigner.Figures
 	{		
 		public CommentFigure (string comment) : base (comment)
 		{
+			if (String.IsNullOrEmpty (comment))
+				Text = "Add your comment here.";
 		}
 		
 		protected override void BasicDraw (Cairo.Context context)

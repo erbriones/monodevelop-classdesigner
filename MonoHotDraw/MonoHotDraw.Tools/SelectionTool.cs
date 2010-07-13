@@ -44,17 +44,20 @@ namespace MonoHotDraw.Tools {
 			IDrawingView view = ev.View;
 			
 			IHandle handle = view.FindHandle (ev.X, ev.Y);
-			if (handle != null) {
+			if (handle != null)
 				DelegateTool = new HandleTracker (Editor, new UndoableHandle(handle));
-			}
 			else {
 				IFigure figure = view.Drawing.FindFigure (ev.X, ev.Y);
-				if (figure != null) {
+				var button_event = (Gdk.EventButton) ev.GdkEvent;
+				
+				if (button_event.Button == 3)
+					DelegateTool = new MenuTool (Editor, figure);
+				else if (figure != null) 
 					DelegateTool = figure.CreateFigureTool (Editor, new DragTool (Editor, figure));
-				} else {
+				else
 					DelegateTool = new SelectAreaTool (Editor);
-				}
 			}
+			
 			if (DelegateTool != null) {
 				DelegateTool.MouseDown (ev);
 			}

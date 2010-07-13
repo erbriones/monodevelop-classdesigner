@@ -116,7 +116,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 		
 		public override void UpdateGroups ()
 		{
-			if (grouping != GroupingSetting.Access) {
+			if (grouping != GroupingSetting.Kind) {
 				base.UpdateGroups ();
 				return;
 			}

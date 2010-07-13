@@ -87,7 +87,7 @@ namespace MonoHotDraw.Database {
 			set { _weakEntity = value; }
 		}
 
-		public override void BasicDraw (Context context) {
+		protected override void BasicDraw (Context context) {
 			SetupLayout (context);
 			DrawEntity (context, false);
 			DrawText (context);

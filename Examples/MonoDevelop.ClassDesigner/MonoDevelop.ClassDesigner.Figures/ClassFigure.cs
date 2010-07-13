@@ -28,6 +28,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MonoHotDraw.Commands;
 using MonoHotDraw.Figures;
 using MonoDevelop.Core;
 using MonoDevelop.Projects.Dom;
@@ -146,6 +147,6 @@ namespace MonoDevelop.ClassDesigner.Figures
 			get {
 				return ClassType.Class;
 			}
-		}		
+		}	
 	}
 }

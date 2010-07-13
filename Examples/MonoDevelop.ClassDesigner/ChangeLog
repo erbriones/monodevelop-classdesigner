@@ -1,3 +1,18 @@
+2010-07-13  Evan Briones  <erbriones@gmail.com>
+
+	* MonoDevelop.ClassDesigner.addin.xml: New extension point added for FigureCommandHandler,
+	and for menu. New extensions added for menu and figure commands.
+	
+	* ClassDesignerView.cs: Deleted, now using AbstractDesigner in MonoDevelop.Diagram
+	
+	* ClassDesigner.cs: Extends new addin MonoDevelop.Diagram
+	Added menu support. Toolbox support added. Now supports creating figures from the toolbar.
+	
+	* ClassDiagram.cs: Fixed MemberFormat and Grouping properties so that it checks
+	for the correct figure type.
+	
+	* MonoDevelop.ClassDesigner.Commands: Added new folder for new commands.
+	
 2010-07-02  Evan Briones  <erbriones@gmail.com>
 	
 	* ClassDesigner.cs: AddInheritance renamed to

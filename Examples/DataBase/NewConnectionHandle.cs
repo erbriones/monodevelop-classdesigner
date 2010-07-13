@@ -43,17 +43,16 @@ namespace MonoHotDraw.Database {
 		public NewConnectionHandle (IFigure owner, ILocator locator) : base (owner, locator) {
 			_icon = GetConnectionIcon ();
 		}
-
-		public override RectangleD DisplayBox {
-			get {
-				RectangleD rect = new RectangleD (Locate ());
-				rect.Inflate (8.0, 8.0);
-				return rect;
-			}
+		
+		protected override RectangleD ViewDisplayBox (IDrawingView view)
+		{
+			RectangleD rect = new RectangleD (Locate ());
+			rect.Inflate (8.0, 8.0);
+			return rect;
 		}
 
-		public override void Draw (Context context) {
-			RectangleD r = DisplayBox;
+		public override void Draw (Context context, IDrawingView view) {
+			RectangleD r = ViewDisplayBox (view);
 			_icon.Show (context, Math.Round (r.X), Math.Round (r.Y));
 		}
 		

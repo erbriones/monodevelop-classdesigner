@@ -81,7 +81,15 @@ namespace MonoDevelop.ClassDesigner
 					return;
 				
 				membersFormat = value;
-				figures.ForEach (f => ((TypeFigure) f).Update (TypeFigure.UpdateStatus.MEMBERS_FORMAT));
+				
+				foreach (var figure in figures) {
+					var tf = figure as TypeFigure;
+					
+					if (tf == null)
+						continue;
+					
+					tf.Update (TypeFigure.UpdateStatus.MEMBERS_FORMAT);
+				}
 			}	
 		}
 		
@@ -94,7 +102,15 @@ namespace MonoDevelop.ClassDesigner
 					return;
 				
 				groupSetting = value;
-				figures.ForEach (f => ((TypeFigure) f).Update (TypeFigure.UpdateStatus.GROUPING));
+			
+				foreach (var figure in figures) {
+					var tf = figure as TypeFigure;
+					
+					if (tf == null)
+						continue;
+					
+					tf.Update (TypeFigure.UpdateStatus.GROUPING);
+				}
 			}
 		}
 		
@@ -207,8 +223,8 @@ namespace MonoDevelop.ClassDesigner
 				
 				if (grouping.Value == GroupingSetting.Alphabetical.ToString ())
 					Grouping = GroupingSetting.Alphabetical;
-				else if (grouping.Value == GroupingSetting.Access.ToString ())
-					Grouping = GroupingSetting.Access;
+				else if (grouping.Value == GroupingSetting.Kind.ToString ())
+					Grouping = GroupingSetting.Kind;
 				else
 					Grouping = GroupingSetting.Member;
 			} else  {

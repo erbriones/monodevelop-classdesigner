@@ -1,5 +1,5 @@
 // 
-// ProjectFileNodeBuilderExtension.cs
+// ClassCommands.cs
 //  
 // Author:
 //       Evan Briones <erbriones@gmail.com>
@@ -24,34 +24,59 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
-using MonoDevelop.Ide.Gui.Components;
-using MonoDevelop.Ide.Gui.Pads.ClassPad;
-using MonoDevelop.Ide.Gui.Pads.ProjectPad;
-using MonoDevelop.Projects;
+using System.Linq;
+using System.Collections.Generic;
 
-namespace MonoDevelop.ClassDesigner.Extensions
+using MonoDevelop.ClassDesigner;
+using MonoDevelop.ClassDesigner.Figures;
+using MonoDevelop.Components.Commands;
+using MonoDevelop.Diagram.Components;
+using MonoHotDraw.Figures;
+
+namespace MonoDevelop.ClassDesigner.Commands
 {
-	internal class GenericNodeBuilderExtension : NodeBuilderExtension
+	internal sealed class ClassCommands : FigureCommandHandler
 	{
-		public override bool CanBuildNode (Type dataType)
+		public override bool CanHandle (IEnumerable<IFigure> figures)
 		{
-			if (typeof (Project).IsAssignableFrom (dataType))
-				return true;
-			else if (typeof (ProjectFolder).IsAssignableFrom (dataType))
-				return true;
-			else if (typeof (ProjectFile).IsAssignableFrom (dataType))
-				return true;
-			else if (typeof (NamespaceData).IsAssignableFrom (dataType))
-				return true;
-			else if (typeof (ClassData).IsAssignableFrom (dataType))
-				return true;
-			else
+			if (figures == null)
 				return false;
+			
+			if (figures.Count () == 0)
+				return false;
+			
+			return figures.All (f => f is ClassFigure);
 		}
 		
-		public override Type CommandHandlerType {
-			get { return typeof (GenericNodeCommandHandler); }
+		#region Commands
+		
+		[CommandHandler (DesignerCommands.ShowAllMembers)]
+		protected void ShowAllMemberItems ()
+		{
 		}
+				
+		[CommandHandler (DesignerCommands.ShowBase)]
+		protected void ShowBase ()
+		{
+		}
+		
+		[CommandHandler (DesignerCommands.ShowDerived)]
+		protected void ShowDerived ()
+		{
+		}
+		
+		[CommandUpdateHandler (DesignerCommands.ShowBase)]
+		protected void UpdateShowBase (CommandInfo info)
+		{
+			info.Enabled = true;
+		}
+		
+		[CommandUpdateHandler (DesignerCommands.ShowDerived)]
+		protected void UpdateShowDerived (CommandInfo info)
+		{
+			info.Enabled = true;
+		}
+		#endregion
 	}
 }
+

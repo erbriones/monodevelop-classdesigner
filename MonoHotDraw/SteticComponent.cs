@@ -54,6 +54,10 @@ namespace MonoHotDraw
 		
 		public IDrawingView View { get; set; }
 		public UndoManager UndoManager { get; private set; }
+	
+		public virtual void DisplayMenu (IFigure figure, MouseEvent ev)
+		{
+		}
 		
 		public ITool Tool {
 			get { return _tool; }

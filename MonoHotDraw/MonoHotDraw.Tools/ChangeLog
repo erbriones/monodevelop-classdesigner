@@ -1,3 +1,9 @@
+2010-07-13  Evan Briones  <erbriones@gmail.com>
+
+	* SelectionTool.cs: Added change to selection tool to support new menu tool.
+
+	* MenuTool.cs: Added new tool to handle menus.
+	
 2009-08-14  Manuel Cerón  <ceronman@gmail.com>
 
 	* SelectionTool.cs:

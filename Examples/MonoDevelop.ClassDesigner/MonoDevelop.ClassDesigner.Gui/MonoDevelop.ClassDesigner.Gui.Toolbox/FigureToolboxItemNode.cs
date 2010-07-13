@@ -30,10 +30,11 @@ using MonoDevelop.Projects.Dom;
 namespace MonoDevelop.ClassDesigner.Gui.Toolbox
 {
 	[System.ComponentModel.ToolboxItem(true)]
-	public class FigureToolboxItemNode : ItemToolboxNode
+	public class FigureToolboxItemNode : ItemToolboxNode, IToolboxFigure
 	{
 		ClassType _classType;
 		bool is_abstract;
+		string _namespace;
 		
 		public FigureToolboxItemNode (string name, ClassType classType, bool isAbstract, Gdk.Pixbuf icon) : base ()
 		{
@@ -43,11 +44,15 @@ namespace MonoDevelop.ClassDesigner.Gui.Toolbox
 			Icon = icon;
 		}
 		
-		ClassType ClassType {
+		public string Namespace {
+			get { return _namespace; }
+		}
+		
+		public ClassType ClassType {
 			get { return _classType; }
 		}
 		
-		bool IsAbstract {
+		public bool IsAbstract {
 			get { return is_abstract; }
 		}
 	}

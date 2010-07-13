@@ -37,20 +37,19 @@ using MonoDevelop.Ide.Gui.Pads.ClassPad;
 
 namespace MonoDevelop.ClassDesigner.Extensions
 {
-	class GenericNodeCommandHandler : NodeCommandHandler
+	internal class GenericNodeCommandHandler : NodeCommandHandler
 	{
-		[CommandUpdateHandler (Commands.ShowClassDesigner)]
+		[CommandUpdateHandler (DesignerCommands.ShowDesigner)]
 		[AllowMultiSelection]
 		public void UpdateHandler (CommandInfo item)
 		{
 			var project = GetProject (CurrentNode);
-			item.Enabled = IdeApp.Workbench.ActiveDocument != null;
 			
-			if (!item.Enabled)
+			if (IdeApp.Workbench.ActiveDocument == null)
 				return;
 			
-			var designer = IdeApp.Workbench.ActiveDocument.GetContent<ClassDesignerView> ()
-				?? IdeApp.Workbench.Documents.Select (d => d.GetContent<ClassDesignerView> ()).FirstOrDefault (v => v != null);
+			var designer = IdeApp.Workbench.ActiveDocument.GetContent<ClassDesigner> ()
+				?? IdeApp.Workbench.Documents.Select (d => d.GetContent<ClassDesigner> ()).FirstOrDefault (v => v != null);
 			
 			if (designer != null)
 				project = designer.Project;
@@ -58,35 +57,42 @@ namespace MonoDevelop.ClassDesigner.Extensions
 			item.Enabled = CurrentNodes.Any (i => (GetProject (i) == project));
 		}
 
-		[CommandHandler (Commands.ShowClassDesigner)]
+		[CommandHandler (DesignerCommands.ShowDesigner)]
 		[AllowMultiSelection]
 		public void Handler ()
 		{
-			var view = IdeApp.Workbench.ActiveDocument.GetContent<ClassDesignerView> ()
-				?? IdeApp.Workbench.Documents.Select (d => d.GetContent<ClassDesignerView> ()).FirstOrDefault (v => v != null);
+			ClassDesigner designer = null;
+			
+			if (IdeApp.Workbench.ActiveDocument != null)
+				designer = IdeApp.Workbench.ActiveDocument.GetContent<ClassDesigner> ()
+					?? IdeApp.Workbench.Documents
+						.Select (d => d.GetContent<ClassDesigner> ())
+						.FirstOrDefault (v => v != null);
 					
-			if (view == null) {
-				view = new ClassDesignerView (GetProject (CurrentNode));
-				IdeApp.Workbench.OpenDocument(view, true);
+			if (designer == null) {
+				designer = new ClassDesigner (GetProject (CurrentNode));
+				IdeApp.Workbench.OpenDocument (designer, true);
 			}
 			
 			foreach (var node in CurrentNodes) {				
 				if (node.DataItem is Project) {
-					view.Designer.AddFromProject ((Project) node.DataItem);
+					designer.AddFromProject ((Project) node.DataItem);
 				} else if (node.DataItem is ProjectFolder) {
 					var folder = (ProjectFolder) node.DataItem;
-					view.Designer.AddFromDirectory (folder.Path);
+					designer.AddFromDirectory (folder.Path);
 				} else if (node.DataItem is ProjectFile) {
 					var file = (ProjectFile) node.DataItem;
-					view.Designer.AddFromFile (file.FilePath);
+					designer.AddFromFile (file.FilePath);
 				} else if (node.DataItem is NamespaceData) {
 					var nsdata = (NamespaceData) node.DataItem;
-					view.Designer.AddFromNamespace (nsdata.FullName);
+					designer.AddFromNamespace (nsdata.FullName);
 				} else if (node.DataItem is ClassData) {
 					var cls = (ClassData) node.DataItem;
-					view.Designer.AddFromType (cls.Class);
+					designer.AddFromType (cls.Class);
 				}
 			}
+			
+			designer.Control.GrabFocus ();
 		}
 		
 		static Project GetProject (ITreeNavigator node)

@@ -1,22 +1,21 @@
-// MonoDevelop ClassDesigner
-//
-// Authors:
-//	Manuel Cerón <ceronman@gmail.com>
-//  Evan Briones <erbriones@gmail.com>
-//
-// Copyright (C) 2009 Manuel Cerón
-// Copyright (C) 2010 Evan Briones
-//
+// 
+// AbstractLine.cs
+//  
+// Author:
+//       Evan Briones <erbriones@gmail.com>
+// 
+// Copyright (c) 2010 Evan Briones
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-//
+// 
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-//
+// 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -25,10 +24,41 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-namespace MonoDevelop.ClassDesigner {
+using System;
+using System.Collections.Generic;
+using MonoHotDraw.Figures;
 
-	public enum Commands {
-		ShowClassDesigner,
-		OpenClassDesigner
+namespace MonoDevelop.ClassDesigner
+{
+	public class AbstractLine : LineConnection
+	{
+		bool route_manually;
+
+		protected AbstractLine () : base ()
+		{
+		}
+		
+		protected AbstractLine (IFigure fig1, IFigure fig2) : base (fig1, fig2)
+		{	
+		}
+
+		public enum PointType
+		{
+			JumpStart,
+			JumpEnd,
+			Normal
+		}
+		
+		public bool RouteManually {
+			get { return route_manually; }
+			set {
+				if (route_manually == value)
+					return;
+				
+				route_manually = value;
+			}
+		}
+		
 	}
 }
+

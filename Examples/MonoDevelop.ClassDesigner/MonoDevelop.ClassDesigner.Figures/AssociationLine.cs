@@ -30,39 +30,18 @@ using MonoHotDraw.Figures;
 
 namespace MonoDevelop.ClassDesigner
 {
-	internal sealed class AssociationLine : LineConnection
-	{
-		bool route_manually;
-		
-		internal enum PointTypes
-		{
-			JumpStart,
-			JumpEnd,
-			Normal
-		}
-				
+	internal sealed class AssociationLine : AbstractLine
+	{				
 		internal AssociationLine () : base ()
 		{
-			route_manually = false;
 			EndTerminal = new TriangleArrowLineTerminal (5.0, 10.0);
 		}
 		
 		internal AssociationLine (IFigure fig1, IFigure fig2) : base (fig1, fig2)
 		{
-			route_manually = false;
 			EndTerminal = new TriangleArrowLineTerminal (5.0, 10.0);
 		}
-		
-		public bool RouteManually {
-			get { return route_manually; }
-			set {
-				if (route_manually == value)
-					return;
-				
-				route_manually = value;
-			}
-		}
-						
+								
 		public override bool CanConnectStart (IFigure figure)
 		{
 			if (figure is CommentFigure)

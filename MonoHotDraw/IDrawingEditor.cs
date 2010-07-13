@@ -25,15 +25,18 @@
 // THE SOFTWARE.
 
 using MonoHotDraw.Commands;
+using MonoHotDraw.Figures;
 using MonoHotDraw.Tools;
 
-namespace MonoHotDraw {
-
-	public interface IDrawingEditor {
-	
+namespace MonoHotDraw
+{
+	public interface IDrawingEditor
+	{
 		IDrawingView View { set; get; }
 		ITool Tool { set; get; }
-		UndoManager UndoManager { get; }  
+		UndoManager UndoManager { get; }
+	
+		void DisplayMenu (IFigure figure, MouseEvent ev);
 	}
 }
 

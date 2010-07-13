@@ -71,7 +71,7 @@ namespace MonoHotDraw.Database {
 			}
 		}
 
-		public override void BasicDraw (Context context) {
+		protected override void BasicDraw (Context context) {
 			SetupLayout (context);
 			DrawAttribute (context, false);
 			DrawText (context);

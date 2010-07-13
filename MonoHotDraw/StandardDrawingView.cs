@@ -62,12 +62,7 @@ namespace MonoHotDraw
 			_selection = new FigureCollection ();
 			DebugCreateTimer ();
 		}
-		
-		static StandardDrawingView ()
-		{
-			targets = new TargetList ();
-		}
-		
+
 		protected StandardDrawingView (IntPtr raw) : base (raw)
 		{
 		}
@@ -126,7 +121,14 @@ namespace MonoHotDraw
 		}
 		
 		public static TargetEntry [] Targets {
-			get { return (TargetEntry []) targets; }
+			get {
+				if (targets == null) {
+					targets = new TargetList ();
+					targets.AddUriTargets(1);
+				}
+				
+				return (TargetEntry []) targets;
+			}
 		}
 		
 		public void Add (IFigure figure)
@@ -377,8 +379,8 @@ namespace MonoHotDraw
 		protected override bool OnButtonPressEvent (Gdk.EventButton gdk_event) 
 		{
 			PointD point = ViewToDrawing(gdk_event.X, gdk_event.Y);
-			var ev = new MouseEvent(this, gdk_event, point);
-			
+			var ev = new MouseEvent (this, gdk_event, point);
+
 			Editor.Tool.MouseDown (ev);
 			_drag = true;
 

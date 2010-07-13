@@ -31,18 +31,20 @@ using MonoHotDraw.Figures;
 
 namespace MonoDevelop.ClassDesigner.Figures
 {
-	public class InheritanceConnectionFigure : AbstractConnectionFigure
+	internal sealed class InheritanceConnectionFigure : AbstractConnectionFigure
 	{
 		ConnectionType type;
 		
-		public InheritanceConnectionFigure (IFigure subClass, IFigure superClass)
+		public InheritanceConnectionFigure ()
 		{
 			type = ConnectionType.Inheritance;
 			ConnectionLine = new InheritanceLine ();
-			
+		}
+		
+		public InheritanceConnectionFigure (IFigure subClass, IFigure superClass) : this ()
+		{
 			if (!ConnectionLine.CanConnectEnd (subClass) && 
 			    !ConnectionLine.CanConnectEnd (superClass))
-				
 			
 			ConnectionLine.DisconnectEnd ();
 			ConnectionLine.DisconnectStart ();
@@ -53,41 +55,6 @@ namespace MonoDevelop.ClassDesigner.Figures
 		
 		public ConnectionType Type {
 			get { return type; }
-		}
-		
-		internal class InheritanceLine : LineConnection
-		{
-			public InheritanceLine () : base ()
-			{
-				EndTerminal = new TriangleArrowLineTerminal ();
-			}
-			
-			public InheritanceLine (IFigure fig1, IFigure fig2) : base (fig1, fig2)
-			{
-				EndTerminal = new TriangleArrowLineTerminal ();
-			}
-			
-			public override bool CanConnectEnd (IFigure figure)
-			{
-				if (!(figure is ClassFigure))
-					return false;
-				
-				if (figure.Includes (StartFigure))
-					return false;
-				
-				return true;
-			}
-			
-			public override bool CanConnectStart (IFigure figure)
-			{
-				if (!(figure is ClassFigure))
-					return false;
-				
-				if (figure.Includes (EndFigure))
-					return false;
-				
-				return true;
-			}
-		}
+		}		
 	}
 }

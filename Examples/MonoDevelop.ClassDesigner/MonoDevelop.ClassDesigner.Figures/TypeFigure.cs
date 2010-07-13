@@ -244,7 +244,7 @@ namespace MonoDevelop.ClassDesigner.Figures {
 				compartment.AddMembers (members.OrderBy (m => m.Name));
 
 				AddMemberGroup (compartment);		
-			} else if (grouping == GroupingSetting.Access) {
+			} else if (grouping == GroupingSetting.Kind) {
 				// Public compartment
 				var compartment = compartments
 					.Where (c => c.Name == "Public")

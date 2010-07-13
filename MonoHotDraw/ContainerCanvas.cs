@@ -31,7 +31,7 @@ using MonoHotDraw.Util;
 
 namespace MonoHotDraw {
 	
-	public class ContainerCanvas: Container {
+	public class ContainerCanvas : Container {
 		
 		public ContainerCanvas(): base () {
 			_children = new Dictionary<Widget,ContainerCanvasChild>();

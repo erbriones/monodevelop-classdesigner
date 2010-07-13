@@ -115,14 +115,21 @@ namespace MonoDevelop.ClassDesigner.Figures
 				return;
 			
 			Remove (_retvalue);
-			
-			if (format == MembersFormat.Name)
-				return;
-			
 			Remove (_name);
-			Add (_retvalue);
-			Add (_name);
+			Remove (_icon);
+			
+			if (format == MembersFormat.Name) {
+				Add (_icon);
+				Add (_name);
+			} else if (format == MembersFormat.FullSignature) {
+				Add (_icon);
+				Add (_retvalue);
+				Add (_name);
+			} else if (format == MembersFormat.NameAndType) {
+				Add (_icon);
+				Add (_retvalue);
+				Add (_name);				
+			}
 		}
-
 	}
 }

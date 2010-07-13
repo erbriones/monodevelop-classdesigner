@@ -28,7 +28,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 {
 	public enum GroupingSetting
 	{
-		Access,
+		Kind,
 		Alphabetical,
 		Member
 	}

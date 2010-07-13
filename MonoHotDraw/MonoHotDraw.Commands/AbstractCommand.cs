@@ -54,7 +54,7 @@ namespace MonoHotDraw.Commands {
 		}
 
 		protected virtual IUndoActivity CreateUndoActivity () { 
-			return new NullUndoActivity (DrawingView);;
+			return new NullUndoActivity (DrawingView);
 		}
 	}
 }

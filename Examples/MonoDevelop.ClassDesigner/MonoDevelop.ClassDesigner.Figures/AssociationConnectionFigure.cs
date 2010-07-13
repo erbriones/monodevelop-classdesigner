@@ -43,11 +43,9 @@ namespace MonoDevelop.ClassDesigner.Figures
 		TextFigure name;
 		ConnectionType type;
 		
-		public AssociationConnectionFigure (IBaseMember memberName,
-		                                    ConnectionType connectionType,
-		                                    IFigure startFigure,
-		                                    IFigure endFigure)
+		public AssociationConnectionFigure (ConnectionType connectionType)
 		{
+			ConnectionLine = new AssociationLine ();
 			if (connectionType == ConnectionType.Inheritance)
 				throw new ArgumentException ("Connection must be of type association or collection");
 			
@@ -55,7 +53,14 @@ namespace MonoDevelop.ClassDesigner.Figures
 			manual_label_size = false;
 			manual_label_position = false;
 			
-			ConnectionLine = new AssociationLine ();
+			Add (ConnectionLine);
+		}
+		
+		public AssociationConnectionFigure (IBaseMember memberName,
+		                                    ConnectionType connectionType,
+		                                    IFigure startFigure,
+		                                    IFigure endFigure) : this (connectionType)
+		{
 			if (!ConnectionLine.CanConnectStart (startFigure) && 
 			    !ConnectionLine.CanConnectEnd (endFigure)) {
 				return;
@@ -74,12 +79,12 @@ namespace MonoDevelop.ClassDesigner.Figures
 			
 			type = connectionType;
 			
-			if (Type == ConnectionType.CollectionAssociation)
-				throw new NotImplementedException ();
+			// FIXME: handle collection setup
+			//
+			//if (Type == ConnectionType.CollectionAssociation)
+			//
 			
-			Add (MemberLabel);
-			Add (ConnectionLine);
-			
+			Add (MemberLabel);			
 			MemberLabel.MoveTo (ConnectionLine.EndPoint.X - 5.0, ConnectionLine.EndPoint.Y + 10.0);
 		}
 		

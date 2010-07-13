@@ -1,5 +1,5 @@
 // 
-// ProjectFileNodeBuilderExtension.cs
+// RightClickTool.cs
 //  
 // Author:
 //       Evan Briones <erbriones@gmail.com>
@@ -24,34 +24,32 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using Gdk;
+using Gtk;
 using System;
-using MonoDevelop.Ide.Gui.Components;
-using MonoDevelop.Ide.Gui.Pads.ClassPad;
-using MonoDevelop.Ide.Gui.Pads.ProjectPad;
-using MonoDevelop.Projects;
+using System.Collections.Generic;
+using MonoHotDraw.Figures;
+using MonoHotDraw.Commands;
 
-namespace MonoDevelop.ClassDesigner.Extensions
+namespace MonoHotDraw.Tools
 {
-	internal class GenericNodeBuilderExtension : NodeBuilderExtension
+	public class MenuTool : AbstractTool
 	{
-		public override bool CanBuildNode (Type dataType)
+		IFigure figure;
+		
+		public MenuTool (IDrawingEditor editor, IFigure figure) : base (editor)
 		{
-			if (typeof (Project).IsAssignableFrom (dataType))
-				return true;
-			else if (typeof (ProjectFolder).IsAssignableFrom (dataType))
-				return true;
-			else if (typeof (ProjectFile).IsAssignableFrom (dataType))
-				return true;
-			else if (typeof (NamespaceData).IsAssignableFrom (dataType))
-				return true;
-			else if (typeof (ClassData).IsAssignableFrom (dataType))
-				return true;
-			else
-				return false;
+			this.figure = figure;
 		}
 		
-		public override Type CommandHandlerType {
-			get { return typeof (GenericNodeCommandHandler); }
+		public override void MouseDown (MouseEvent ev)
+		{	
+			if (!Editor.View.IsFigureSelected (figure))
+				Editor.View.ClearSelection ();
+			
+			Editor.View.AddToSelection (figure);
+			Editor.DisplayMenu (figure, ev);
 		}
 	}
 }
+
