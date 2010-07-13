@@ -1,0 +1,16 @@
+2010-07-13  Evan Briones  <erbriones@gmail.com>
+
+	* MonoDevelop.Diagram.Commands: Added several generic command handlers features.
+	
+	* MonoDevelop.Diagram.Components: Added a new MonoHotDraw specific
+	command handler.
+
+	* AbstractDesigner.cs: Interfaced MonoHotDraw with MonoDevelop Command System.
+	Refactored code from MonoDevelop.ClassDesigner into new abstract designer.
+	Added toolbox support into designer. Abstract designer implements
+	IDrawingEditor and AbstractViewContent directly.
+	
+	* DiagramCommands.cs: Added a diagram command enumerator for commands
+	specific to MonoHotDraw.
+	
+	* MonoDevelop.Diagram.addin.xml: Added new diagram specific commands to monodevelop.

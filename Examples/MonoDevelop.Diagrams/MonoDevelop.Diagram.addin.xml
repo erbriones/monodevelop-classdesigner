@@ -1,0 +1,30 @@
+<Addin id          = "Diagram"
+       namespace   = "MonoDevelop"
+       name        = "Diagram framework"
+       author      = "Evan Briones"
+       copyright   = "MIT X11"
+       url         = "http://www.monodevelop.com"
+       description = "A Diagram framework bridge to monodevelop"
+       category    = "Visual Designers"	   
+       version     = "2.6">
+
+	<Runtime>
+		<Import assembly = "MonoDevelop.Diagram.dll" />
+		<Import assembly = "MonoHotDraw.dll"/>
+	</Runtime>
+
+	<Dependencies>
+		<Addin id="Core" version="2.4"/>
+		<Addin id="DesignerSupport" version="2.4"/>
+		<Addin id="Ide" version="2.4"/>
+	</Dependencies>
+	
+	<Extension path = "/MonoDevelop/Ide/Commands">
+		<Command id = "MonoDevelop.Diagram.DiagramCommands.BringToFront"
+		_label = "Bring to front" />
+		<Command id = "MonoDevelop.Diagram.DiagramCommands.SendToBack"
+			_label = "Send to back" />
+		<Command id = "MonoDevelop.Diagram.DiagramCommands.Duplicate"
+			_label = "Duplicate last command" />
+	</Extension>
+</Addin>

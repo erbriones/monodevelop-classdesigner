@@ -1,0 +1,7 @@
+2010-07-13  Evan Briones  <erbriones@gmail.com>
+
+	* FigureCommandHandler.cs: Added a new CommandHandler specific to MonoHotDraw.
+	Giving flexibility of the MonoDevelop Command System. 
+	
+	* FigureCommandHandlerCollection.cs: Added a collection for CommandHandlers.
+	Interfaces with Mono.Addins to get all FigureCommandHandlers.
