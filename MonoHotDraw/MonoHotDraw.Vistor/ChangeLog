@@ -1,0 +1,9 @@
+07-25-2010  Evan Briones  <erbriones@gmail.com>
+
+	* DeleteFromDrawingVisitor.cs: Moved to visitor namespace.
+
+	* DrawInRegionVisitor.cs: New visitor for drawing updates.
+
+	* IFigureVisitor.cs: Moved to visitor namespace.
+
+	* InsertIntoDrawingVisitor.cs: Moved to visitor namespace.
