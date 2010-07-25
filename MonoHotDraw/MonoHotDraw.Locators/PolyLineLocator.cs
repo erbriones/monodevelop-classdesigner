@@ -26,23 +26,28 @@
 using Cairo;
 using MonoHotDraw.Figures;
 
-namespace MonoHotDraw.Locators {
-
-	public class PolyLineLocator: ILocator {
-	
-		public PolyLineLocator (int index) {
-			this._index = index;
+namespace MonoHotDraw.Locators
+{
+	public class PolyLineLocator: ILocator
+	{
+		public PolyLineLocator (int index)
+		{
+			this.index = index;
 		}
 		
-		public PointD Locate (IFigure owner) {
-			if (owner != null) {
-				PolyLineFigure figure = (PolyLineFigure) owner; 
-				return figure.PointAt (_index);
-			}
-
-			return new PointD ();
+		#region ILocator implementation
+		public PointD Locate (IFigure owner)
+		{
+			if (owner == null)
+				return new PointD ();
+			
+			PolyLineFigure figure = (PolyLineFigure) owner; 
+			return figure.PointAt (index);
 		}
+		#endregion
 		
-		private int _index;
+		#region Private Members
+		private int index;
+		#endregion
 	}
 }

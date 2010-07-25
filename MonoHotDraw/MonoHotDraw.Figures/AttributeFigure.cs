@@ -35,8 +35,7 @@ namespace MonoHotDraw.Figures
 
 	[Serializable]
 	public abstract class AttributeFigure : AbstractFigure
-	{
-
+	{	
 		protected AttributeFigure ()
 		{
 		}	
@@ -48,7 +47,9 @@ namespace MonoHotDraw.Figures
  
 			_attributes = (Dictionary<FigureAttribute, object>) info.GetValue ("Attributes", typeof (Dictionary<FigureAttribute, object>));
 		}
-
+		
+		#region Public Api
+		
 		public static object GetDefaultAttribute (FigureAttribute attribute)
 		{
 			if (_defaultAttributes == null)
@@ -59,6 +60,17 @@ namespace MonoHotDraw.Figures
 			return returnValue;
 		}
 		
+		public override void SetAttribute (FigureAttribute attribute, object value)
+		{
+			if (value == null)
+				return;
+
+			if (_attributes == null)
+				_attributes = new Dictionary<FigureAttribute, object> ();
+
+			_attributes [attribute] = value;
+		}
+
 		public static void SetDefaultAttribute (FigureAttribute attribute, object value) {
 			if (value == null)
 				return;
@@ -67,18 +79,6 @@ namespace MonoHotDraw.Figures
 				InitializeDefaultAttributes ();
 
 			_defaultAttributes [attribute] = value;
-		}
-		
-		public override void GetObjectData (SerializationInfo info, StreamingContext context)
-		{
-			if (_attributes != null && _attributes.Count > 0) {
-				info.AddValue ("HasAttributes", true);
-				info.AddValue ("Attributes", _attributes);
-			} else {
-				info.AddValue ("HasAttributes", false);
-			}
-			
-			base.GetObjectData (info, context);
 		}
 		
 		public override object GetAttribute (FigureAttribute attribute)
@@ -92,18 +92,24 @@ namespace MonoHotDraw.Figures
 
 			return returnValue;
 		}
-
-		public override void SetAttribute (FigureAttribute attribute, object value)
-		{
-			if (value == null)
-				return;
-
-			if (_attributes == null)
-				_attributes = new Dictionary<FigureAttribute, object> ();
-
-			_attributes [attribute] = value;
-		}
+		#endregion
 		
+		#region ISerializable implementation
+		public override void GetObjectData (SerializationInfo info, StreamingContext context)
+		{
+			if (_attributes != null && _attributes.Count > 0) {
+				info.AddValue ("HasAttributes", true);
+				info.AddValue ("Attributes", _attributes);
+			} else {
+				info.AddValue ("HasAttributes", false);
+			}
+			
+			base.GetObjectData (info, context);
+		}		
+		
+		#endregion
+		
+		#region Private Members
 		private static void InitializeDefaultAttributes ()
 		{
 			_defaultAttributes = new Dictionary<FigureAttribute, object> ();
@@ -118,7 +124,8 @@ namespace MonoHotDraw.Figures
 			//TODO: Should FigureAttribute.Location be added?
 		}
 		
-		private Dictionary<FigureAttribute, object>        _attributes;
+		private Dictionary<FigureAttribute, object> _attributes;
 		private static Dictionary<FigureAttribute, object> _defaultAttributes;
+		#endregion
 	}
 }

@@ -29,24 +29,30 @@ using MonoHotDraw.Figures;
 using MonoHotDraw.Locators;
 using MonoHotDraw.Util;
 
-namespace MonoHotDraw.Handles {
+namespace MonoHotDraw.Handles
+{	
+	public class SouthWestHandle : ResizeHandle
+	{
 	
-	public class SouthWestHandle: ResizeHandle {
-	
-		public SouthWestHandle (IFigure owner): base (owner, RelativeLocator.SouthWest) {
+		public SouthWestHandle (IFigure owner) : base (owner, RelativeLocator.SouthWest)
+		{
 		}
 		
-		public override Gdk.Cursor CreateCursor () {
+		#region Public Members
+		public override Gdk.Cursor CreateCursor ()
+		{
 			return CursorFactory.GetCursorFromType (Gdk.CursorType.BottomLeftCorner);
 		}
 
-		public override void InvokeStep (double x, double y, IDrawingView view) {
+		public override void InvokeStep (double x, double y, IDrawingView view)
+		{
 			RectangleD r = Owner.DisplayBox;
 
-			PointD new_location = new PointD (Math.Min (r.X + r.Width, x), r.Y);
-			PointD new_corner   = new PointD (r.X + r.Width, Math.Max (r.Y, y));
+			var new_location = new PointD (Math.Min (r.X + r.Width, x), r.Y);
+			var new_corner   = new PointD (r.X + r.Width, Math.Max (r.Y, y));
 
 			Owner.DisplayBox = new RectangleD (new_location, new_corner);
 		}
+		#endregion
 	}
 }

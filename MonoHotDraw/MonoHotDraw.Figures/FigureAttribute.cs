@@ -37,6 +37,7 @@ namespace MonoHotDraw.Figures
 		LineColor,
 		// Other attributes
 		Location,
+		Selected,
 		LineWidth
 	}
 }

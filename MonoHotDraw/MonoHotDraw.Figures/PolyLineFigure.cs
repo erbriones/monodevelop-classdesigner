@@ -39,10 +39,6 @@ namespace MonoHotDraw.Figures
 	[Serializable]
 	public class PolyLineFigure : AttributeFigure
 	{
-		double [] _dashes;
-		List <PointD> _points;
-		LineTerminal _startTerminal;
-		LineTerminal _endTerminal;
 
 		public PolyLineFigure ()
 		{
@@ -56,69 +52,29 @@ namespace MonoHotDraw.Figures
 			_endTerminal = (LineTerminal) info.GetValue ("EndTerminal", typeof (LineTerminal));
 			_points = (List <PointD>) info.GetValue ("Points", typeof (List <PointD>));
 		}
-
+		
+		#region Public Api
 		public virtual double [] Dashes {
 			get { return _dashes; }
 			set { _dashes = value; }
 		}
 
-		public virtual int FindSegment (double x, double y) {
-			for (int i = 0; i < _points.Count - 1; i++) {
-				PointD p1 = PointAt (i);
-				PointD p2 = PointAt (i + 1);
-				if (Geometry.LineContainsPoint (p1.X, p1.Y, p2.X, p2.Y, x, y))
-					return i + 1;
+		public override IEnumerable <IHandle> Handles {
+			get {
+				for (int i = 0; i < PointCount; i++)
+					yield return new PolyLineHandle (this, new PolyLineLocator (i), i);
 			}
-			return -1;
 		}
-
-		public virtual void AddPoint (double x, double y)
+				
+		public override ITool CreateFigureTool (IDrawingEditor editor, ITool dt)
 		{
-			WillChange ();
-			_points.Add (new PointD (x, y));
-			Changed ();
+			return new PolyLineFigureTool (editor, this, dt);
 		}
-
-		public virtual void RemovePointAt (int i)
-		{
-			WillChange ();
-			_points.RemoveAt (i);
-			Changed ();
-		}
-
-		public virtual void ClearPoints ()
-		{
-			_points.Clear ();
-		}
-
-		public virtual void SplitSegment (double x, double y)
-		{
-			int index = FindSegment (x, y);
-			
-			if (index != -1)
-				InsertPointAt (index, x, y);
-		}
-
-		public virtual void InsertPointAt (int index, double x, double y)
-		{
-			WillChange ();
-			_points.Insert (index, new PointD (x, y));
-			Changed ();	
-		}
-
-		public virtual void SetPointAt (int index, double x, double y)
-		{
-			WillChange ();
-			_points [index] = new PointD (x, y);
-			Changed ();
-		}
-
+		#endregion
+		
+		#region Point Members
 		public virtual int PointCount {
 			get { return _points.Count; }
-		}
-
-		public virtual PointD PointAt (int index) {
-			return _points [index];
 		}
 		
 		public virtual PointD StartPoint {
@@ -134,7 +90,7 @@ namespace MonoHotDraw.Figures
 				Changed ();
 			}
 		}
-
+		
 		public virtual PointD EndPoint {
 			get { return PointAt (PointCount - 1); }
 			set {
@@ -148,7 +104,90 @@ namespace MonoHotDraw.Figures
 				Changed ();
 			}
 		}
+		
+		protected virtual List <PointD> Points {
+			get { return _points; }
+		}
+		
+		public virtual void AddPoint (double x, double y)
+		{
+			WillChange ();
+			_points.Add (new PointD (x, y));
+			Changed ();
+		}
+
+		public virtual void ClearPoints ()
+		{
+			_points.Clear ();
+		}
+
+		public override bool ContainsPoint (double x, double y)
+		{
+			RectangleD rect = DisplayBox;
+			rect.Inflate (4.0, 4.0);
 			
+			if (!rect.Contains (x, y))
+				return false;
+
+			for (int i = 0; i < _points.Count - 1; i++) {
+				PointD p1 = _points [i];
+				PointD p2 = _points [i + 1];
+				
+				if (Geometry.LineContainsPoint (p1.X, p1.Y, p2.X, p2.Y, x, y))
+					return true;
+			}
+			
+			return false;
+		}
+
+		public virtual void InsertPointAt (int index, double x, double y)
+		{
+			WillChange ();
+			_points.Insert (index, new PointD (x, y));
+			Changed ();	
+		}
+
+		public virtual PointD PointAt (int index) {
+			return _points [index];
+		}
+
+		public virtual void RemovePointAt (int i)
+		{
+			WillChange ();
+			_points.RemoveAt (i);
+			Changed ();
+		}
+
+		public virtual void SetPointAt (int index, double x, double y)
+		{
+			WillChange ();
+			_points [index] = new PointD (x, y);
+			Changed ();
+		}
+	
+		#endregion
+		
+		#region Segment Members
+		public virtual int FindSegment (double x, double y)
+		{
+			for (int i = 0; i < _points.Count - 1; i++) {
+				PointD p1 = PointAt (i);
+				PointD p2 = PointAt (i + 1);
+				if (Geometry.LineContainsPoint (p1.X, p1.Y, p2.X, p2.Y, x, y))
+					return i + 1;
+			}
+			return -1;
+		}
+		public virtual void SplitSegment (double x, double y)
+		{
+			int index = FindSegment (x, y);
+			
+			if (index != -1)
+				InsertPointAt (index, x, y);
+		}
+		#endregion
+		
+		#region Terminal Members
 		public virtual LineTerminal StartTerminal {
 			get { return _startTerminal; }
 			set { _startTerminal = value; }
@@ -158,23 +197,11 @@ namespace MonoHotDraw.Figures
 			get { return _endTerminal; }
 			set { _endTerminal = value; }
 		}
+		#endregion
 		
-		public override IEnumerable <IHandle> HandlesEnumerator {
-			get {
-				for (int i=0; i<PointCount; i++)
-					yield return new PolyLineHandle (this, new PolyLineLocator (i), i);
-			}
-		}
 		
-		protected virtual List <PointD> Points {
-			get { return _points; }
-		}
 		
-		public override ITool CreateFigureTool (IDrawingEditor editor, ITool dt)
-		{
-			return new PolyLineFigureTool (editor, this, dt);
-		}
-		
+		#region Drawing Members
 		public override RectangleD InvalidateDisplayBox {
 			get {
 				RectangleD rect = DisplayBox;
@@ -189,7 +216,7 @@ namespace MonoHotDraw.Figures
 				return rect;
 			}
 		}
-		
+
 		protected override void BasicDraw (Context context)
 		{
 			if (_points.Count < 2)
@@ -223,7 +250,7 @@ namespace MonoHotDraw.Figures
 			context.Stroke ();
 		}
 
-		public override void BasicMoveBy (double x, double y)
+		protected override void BasicMoveBy (double x, double y)
 		{
 			PointD newpoint;
 
@@ -234,7 +261,21 @@ namespace MonoHotDraw.Figures
 				_points [i] = newpoint;
 			}
 		}
+		#endregion
 
+		#region ISerializable implementation
+		public override void GetObjectData (SerializationInfo info, StreamingContext context)
+		{		
+			info.AddValue ("Dashes", _dashes);
+			info.AddValue ("StartTerminal", _startTerminal);
+			info.AddValue ("EndTerminal", _endTerminal);
+			info.AddValue ("Points", _points);
+			
+			base.GetObjectData (info, context);
+		}
+		#endregion
+		
+		#region PolyLineFigure Members
 		protected override RectangleD BasicDisplayBox {
 			get {
 				if (_points.Count < 2)
@@ -249,33 +290,10 @@ namespace MonoHotDraw.Figures
 			} set { }
 		}
 
-		public override bool ContainsPoint (double x, double y)
-		{
-			RectangleD rect = DisplayBox;
-			rect.Inflate (4.0, 4.0);
-			
-			if (!rect.Contains (x, y))
-				return false;
-
-			for (int i = 0; i < _points.Count - 1; i++) {
-				PointD p1 = _points [i];
-				PointD p2 = _points [i + 1];
-				
-				if (Geometry.LineContainsPoint (p1.X, p1.Y, p2.X, p2.Y, x, y))
-					return true;
-			}
-			
-			return false;
-		}
-		
-		public override void GetObjectData (SerializationInfo info, StreamingContext context)
-		{		
-			info.AddValue ("Dashes", _dashes);
-			info.AddValue ("StartTerminal", _startTerminal);
-			info.AddValue ("EndTerminal", _endTerminal);
-			info.AddValue ("Points", _points);
-			
-			base.GetObjectData (info, context);
-		}		
+		double [] _dashes;
+		List <PointD> _points;
+		LineTerminal _startTerminal;
+		LineTerminal _endTerminal;
+		#endregion
 	}
 }

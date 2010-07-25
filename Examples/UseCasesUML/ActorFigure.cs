@@ -58,7 +58,7 @@ namespace MonoHotDraw.Samples {
 			_name.Padding = 4.0;
 		}
 		
-		public override void BasicDraw (Cairo.Context context) {
+		protected override void BasicDraw (Cairo.Context context) {
 			if (DisplayBox.Width == 0 || DisplayBox.Height == 0) {
 				return;
 			}
@@ -88,7 +88,7 @@ namespace MonoHotDraw.Samples {
 			_name.BasicDraw(context);
 		}
 		
-		public override void BasicDrawSelected(Context context)	{
+		protected override void BasicDrawSelected(Context context)	{
 			_name.BasicDrawSelected(context);
 		}
 		
@@ -116,9 +116,9 @@ namespace MonoHotDraw.Samples {
 			}
 		}
 		
-		public override IEnumerable<IHandle> HandlesEnumerator {
+		public override IEnumerable<IHandle> Handles {
 			get {
-				foreach (IHandle handle in base.HandlesEnumerator) {
+				foreach (IHandle handle in base.Handles) {
 					yield return handle;
 				}
 					

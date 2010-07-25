@@ -31,43 +31,53 @@ using MonoHotDraw.Figures;
 using MonoHotDraw.Util;
 using MonoHotDraw.Commands;
 
-namespace MonoHotDraw.Tools {
-
-	public class TextTool: FigureTool	{
-
-		public TextTool (IDrawingEditor editor, TextFigure fig, ITool dt) 
-			: base (editor, fig, dt) {
+namespace MonoHotDraw.Tools
+{
+	public class TextTool : FigureTool
+	{
+		public TextTool (IDrawingEditor editor, TextFigure fig, ITool dt) : base (editor, fig, dt)
+		{
 		}
 		
-	    public override void Activate () {
-			_showingWidget = false;
+		#region Tool Activation
+	    public override void Activate ()
+		{
+			showingWidget = false;
 			base.Activate ();
 		}
-
-		public override void MouseDrag (MouseEvent ev) {
-			if (!_showingWidget) {
-				DefaultTool.MouseDrag (ev);
-			}
-		}
+		#endregion
 		
-		public class TextToolUndoActivity: AbstractUndoActivity {
-			public TextToolUndoActivity(IDrawingView view): base(view) {
+		#region Mouse Events
+		public override void MouseDrag (MouseEvent ev)
+		{
+			if (!showingWidget)
+				DefaultTool.MouseDrag (ev);
+		}
+		#endregion
+		
+		#region UndoActivity
+		public class TextToolUndoActivity: AbstractUndoActivity
+		{
+			public TextToolUndoActivity (IDrawingView view): base (view)
+			{
 				Undoable = true;
 				Redoable = true;
 			}
 			
-			public override bool Undo () {
-				if (!base.Undo ()) {
+			public override bool Undo ()
+			{
+				if (!base.Undo ())
 					return false;
-				}
+
 				AffectedFigure.Text = OldText;
 				return true;
 			}
 			
-			public override bool Redo () {
-				if (!base.Undo ()) {
+			public override bool Redo ()
+			{
+				if (!base.Undo ())
 					return false;
-				}
+
 				AffectedFigure.Text = NewText;
 				return true;
 			}
@@ -76,24 +86,31 @@ namespace MonoHotDraw.Tools {
 			public string NewText { get; set; }
 			public TextFigure AffectedFigure { get; set; }
 		}
+		#endregion
 		
-		protected void CreateUndoActivity() {
-			TextToolUndoActivity activity = new TextToolUndoActivity(Editor.View);
-			activity.AffectedFigure = Figure as TextFigure;
+		#region TextTool Members
+		protected void CreateUndoActivity ()
+		{
+			var activity = new TextToolUndoActivity (Editor.View);
+			activity.AffectedFigure = (TextFigure) Figure;
 			activity.OldText = activity.AffectedFigure.Text;
 			UndoActivity = activity;
 		}
 
-		protected void UpdateUndoActivity() {
-			TextToolUndoActivity activity = UndoActivity as TextToolUndoActivity;
+		protected void UpdateUndoActivity ()
+		{
+			var activity = UndoActivity as TextToolUndoActivity;
+			
 			if (activity == null)
 				return;
+			
 			activity.NewText = activity.AffectedFigure.Text;
-			if (activity.NewText == activity.OldText) {
+			
+			if (activity.NewText == activity.OldText)
 				UndoActivity = null;
-			}
 		}
 		
-		protected bool _showingWidget = false;
+		protected bool showingWidget = false;
+		#endregion
 	}
 }

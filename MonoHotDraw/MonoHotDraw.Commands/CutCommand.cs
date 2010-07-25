@@ -26,22 +26,27 @@
 using System;
 using MonoHotDraw.Figures;
 
-namespace MonoHotDraw.Commands {
-
-	public class CutCommand : FigureTransferCommand  {
-		
-		public CutCommand (string name, IDrawingEditor editor) : base (name, editor) {
+namespace MonoHotDraw.Commands
+{
+	public class CutCommand : FigureTransferCommand 
+	{	
+		public CutCommand (string name, IDrawingEditor editor) : base (name, editor)
+		{
 		}
 		
+		#region Public Members
 		public override bool IsExecutable {
 			get { return DrawingView.SelectionCount > 0; }
 		}
 		
-		public override void Execute () {
+		public override void Execute ()
+		{
 			base.Execute ();
-			FigureCollection figures = GetWithDependents (new FigureCollection (DrawingView.SelectionEnumerator));
+			var figures = GetWithDependents (new FigureCollection (DrawingView.SelectionEnumerator));
+			
 			CopyFigures (figures);
 			DeleteFigures (figures);
 		}
+		#endregion
 	}
 }

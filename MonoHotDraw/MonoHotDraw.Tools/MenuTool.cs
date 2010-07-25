@@ -35,13 +35,12 @@ namespace MonoHotDraw.Tools
 {
 	public class MenuTool : AbstractTool
 	{
-		IFigure figure;
-		
 		public MenuTool (IDrawingEditor editor, IFigure figure) : base (editor)
 		{
 			this.figure = figure;
 		}
 		
+		#region Mouse Events
 		public override void MouseDown (MouseEvent ev)
 		{	
 			if (!Editor.View.IsFigureSelected (figure))
@@ -50,6 +49,11 @@ namespace MonoHotDraw.Tools
 			Editor.View.AddToSelection (figure);
 			Editor.DisplayMenu (figure, ev);
 		}
+		#endregion
+		
+		#region MenuTool Members
+		IFigure figure;
+		#endregion
 	}
 }
 

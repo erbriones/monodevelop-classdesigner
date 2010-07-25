@@ -27,22 +27,28 @@ using Gdk;
 using Cairo;
 using MonoHotDraw.Commands;
 
-namespace MonoHotDraw.Tools {
-
-	public interface ITool {
-	
-		void MouseDown (MouseEvent ev);
-		void MouseUp (MouseEvent ev);
-		void MouseMove (MouseEvent ev);
-		void MouseDrag (MouseEvent ev);
-		void KeyDown (KeyEvent ev);
-		void KeyUp (KeyEvent ev);
-		void Activate ();
-		void Deactivate ();
-		
+namespace MonoHotDraw.Tools
+{
+	public interface ITool
+	{
+		// Tool Properties
 		bool Activated { get; }
 		IDrawingEditor Editor { set; get; }
 		IUndoActivity UndoActivity { get; set; }
 		bool Undoable { get; set; }
+		
+		// Tool Activation
+		void Activate ();
+		void Deactivate ();
+		
+		// Key Events
+		void KeyDown (KeyEvent ev);
+		void KeyUp (KeyEvent ev);
+
+		// Mouse Events
+		void MouseDown (MouseEvent ev);
+		void MouseUp (MouseEvent ev);
+		void MouseMove (MouseEvent ev);
+		void MouseDrag (MouseEvent ev);
 	}
 }

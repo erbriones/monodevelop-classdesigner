@@ -24,23 +24,36 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using MonoHotDraw.Commands;
+using MonoHotDraw.Util;
 
 namespace MonoHotDraw.Figures
 {
-	public class FigureCollection : List <IFigure>, System.ICloneable
+	public class FigureCollection : List<IFigure>, System.ICloneable
 	{
-	
 		public FigureCollection () : base ()
 		{
 		}
-		
-		public FigureCollection (IEnumerable <IFigure> enumeration) : base (enumeration)
+
+		public FigureCollection (IEnumerable <IFigure> list) : base (list)
 		{
 		}
 		
+		#region Public Api
+		public RectangleD GetBounds ()
+		{
+			var rectangle = new RectangleD (0, 0, 0, 0);
+			
+			foreach (IFigure figure in this)
+				rectangle.Add (figure.DisplayBox);
+			
+			return rectangle;
+		}
+		#endregion
+
+		#region ICloneable implementation
 		object System.ICloneable.Clone ()
 		{
 			return GenericCloner.Clone<FigureCollection> (this); 
@@ -50,8 +63,9 @@ namespace MonoHotDraw.Figures
 		{
 			return (FigureCollection) GenericCloner.Clone<FigureCollection> (this); 
 		}
+		#endregion		
 	}
-
+	
 	public static class FigureCollectionExtensions
 	{
 		public static FigureCollection ToFigures (this IEnumerable<IFigure> collection)

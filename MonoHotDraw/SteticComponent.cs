@@ -41,9 +41,11 @@ namespace MonoHotDraw
 		{
 			this.Build();
 			
+		
 			View = new StandardDrawingView (this);
 			this.scrolledwindow.Add ((Widget) View);
 			Tool = new SelectionTool (this);
+			CommandManager = CommandManager.CreateInstance (this);
 			UndoManager = new UndoManager();
 			UndoManager.StackChanged += delegate {
 				OnUndoStackChanged();
@@ -53,8 +55,9 @@ namespace MonoHotDraw
 		public event EventHandler UndoStackChanged;
 		
 		public IDrawingView View { get; set; }
+		public CommandManager CommandManager { get; private set; }
 		public UndoManager UndoManager { get; private set; }
-	
+		
 		public virtual void DisplayMenu (IFigure figure, MouseEvent ev)
 		{
 		}
@@ -88,12 +91,12 @@ namespace MonoHotDraw
 			Tool = new DragCreationTool(this, figure);
 		}
 		
-		public void AddWithResizing(IFigure figure)
+		public void AddWithResizing (IFigure figure)
 		{
 			Tool = new ResizeCreationTool(this, figure);
 		}
 		
-		public void AddConnection(IConnectionFigure figure)
+		public void AddConnection (IConnectionFigure figure)
 		{
 			Tool = new ConnectionCreationTool(this, figure);
 		}

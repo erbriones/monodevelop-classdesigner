@@ -19,22 +19,22 @@ public partial class MainWindow: Gtk.Window
 
 	protected virtual void OnAddClassFigureActionActivated (object sender, System.EventArgs e)
 	{
-		mhdcanvas.AddWithDragging(new TypeHeaderFigure());
+		mhdcanvas.AddWithDragging(new HeaderFigure());
 	}
 
 	protected virtual void OnAddStackFigureActionActivated (object sender, System.EventArgs e)
 	{
 		Pixbuf pb = RenderIcon("gtk-info", IconSize.Button, "");
-		mhdcanvas.AddWithDragging((IFigure) new TypeMemberFigure (pb, "Hello", "World", true));
+		mhdcanvas.AddWithDragging((IFigure) new MemberFigure (pb, "Hello", "World", true));
 	}
 
 	protected virtual void OnAddMemberGroupActionActivated (object sender, System.EventArgs e)
 	{
-		TypeMemberGroupFigure group = new TypeMemberGroupFigure("Methods");
+		CompartmentFigure group = new CompartmentFigure("Methods");
 		Pixbuf icon = RenderIcon("gtk-info", IconSize.Menu, "");
 		
 		for (int i=0; i<5; i++) {
-			group.AddMember(new TypeMemberFigure (icon, "int", string.Format("method{0}", i), true));
+			group.AddMember(new MemberFigure (icon, "int", string.Format("method{0}", i), true));
 		}
 		
 		mhdcanvas.AddWithDragging(group);

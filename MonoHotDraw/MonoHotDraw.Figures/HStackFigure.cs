@@ -29,17 +29,20 @@ using System.Linq;
 using Cairo;
 using MonoHotDraw.Util;
 
-namespace MonoHotDraw.Figures {
-	
-	public enum HStackAlignment {
+namespace MonoHotDraw.Figures
+{	
+	public enum HStackAlignment
+	{
 		Center,
 		Top,
 		Bottom,
 	}
 	
-	public class HStackFigure: StackFigure {
+	public class HStackFigure : StackFigure
+	{
 		
-		public HStackFigure(): base() {
+		public HStackFigure() : base()
+		{
 			Alignment = HStackAlignment.Center;
 		}
 		
@@ -50,18 +53,18 @@ namespace MonoHotDraw.Figures {
 			if (Figures.Count() == 0)
 				return 0.0;
 			
-			return (from IFigure fig in this.Figures
+			return (from IFigure fig in this.FigureCollection
 			        select fig.DisplayBox.Height).Max();
 		}
 		
 		protected override double CalculateWidth ()
 		{
-			int count = Figures.Count();
+			int count = FigureCollection.Count();
 			
 			if (count == 0)
 				return 0.0;
 			
-			return (from IFigure fig in this.Figures
+			return (from IFigure fig in this.FigureCollection
 			        select fig.DisplayBox.Width).Sum() + Spacing * (count-1);
 		}
 		
@@ -69,16 +72,15 @@ namespace MonoHotDraw.Figures {
 		{
 			var width = 0.0;
 			
-			foreach (IFigure figure in Figures) {
+			foreach (IFigure figure in FigureCollection) {
 				RectangleD r = figure.DisplayBox;
 				r.X = Position.X + width;
-				r.Y = CalculateFigureY(figure);
-				var af = figure as AbstractFigure;
+				r.Y = CalculateFigureY (figure);
+				var af = (AbstractFigure) figure;
 				af.DisplayBox = r;
 				width += r.Width + Spacing;
 			}
 		}
-		
 		double CalculateFigureY (IFigure figure)
 		{
 			switch (Alignment) {

@@ -26,32 +26,39 @@
 using System.Collections.Generic;
 using Pango;
 
-namespace MonoHotDraw.Util {
-
-	public sealed class FontFactory {
-	
-		private FontFactory () {
+namespace MonoHotDraw.Util
+{
+	public sealed class FontFactory
+	{
+		private FontFactory ()
+		{
 		}
 		
-		public static FontDescription GetFontFromDescription (string description) {
+		#region Utility Method
+		public static FontDescription GetFontFromDescription (string description)
+		{
 			FontDescription font;
 			string fontString = string.Empty;
 
-			if (description == null || description == string.Empty) {
+			if (description == null || description == string.Empty)
 				fontString = "Sans Normal 9";
-			} else {
+			else
 				fontString = description;
-			}
 			
-			if (FontClass.Fonts.TryGetValue (fontString, out font) == false) {
-				font = Pango.FontDescription.FromString (fontString);
-				FontClass.Fonts.Add (fontString, font);
-			}
+			if (FontCatalog.Fonts.TryGetValue (fontString, out font))
+				return font;
+			
+			font = Pango.FontDescription.FromString (fontString);
+			FontCatalog.Fonts.Add (fontString, font);
+			
 			return font;
 		}
+		#endregion
 		
-		class FontClass {
-			static FontClass () {
+		class FontCatalog
+		{
+			static FontCatalog ()
+			{
 				Fonts = new Dictionary <string, Pango.FontDescription> ();
 			}
 			

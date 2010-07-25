@@ -33,14 +33,13 @@ using System.Runtime.Serialization;
 using MonoHotDraw.Tools;
 using MonoHotDraw.Util;
 
-namespace MonoHotDraw.Figures {
-
+namespace MonoHotDraw.Figures
+{
 	[Serializable]
-	public class TextFigure : AttributeFigure {
-	
-		public event EventHandler TextChanged;
-
-		public TextFigure (string text): base () {
+	public class TextFigure : AttributeFigure
+	{
+		public TextFigure (string text) : base ()
+		{
 			
 			TextEditable  = true;
 			Padding       = 2.0;
@@ -49,125 +48,97 @@ namespace MonoHotDraw.Figures {
 			FontFamily    = (string) AttributeFigure.GetDefaultAttribute (FigureAttribute.FontFamily);
 			FontSize      = Convert.ToDouble (AttributeFigure.GetDefaultAttribute (FigureAttribute.FontSize));
 			FontStyle     = (Pango.Style) AttributeFigure.GetDefaultAttribute (FigureAttribute.FontStyle);
-			_text         = text;
+			this.text     = text;
 			
 			GenerateDummyContext ();
 		}
 
-		protected TextFigure (SerializationInfo info, StreamingContext context) : base (info, context) {
+		protected TextFigure (SerializationInfo info, StreamingContext context) : base (info, context)
+		{
 			FontColor     = (Cairo.Color) info.GetValue ("FontColor", typeof (Cairo.Color));
 			FontAlignment = (Pango.Alignment) info.GetValue ("FontAlignment", typeof (Pango.Alignment));
 			FontFamily    = (string) info.GetValue ("FontFamily", typeof (string));
 			FontSize      = (double) info.GetDouble ("FontSize");
 			FontStyle     = (Pango.Style) info.GetValue ("FontStyle", typeof (Pango.Style));
-			_displayBox   = (RectangleD) info.GetValue ("DisplayBox", typeof (RectangleD));
-			_text         = (string) info.GetValue ("Text", typeof (string));
-			_textEditable = info.GetBoolean ("TextEditable");
-			_padding      = info.GetDouble ("Padding");
+			displaybox    = (RectangleD) info.GetValue ("DisplayBox", typeof (RectangleD));
+			text          = (string) info.GetValue ("Text", typeof (string));
+			textEditable  = info.GetBoolean ("TextEditable");
+			padding       = info.GetDouble ("Padding");
 		}
 		
-		public Pango.Alignment FontAlignment {
-			get { return _fontAlignment; }
-			set { _fontAlignment = value; }
-		}
+		public event EventHandler TextChanged;
 		
-		public Cairo.Color FontColor {
-			get { return _fontColor; }
-			set { _fontColor = value; }
-		}
-
-		public string FontFamily {
-			get { return _fontFamily; }
-			set {
-				if (value != null && value != string.Empty)
-					_fontFamily = value;
-			}
-		}	
-
-		public double FontSize {
-			get { return _fontSize; }
-			set { _fontSize = value; }
-		}
-
-		public Pango.Style FontStyle {
-			get { return _fontStyle; }
-			set { _fontStyle = value; } 
-		}
-
+		#region Text Members
+		public Pango.Alignment FontAlignment { get; set; }
+		public Cairo.Color FontColor { get; set; }
+		public string FontFamily { get; set; }
+		public double FontSize { get; set; }
+		public Pango.Style FontStyle { get; set; }
+		
 		public virtual string Text {
-			get { return _text; }
+			get { return text; }
 			set {
-				if (_text == value) {
+				if (text == value)
 					return;
-				}
 				
-				_text = value;
-
+				text = value;
 				WillChange ();
-				if (_text != null && _text.Length > 0)
+				
+				if (!String.IsNullOrEmpty (text))
 					PangoLayout.SetText (value);
+				
 				RecalculateDisplayBox ();
-				Changed ();	
-								
+				Changed ();					
 				OnTextChanged ();
 			}
 		}
 
-		public bool TextEditable {
-			get { return _textEditable; }
-			set { _textEditable = value; }
-		}
-		
-		public virtual Pango.Layout PangoLayout	{
-			protected set {	_pangoLayout = value; }
-			get { return _pangoLayout; }
-		}
+		public bool TextEditable { get; set; }
+		public virtual Pango.Layout PangoLayout	{ get; protected set; }
 		
 		public virtual double Padding {
-			get { return _padding; }
+			get { return padding; }
 			set {
-				if (value >= 0) { 
-					WillChange ();
-					_padding = value;
-					RecalculateDisplayBox ();
-					Changed ();
-				}
-			}
-		}
-
-		protected override RectangleD BasicDisplayBox {
-			get { return _displayBox; }
-			set {
+				if (value < 0)
+					return;
+			
 				WillChange ();
-				_displayBox = value; 
+				padding = value;
 				RecalculateDisplayBox ();
+				Changed ();
 			}
-		}
+		}		
 
-		protected override void BasicDraw (Cairo.Context context) {
-			SetupLayout (context);
-			DrawText (context);
-			if (_usingDummy) {
-				RecalculateDisplayBox();
-				Changed();
-				_usingDummy = false;
-			}
-		}
-		
-		public override void BasicDrawSelected (Cairo.Context context)
+		public override ITool CreateFigureTool (IDrawingEditor editor, ITool dt)
 		{
-			context.LineWidth = 1.0;
-			RectangleD rect = DisplayBox;
-			rect.OffsetDot5();
-			context.Rectangle(GdkCairoHelper.CairoRectangle(rect));
-			context.Stroke();
-		}
-	
-		public override ITool CreateFigureTool (IDrawingEditor editor, ITool dt) {
 			return TextEditable ? new SimpleTextTool (editor, this, dt) : dt;
 		}
+				
+		protected virtual void OnTextChanged ()
+		{
+			var handler = TextChanged;
+			if (handler != null)
+				handler (this, EventArgs.Empty);
+		}
 		
-		public override object GetAttribute (FigureAttribute attribute) {
+		protected virtual void SetupLayout (Cairo.Context context)
+		{
+			PangoLayout = Pango.CairoHelper.CreateLayout (context);
+			PangoLayout.FontDescription = FontFactory
+				.GetFontFromDescription (String.Format ("{0} {1}", FontFamily, FontSize));
+			
+			if (Text != null && Text.Length > 0)
+				PangoLayout.SetText (Text);
+			
+			PangoLayout.Alignment = FontAlignment;
+			PangoLayout.ContextChanged ();
+		}
+
+		#endregion
+
+		#region Attribute Figure Members
+		public override object GetAttribute (FigureAttribute attribute)
+		{
 			switch (attribute) {
 				case FigureAttribute.FillColor:
 					return FillColor;
@@ -185,23 +156,11 @@ namespace MonoHotDraw.Figures {
 			return base.GetAttribute (attribute); 
 		}
 
-		public override void GetObjectData (SerializationInfo info, StreamingContext context) {
-			info.AddValue ("DisplayBox", _displayBox);
-			info.AddValue ("FontAlignment", _fontAlignment);
-			info.AddValue ("FontColor", FontColor);
-			info.AddValue ("FontFamily", _fontFamily);
-			info.AddValue ("FontSize", _fontSize);
-			info.AddValue ("FontStyle", _fontStyle);
-			info.AddValue ("Padding", _padding);
-			info.AddValue ("Text", _text);
-			info.AddValue ("TextEditable", _textEditable);
-
-			base.GetObjectData (info, context);
-		}
-
-		public override void SetAttribute (FigureAttribute attribute, object value) {
+		public override void SetAttribute (FigureAttribute attribute, object value)
+		{
 			//FIXME: Improve this logic, because doesn't make any sense
-			//invalidating when isn't needed (current value = new value) 
+			//invalidating when isn't needed (current value = new value)
+			
 			WillChange ();
 			switch (attribute) {
 				case FigureAttribute.FillColor:
@@ -229,65 +188,102 @@ namespace MonoHotDraw.Figures {
 			GenerateDummyContext (); 
 			Changed ();
 		}
+		#endregion
+		
+		#region ISerializable implementation
+		public override void GetObjectData (SerializationInfo info, StreamingContext context)
+		{
+			info.AddValue ("DisplayBox", displaybox);
+			info.AddValue ("FontAlignment", FontAlignment);
+			info.AddValue ("FontColor", FontColor);
+			info.AddValue ("FontFamily", FontFamily);
+			info.AddValue ("FontSize", FontSize);
+			info.AddValue ("FontStyle", FontStyle);
+			info.AddValue ("Padding", padding);
+			info.AddValue ("Text", text);
+			info.AddValue ("TextEditable", textEditable);
 
-		protected virtual void DrawText (Cairo.Context context) {
+			base.GetObjectData (info, context);
+		}
+		#endregion
+		
+		#region Drawing Members
+		protected override RectangleD BasicDisplayBox {
+			get { return displaybox; }
+			set {
+				WillChange ();
+				displaybox = value; 
+				RecalculateDisplayBox ();
+			}
+		}
+
+		protected override void BasicDraw (Cairo.Context context)
+		{
+			SetupLayout (context);
+			DrawText (context);
+			
+			if (!usingDummy)
+				return;
+			
+			RecalculateDisplayBox ();
+			Changed ();
+			usingDummy = false;
+		}
+
+		protected override void BasicDrawSelected (Cairo.Context context)
+		{
+			RectangleD rect = DisplayBox;
+			context.LineWidth = 1.0;
+			
+			rect.OffsetDot5 ();
+			context.Rectangle (GdkCairoHelper.CairoRectangle(rect));
+			context.Stroke ();
+		}
+
+		protected virtual void DrawText (Cairo.Context context)
+		{
 			context.Color = FontColor;
 			context.MoveTo (DisplayBox.X + Padding, DisplayBox.Y + Padding);
 			Pango.CairoHelper.ShowLayout (context, PangoLayout);
 			context.Stroke ();
 		}
 		
-		protected virtual void OnTextChanged () {
-			if (TextChanged != null) {
-				TextChanged (this, new EventArgs ());
-			}
-		}
-		
-		protected virtual void SetupLayout (Cairo.Context context) {
-			PangoLayout = Pango.CairoHelper.CreateLayout (context);
-			PangoLayout.FontDescription = FontFactory.GetFontFromDescription (string.Format ("{0} {1}", FontFamily, FontSize));
-			if (Text != null && Text.Length > 0)
-				PangoLayout.SetText (Text);
-			PangoLayout.Alignment = FontAlignment;
-			PangoLayout.ContextChanged ();
-		}
-
-		protected void RecalculateDisplayBox () {
+		protected void RecalculateDisplayBox ()
+		{
 			int w = 0;
 			int h = 0;
 			
 			if (PangoLayout != null)
-				PangoLayout.GetPixelSize(out w, out h);
+				PangoLayout.GetPixelSize (out w, out h);
 			
-			RectangleD r = new RectangleD (DisplayBox.X + Padding, DisplayBox.Y + Padding, 
+			var r = new RectangleD (DisplayBox.X + Padding, DisplayBox.Y + Padding, 
 									(double) w, (double) h);
 
 			r.Inflate (Padding, Padding);
-			_displayBox = r; 
+			displaybox = r; 
 		}
+
+		#endregion
 		
-		private void GenerateDummyContext () {
+		#region Private Members
+		private void GenerateDummyContext ()
+		{
 			// Generates a dummy Cairo.Context. This trick is necesary in order to get
 			// a Pango.Layout before obtaining a valid Cairo Context, otherwise, we should
 			// wait until Draw method is called. The Pango.Layout is neccesary for
 			// RecalculateDisplayBox.
-			ImageSurface surface = new ImageSurface (Cairo.Format.ARGB32, 100, 100);			
+			var surface = new ImageSurface (Cairo.Format.ARGB32, 100, 100);			
 			using (Cairo.Context dummycontext =  new Cairo.Context (surface)) {
 				SetupLayout (dummycontext);
 				RecalculateDisplayBox ();
 			}
 		}
-
-		private RectangleD      _displayBox;
-		private Pango.Alignment _fontAlignment;
-		private Cairo.Color     _fontColor;
-		private string          _fontFamily;
-		private double          _fontSize;
-		private Pango.Style     _fontStyle;
-		private double          _padding;
-		private Pango.Layout    _pangoLayout;
-		private string          _text;
-		private bool            _textEditable;
-		private bool            _usingDummy = true;
+		
+		private RectangleD      displaybox;
+		private double          padding;
+		private string          text;
+		private bool            textEditable;
+		private bool            usingDummy = true;
+		#endregion
 	}
 }

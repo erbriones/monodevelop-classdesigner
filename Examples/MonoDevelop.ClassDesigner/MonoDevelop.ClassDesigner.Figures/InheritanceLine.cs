@@ -28,7 +28,7 @@ using MonoHotDraw.Figures;
 
 namespace MonoDevelop.ClassDesigner.Figures
 {
-		internal sealed class InheritanceLine : LineConnection
+		internal sealed class InheritanceLine : LineConnectionFigure
 		{
 			public InheritanceLine () : base ()
 			{

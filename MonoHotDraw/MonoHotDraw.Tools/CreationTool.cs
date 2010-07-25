@@ -39,6 +39,7 @@ namespace MonoHotDraw.Tools
 			Prototype = ptype;
 		}
 		
+		#region Tool Activation		
 		public override void Activate ()
 		{
 			base.Activate ();
@@ -54,7 +55,9 @@ namespace MonoHotDraw.Tools
 			var widget = (Gtk.Widget) Editor.View;
 			widget.GdkWindow.Cursor = null;
 		}
+		#endregion
 		
+		#region Mouse Events
 		public override void MouseDown (MouseEvent ev)
 		{
 			IDrawingView view = ev.View;
@@ -73,10 +76,12 @@ namespace MonoHotDraw.Tools
 			Editor.Tool = new SelectionTool (Editor);
 			PushUndoActivity();
 		}
-		
+		#endregion
+	
+		#region UndoActivity		
 		public class CreationToolUndoActivity: AbstractUndoActivity
 		{
-			public CreationToolUndoActivity(IDrawingView view, IFigure prototype): base(view)
+			public CreationToolUndoActivity (IDrawingView view, IFigure prototype): base (view)
 			{
 				Undoable = true;
 				Redoable = true;
@@ -106,12 +111,16 @@ namespace MonoHotDraw.Tools
 			
 			public IFigure Prototype { set; get; }
 		}
+		#endregion
 		
+		
+		#region Protected Members
 		protected virtual void CreateUndoActivity ()
 		{
 			UndoActivity = new CreationToolUndoActivity (Editor.View, Prototype);
 		}
 		
 		protected IFigure Prototype { get; set; }
+		#endregion
 	}
 }

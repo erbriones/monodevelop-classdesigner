@@ -28,14 +28,17 @@ using Gdk;
 using MonoHotDraw.Figures;
 using MonoHotDraw.Util;
 
-namespace MonoHotDraw.Tools {
-
-	public class DragCreationTool: CreationTool {
-
-		public DragCreationTool (IDrawingEditor editor, IFigure ptype): base (editor, ptype) {
+namespace MonoHotDraw.Tools
+{
+	public class DragCreationTool: CreationTool
+	{
+		public DragCreationTool (IDrawingEditor editor, IFigure ptype) : base (editor, ptype)
+		{
 		}
 		
-		public override void MouseDrag (MouseEvent ev) {
+		#region Mouse Events
+		public override void MouseDrag (MouseEvent ev)
+		{
 			RectangleD r = Prototype.DisplayBox;
 			
 			r.X = ev.X;
@@ -43,5 +46,6 @@ namespace MonoHotDraw.Tools {
 			
 			Prototype.DisplayBox = r;
 		}
+		#endregion
 	}
 }

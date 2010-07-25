@@ -27,26 +27,29 @@ using Cairo;
 using System;
 using System.Runtime.Serialization;
 
-namespace MonoHotDraw.Util {
-
-	public sealed class PointDSerializationSurrogate : ISerializationSurrogate {
-
-		public void GetObjectData (object obj, SerializationInfo info, StreamingContext context) {
-			PointD point = (PointD) obj;
+namespace MonoHotDraw.Util
+{
+	public sealed class PointDSerializationSurrogate : ISerializationSurrogate 
+	{	
+		#region ISerializationSurrogate
+		public void GetObjectData (object obj, SerializationInfo info, StreamingContext context)
+		{
+			var point = (PointD) obj;
 
 			info.AddValue ("Cairo.PointD.X", point.X);
 			info.AddValue ("Cairo.PointD.Y", point.Y);
 		}
 
-		public object SetObjectData (object obj, SerializationInfo info, StreamingContext context, ISurrogateSelector selector) {
-			PointD point = (PointD) obj;
+		public object SetObjectData (object obj, 
+			SerializationInfo info, StreamingContext context, ISurrogateSelector selector)
+		{
+			var point = (PointD) obj;
 
 			point.X = info.GetDouble ("Cairo.PointD.X");
 			point.Y = info.GetDouble ("Cairo.PointD.Y");
 
 			return point;
 		}
-
+		#endregion
 	}
-
 }

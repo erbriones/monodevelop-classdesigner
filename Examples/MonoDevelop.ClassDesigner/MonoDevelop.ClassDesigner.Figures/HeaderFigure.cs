@@ -33,54 +33,43 @@ using MonoHotDraw.Util;
 using MonoHotDraw.Handles;
 using MonoHotDraw.Locators;
 
-namespace MonoDevelop.ClassDesigner.Figures {
-	
-	public class TypeHeaderFigure: VStackFigure {
-		
-		public TypeHeaderFigure(): base() {		
-			namespaceFigure = new TextFigure("Namespace");
+namespace MonoDevelop.ClassDesigner.Figures
+{	
+	public class HeaderFigure : VStackFigure
+	{	
+		public HeaderFigure () : base ()
+		{		
+			namespaceFigure = new TextFigure ("Namespace");
 			namespaceFigure.Padding = 0;
 			namespaceFigure.FontSize = 7;
 					
-			typeFigure = new TextFigure("Type");
+			typeFigure = new TextFigure ("Type");
 			typeFigure.Padding = 0;
 			typeFigure.FontSize = 7;
 			
-			nameFigure = new TextFigure("Name");
+			nameFigure = new TextFigure ("Name");
 			nameFigure.Padding = 0;
 			nameFigure.FontSize = 12;
 			Spacing = 0;
 			
-			Add(typeFigure);
-			Add(namespaceFigure);
-			Add(nameFigure);
+			Add (typeFigure);
+			Add (namespaceFigure);
+			Add (nameFigure);
 		}
-		
+
 		public string Name {
-			get {
-				return nameFigure.Text;
-			}
-			set {
-				nameFigure.Text = value;
-			}
+			get { return nameFigure.Text; }
+			set { nameFigure.Text = value; }
 		}
 		
 		public string Namespace {
-			get {
-				return namespaceFigure.Text;
-			}
-			set {
-				namespaceFigure.Text = value;
-			}
+			get { return namespaceFigure.Text; }
+			set { namespaceFigure.Text = value; }
 		}
 		
 		public string Type {
-			get {
-				return typeFigure.Text;
-			}
-			set {
-				typeFigure.Text = value;
-			}
+			get { return typeFigure.Text; }
+			set { typeFigure.Text = value; }
 		}
 		
 		private TextFigure namespaceFigure;

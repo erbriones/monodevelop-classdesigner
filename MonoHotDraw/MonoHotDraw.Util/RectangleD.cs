@@ -27,39 +27,47 @@
 using Cairo;
 using System;
 
-namespace MonoHotDraw.Util {
-
+namespace MonoHotDraw.Util
+{
 	[Serializable]
-	public struct RectangleD : IEquatable<RectangleD> {
-	
-		public RectangleD (double x, double y): this (x, y, 0.0, 0.0) {
+	public struct RectangleD : IEquatable<RectangleD>
+	{
+		public RectangleD (double x, double y) : this (x, y, 0.0, 0.0)
+		{
 		}
 		
-		public RectangleD (PointD point): this (point.X, point.Y, 0.0, 0.0)	{
+		public RectangleD (PointD point) : this (point.X, point.Y, 0.0, 0.0)
+		{
 		}
 
-		public RectangleD (RectangleD rect): this (rect.X, rect.Y, rect.Width, rect.Height)	{
+		public RectangleD (RectangleD rect) : this (rect.X, rect.Y, rect.Width, rect.Height)
+		{
 		}
 
-		public RectangleD (double x, double y, double width, double height)	{
+		public RectangleD (double x, double y, double width, double height)
+		{
 			X = x;
 			Y = y;
 			Width = width;
 			Height = height;
 		}
 
-		public RectangleD (PointD location, PointD corner) {
+		public RectangleD (PointD location, PointD corner)
+		{
 			X = location.X;
 			Y = location.Y;
 			Width = corner.X - X;
 			Height = corner.Y - Y;
 		}
-
+		
+		#region Fields
 		public double X;
 		public double Y;
 		public double Width;
 		public double Height;
-
+		#endregion
+		
+		#region Properties
 		public double X2 {
 			get { return X + Width; }
 		}
@@ -108,12 +116,17 @@ namespace MonoHotDraw.Util {
 			get { return new RectangleD (0.0, 0.0, 0.0, 0.0); }
 		}
 		
-		public bool Contains (double x, double y) {
+		#endregion
+		
+		#region Methods
+		public bool Contains (double x, double y)
+		{
 			return ((x >= Left) && (x < Right) && (y >= Top) && (y < Bottom));
 		}
 		
-		public bool Contains (RectangleD r) {
-			return ( Contains (r.X, r.Y) && Contains (r.X2, r.Y2) );
+		public bool Contains (RectangleD r)
+		{
+			return (Contains (r.X, r.Y) && Contains (r.X2, r.Y2));
 		}
 
 		public void OffsetDot5 () {
@@ -123,10 +136,10 @@ namespace MonoHotDraw.Util {
 			Height = Math.Truncate (Height);
 		}
 
-		public void Normalize () {
-			if (Width > 0 && Height > 0) {
+		public void Normalize ()
+		{
+			if (Width > 0 && Height > 0)
 				return;
-			}
 
 			if (Width < 0 ) {
 				X = X2;
@@ -139,14 +152,16 @@ namespace MonoHotDraw.Util {
 			}
 		}
 
-		public void Inflate (double w, double h) {
+		public void Inflate (double w, double h)
+		{
 			X -= w;
 			Y -= h;
 			Width += w * 2.0;
 			Height += h * 2.0;
 		}
 		
-		public void Add (double newx, double newy) {
+		public void Add (double newx, double newy)
+		{
 			double x1 = Math.Min (X, newx);
 			double x2 = Math.Max (X + Width, newx);
 			double y1 = Math.Min (Y, newy);
@@ -158,45 +173,52 @@ namespace MonoHotDraw.Util {
 			Height = y2 - y1;
 		}
 
-		public void Add (PointD point) {
+		public void Add (PointD point)
+		{
 			Add (point.X, point.Y);
 		}
 
-		public void Add (RectangleD r) {
+		public void Add (RectangleD r)
+		{
 			Add (r.X, r.Y);
 			Add (r.X2, r.Y2);
 		}
 
-		public bool Equals (RectangleD rectangle) {
+		public bool Equals (RectangleD rectangle)
+		{
 			return rectangle.X == this.X && rectangle.Y == this.Y 
 				&& rectangle.Width == this.Width && rectangle.Height == this.Height;
 		}
 		
-		public override bool Equals (object obj) {
-			if (obj is RectangleD) {
+		public override bool Equals (object obj)
+		{
+			if (obj is RectangleD)
 				return Equals ((RectangleD) obj);
-			}
-			else {
+			else 
 				return false;
-			}
 		}
 		
-		public override int GetHashCode () {
+		public override int GetHashCode ()
+		{
 			//TODO: This seems to be too tricky.
 			return (int) (X + Y + Width + Height);
 		}
 
-		public override string ToString () {
+		public override string ToString ()
+		{
 			return String.Format ("x:{0} y:{1} w:{2} h:{3}", X, Y, Width, Height);
 		}
 
-		public static bool operator == (RectangleD rectangle, RectangleD other) {
+		public static bool operator == (RectangleD rectangle, RectangleD other)
+		{
 			return rectangle.Equals (other); 
 		}
 
-		public static bool operator != (RectangleD rectangle, RectangleD other) {
+		public static bool operator != (RectangleD rectangle, RectangleD other)
+		{
 			return !rectangle.Equals (other); 
 		}
+		#endregion
 	}
 }
 

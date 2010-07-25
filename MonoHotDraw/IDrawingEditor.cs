@@ -34,6 +34,7 @@ namespace MonoHotDraw
 	{
 		IDrawingView View { set; get; }
 		ITool Tool { set; get; }
+		CommandManager CommandManager { get; }
 		UndoManager UndoManager { get; }
 	
 		void DisplayMenu (IFigure figure, MouseEvent ev);

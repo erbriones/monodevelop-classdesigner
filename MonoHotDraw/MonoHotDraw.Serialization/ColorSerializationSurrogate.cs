@@ -27,12 +27,14 @@ using Cairo;
 using System;
 using System.Runtime.Serialization;
 
-namespace MonoHotDraw.Util {
-
-	public sealed class ColorSerializationSurrogate : ISerializationSurrogate {
-
-		public void GetObjectData (object obj, SerializationInfo info, StreamingContext context) {
-			Color color = (Color) obj;
+namespace MonoHotDraw.Util
+{
+	public sealed class ColorSerializationSurrogate : ISerializationSurrogate
+	{
+		#region ISerializationSurrogate
+		public void GetObjectData (object obj, SerializationInfo info, StreamingContext context)
+		{
+			var color = (Color) obj;
 
 			info.AddValue ("Cairo.Color.A", color.A);
 			info.AddValue ("Cairo.Color.R", color.R);
@@ -40,8 +42,10 @@ namespace MonoHotDraw.Util {
 			info.AddValue ("Cairo.Color.B", color.B);
 		}
 
-		public object SetObjectData (object obj, SerializationInfo info, StreamingContext context, ISurrogateSelector selector) {
-			Color color = (Color) obj;
+		public object SetObjectData (object obj,
+			SerializationInfo info, StreamingContext context, ISurrogateSelector selector)
+		{
+			var color = (Color) obj;
 
 			color.A = info.GetDouble ("Cairo.Color.A");
 			color.R = info.GetDouble ("Cairo.Color.R");
@@ -50,7 +54,6 @@ namespace MonoHotDraw.Util {
 
 			return color;
 		}
-
+		#endregion
 	}
-
 }

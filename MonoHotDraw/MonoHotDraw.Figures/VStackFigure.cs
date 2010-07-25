@@ -37,7 +37,7 @@ namespace MonoHotDraw.Figures
 		Right,
 	}
 	
-	public class VStackFigure: StackFigure
+	public class VStackFigure : StackFigure
 	{	
 		public VStackFigure () : base ()
 		{
@@ -48,41 +48,48 @@ namespace MonoHotDraw.Figures
 		
 		protected override double CalculateHeight ()
 		{
-			int count = Figures.Count ();
+			int count = FigureCollection.Count ();
+			double height = 0.0;
 			
 			if (count == 0)
 				return 0.0;
 			
-			return (from IFigure fig in this.Figures
-			        select fig.DisplayBox.Height).Sum() + Spacing * (count-1);
+			foreach (IFigure fig in FigureCollection)
+				height += fig.DisplayBox.Height;
+			
+			return height + Spacing * (count - 1);
 		}
 		
 		protected override double CalculateWidth ()
 		{
-			if (Figures.Count() == 0)
+			double width = 0.0;
+			
+			if (FigureCollection.Count () == 0)
 				return 0.0;
 			
-			return (from IFigure fig in this.Figures
-			        select fig.DisplayBox.Width).Max();
+			
+			foreach (IFigure fig in FigureCollection)
+				width = Math.Max (width, fig.DisplayBox.Width);
+			
+			return width;
 		}
 		
 		protected override void UpdateFiguresPosition ()
 		{
 			var height = 0.0;
 			
-			foreach (IFigure figure in Figures) {
+			foreach (IFigure figure in FigureCollection) {
 				RectangleD r = figure.DisplayBox;
-				r.X = CalculateFigureX(figure);
+				r.X = CalculateFigureX (figure);
 				r.Y = Position.Y + height;
-				var af = figure as AbstractFigure;
+				var af = (AbstractFigure) figure;
 				af.DisplayBox = r;
 				height += r.Height + Spacing;
 			}
 		}
-		
+
 		private double CalculateFigureX (IFigure figure)
 		{
-			
 			switch (Alignment) {
 			case VStackAlignment.Center:
 				return Position.X + (Width - figure.DisplayBox.Width)/2;

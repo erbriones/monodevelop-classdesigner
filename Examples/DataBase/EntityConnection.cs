@@ -32,7 +32,7 @@ using System.Runtime.Serialization;
 namespace MonoHotDraw.Database {
 
 	[Serializable]
-	public class EntityConnection : LineConnection {
+	public class EntityConnection : LineConnectionFigure {
 	
 		public EntityConnection () : base () {
 		}

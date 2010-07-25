@@ -44,7 +44,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 		{
 			hideCollection = false;
 			hideAssociations = false;
-			FigureColor = new Cairo.Color (0.8, 0.8, 0.8, 0.4);
+			FillColor = new Cairo.Color (0.8, 0.8, 0.8, 0.4);
 		}
 
 		protected override ClassType ClassType {
@@ -114,8 +114,10 @@ namespace MonoDevelop.ClassDesigner.Figures
 
 		#endregion
 		
+		/*
 		public override void UpdateGroups ()
 		{
+			
 			if (grouping != GroupingSetting.Kind) {
 				base.UpdateGroups ();
 				return;
@@ -135,12 +137,12 @@ namespace MonoDevelop.ClassDesigner.Figures
 				name = "Protected Internal";
 			
 			var compartment = Compartments.Where (c => c.Name == name).SingleOrDefault ();
-			var members = new List<IMemberFigure> ();
+			var members = new List<IFigure> ();
 				
 			
 			members.AddRange (Compartments
-			                  .Select (c => c.FiguresEnumerator.Where (m => m != null))
-			                  .OfType<IMemberFigure> ());
+			                  .Select (c => c.Figures.Where (m => m != null))
+			                  .OfType<IFigure> ());
 			                  
 			foreach (var c in Compartments) {
 				RemoveMemberGroup (c);
@@ -154,9 +156,10 @@ namespace MonoDevelop.ClassDesigner.Figures
 				}
 			}
 			
-			compartment.AddMembers (members);
+			compartment.AddRange (members);
 			AddMemberGroup (compartment);
+		 
 		}
-
+		*/	
 	}
 }

@@ -32,25 +32,30 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using MonoHotDraw.Util;
 
-namespace MonoHotDraw.Commands {
-
-	public sealed class GenericCloner {
-		private GenericCloner () { 
+namespace MonoHotDraw.Commands
+{
+	public sealed class GenericCloner
+	{
+		private GenericCloner ()
+		{ 
 		}
 		
-		public static T Clone<T> (T reference) where T : class, ICloneable {
+		#region Clone Utility Method
+		public static T Clone<T> (T reference) where T : class, ICloneable
+		{
 			if (reference == null)
 				return null;
 				
 			T clone = default (T);
-			BinaryFormatter formater = new BinaryFormatter ();
-			MemoryStream stream = new MemoryStream ();
-			SurrogateSelector surrogate = new SurrogateSelector ();
+			var formater = new BinaryFormatter ();
+			var stream = new MemoryStream ();
+			var surrogate = new SurrogateSelector ();
 			
 			/* Using surrogates because Cairo structures aren't serializable */
 			surrogate.AddSurrogate (typeof (Cairo.PointD),
 					new StreamingContext (StreamingContextStates.All),
 					new PointDSerializationSurrogate ());
+			
 			surrogate.AddSurrogate (typeof (Cairo.Color),
 					new StreamingContext (StreamingContextStates.All),
 					new ColorSerializationSurrogate ());
@@ -63,6 +68,6 @@ namespace MonoHotDraw.Commands {
 
 			return (T) clone;
 		}
+		#endregion
 	}
 }
-

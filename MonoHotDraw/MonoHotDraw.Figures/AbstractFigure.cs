@@ -32,26 +32,46 @@ using MonoHotDraw.Connectors;
 using MonoHotDraw.Handles;
 using MonoHotDraw.Tools;
 using MonoHotDraw.Util;
+using MonoHotDraw.Visitor;
 
 namespace MonoHotDraw.Figures
 {
 	[Serializable]
 	public abstract class AbstractFigure : IFigure
-	{
-		List <IFigure> _dependentFigures;
-		Cairo.Color    _fillColor;
-		Cairo.Color    _lineColor;
-	
+	{	
 		protected AbstractFigure ()
 		{
-			FillColor = new Cairo.Color (1.0, 1.0, 0.2, 0.8);
+			FillColor = new Color (1.0, 1.0, 0.2, 0.8);
 			LineColor = (Color) AttributeFigure.GetDefaultAttribute (FigureAttribute.LineColor);
 		}
 
 		protected AbstractFigure (SerializationInfo info, StreamingContext context)
 		{
-			FillColor = (Cairo.Color) info.GetValue ("FillColor", typeof (Cairo.Color));
-			LineColor = (Cairo.Color) info.GetValue ("LineColor", typeof (Cairo.Color));
+			FillColor = (Color) info.GetValue ("FillColor", typeof (Color));
+			LineColor = (Color) info.GetValue ("LineColor", typeof (Color));
+		}
+
+		public event FigureEventHandler FigureChanged;
+		public event FigureEventHandler FigureInvalidated;
+		
+		
+		#region Public Api
+		public virtual void Add (IFigure figure)
+		{
+			throw new NotSupportedException ("Does not support adding child figures.");
+		}
+
+		public virtual void Remove (IFigure figure)
+		{
+			throw new NotSupportedException ("Does not support removing child figures.");
+		}
+		
+		public virtual IFigure Container {
+			get { return null; }
+		}
+		
+		public virtual bool CanConnect {
+			get { return true; }
 		}
 
 		public virtual RectangleD DisplayBox {
@@ -65,25 +85,25 @@ namespace MonoHotDraw.Figures
 			}
 		}
 		
-		protected abstract RectangleD BasicDisplayBox { get; set; }
-		
-		public virtual bool CanConnect {
-			get { return true; }
-		}
-		
-		public virtual IEnumerable <IFigure> FiguresEnumerator {
+		public virtual IEnumerable <IFigure> Figures {
 			get { yield break; }
 		}
 		
-		public virtual Color FillColor {
-			get { return _fillColor; }
-			set { _fillColor = value; }
+		public Color FillColor { get; set; }
+
+		public virtual IEnumerable <IHandle> Handles {
+			get { yield break; }
 		}
 		
-		public virtual Color LineColor {
-			get { return _lineColor; }
-			set { _lineColor = value; }
+		public virtual RectangleD InvalidateDisplayBox {
+			get {
+				RectangleD rect = DisplayBox;
+				rect.Inflate (AbstractHandle.Size + 1.0 , AbstractHandle.Size + 1.0);
+				return rect;
+			}
 		}
+
+		public virtual Color LineColor { get; set; }
 
 		public virtual double LineWidth {
 			get { return (double) GetAttribute (FigureAttribute.LineWidth); }
@@ -93,46 +113,45 @@ namespace MonoHotDraw.Figures
 			}
 		}
 		
+		public virtual void AcceptVisitor (IFigureVisitor visitor)
+		{
+			visitor.VisitFigure (this);
+			
+			foreach (IFigure figure in Figures)
+				figure.AcceptVisitor (visitor);
+			
+			foreach (IHandle handle in Handles)
+				visitor.VisitHandle (handle);
+		}
+		
+		public virtual IConnector ConnectorAt (double x, double y)
+		{
+			return new ChopBoxConnector (this);
+		}
+
+
+		public virtual bool ContainsPoint (double x, double y)
+		{
+			return DisplayBox.Contains (x, y);
+		}
+		
 		public virtual ITool CreateFigureTool (IDrawingEditor editor, ITool defaultTool)
 		{
 			return defaultTool;
 		}
-		
-		public virtual void GetObjectData (SerializationInfo info, StreamingContext context)
-		{
-			info.AddValue ("FillColor", FillColor);
-			info.AddValue ("LineColor", LineColor);
-		}
 
-		public virtual IEnumerable <IHandle> HandlesEnumerator {
-			get { yield break; }
-		}
-
-		public virtual void Draw (Context context)
+		public void Draw (Context context)
 		{
 			context.Save ();
 			BasicDraw (context);
 			context.Restore ();
 		}
 		
-		protected virtual void BasicDraw (Context context)
-		{
-		}
-		
-		public virtual void DrawSelected (Context context)
+		public void DrawSelected (Context context)
 		{
 			context.Save ();
 			BasicDrawSelected (context);
 			context.Restore ();
-		}
-		
-		public virtual void BasicDrawSelected (Context context)
-		{
-		}
-		
-		public virtual bool Includes (IFigure figure)
-		{
-			return (this == figure);
 		}
 
 		public virtual object GetAttribute (FigureAttribute attribute)
@@ -146,99 +165,103 @@ namespace MonoHotDraw.Figures
 				return null;
 			}
 		}
-		
-		public virtual void SetAttribute (FigureAttribute attribute, object value)
+
+		public virtual bool Includes (IFigure figure)
 		{
-			switch (attribute) {
-				case FigureAttribute.FillColor:
-					FillColor = (Cairo.Color) value;
-					break;
-				case FigureAttribute.LineColor:
-					LineColor = (Cairo.Color) value;
-					break;
-			}
+			return (this == figure);
+		}
+		
+		public void Invalidate ()
+		{
+			OnFigureInvalidated (new FigureEventArgs (this, InvalidateDisplayBox));
 		}
 
-		public void MoveBy (double x, double y) {
+		public void MoveBy (double x, double y)
+		{
 			WillChange ();
 			BasicMoveBy (x, y);
 			Changed ();
 		}
 		
-		public void MoveTo (double x, double y) {
+		public void MoveTo (double x, double y)
+		{
 			RectangleD r = DisplayBox;
 			r.X = x;
 			r.Y = y;
 			DisplayBox = r;
 		}
+		
+		public virtual void SetAttribute (FigureAttribute attribute, object value)
+		{
+			switch (attribute) {
+				case FigureAttribute.FillColor:
+					FillColor = (Color) value;
+					break;
+				case FigureAttribute.LineColor:
+					LineColor = (Color) value;
+					break;
+			}
+		}
+		
+		#endregion
+		
+		#region ICloneable implementation
+		public virtual object Clone ()
+		{
+			return GenericCloner.Clone <AbstractFigure> (this);
+		}
 
-		public virtual void BasicMoveBy (double x, double y) {
+		#endregion
+		
+		#region ISerializable implementation
+		public virtual void GetObjectData (SerializationInfo info, StreamingContext context)
+		{
+			info.AddValue ("FillColor", FillColor);
+			info.AddValue ("LineColor", LineColor);
+		}
+		#endregion
+		
+		protected abstract RectangleD BasicDisplayBox { get; set; }
+
+		protected virtual void BasicMoveBy (double x, double y)
+		{
 			RectangleD r = BasicDisplayBox;
 			r.X += x;
 			r.Y += y;
 			BasicDisplayBox = r;
 		}
+		
+		protected virtual void BasicDraw (Context context)
+		{
+		}
 
-		public virtual bool ContainsPoint (double x, double y) {
-			return DisplayBox.Contains (x, y);
+		protected virtual void BasicDrawSelected (Context context)
+		{
 		}
 		
-		public virtual object Clone () {
-			return GenericCloner.Clone <AbstractFigure> (this);
-		}
-
-		public void Invalidate () {
-			OnFigureInvalidated (new FigureEventArgs (this, InvalidateDisplayBox));
-		}
-
-		public virtual IConnector ConnectorAt (double x, double y) {
-			return new ChopBoxConnector (this);
-		}
-
-		public virtual RectangleD InvalidateDisplayBox {
-			get {
-				RectangleD rect = DisplayBox;
-				rect.Inflate (AbstractHandle.Size + 1.0 , AbstractHandle.Size + 1.0);
-				return rect;
-			}
-		}
-
-		public void Visit (IFigureVisitor visitor) {
-			visitor.VisitFigure (this);
-
-			foreach (IFigure figure in FiguresEnumerator) {
-				figure.Visit (visitor);
-			}
-			
-			foreach (IHandle handle in HandlesEnumerator) {
-				visitor.VisitHandle (handle);
-			}
-		}
-		
-		public event EventHandler <FigureEventArgs> FigureInvalidated;
-		public event EventHandler <FigureEventArgs> FigureChanged;
-
-		protected virtual void OnFigureInvalidated (FigureEventArgs e) {
-			if (FigureInvalidated != null) {
-				FigureInvalidated (this, e);
-			}
-		}
-
-		protected void WillChange () {
-			Invalidate ();
-		}
-
-		protected void Changed () {
+		protected void Changed ()
+		{
 			Invalidate ();
 			OnFigureChanged (new FigureEventArgs (this, DisplayBox));
 		}
 
-		protected virtual void OnFigureChanged (FigureEventArgs e) {
-			if (FigureChanged != null) {
-				FigureChanged (this, e);
-			}
+		protected virtual void OnFigureChanged (FigureEventArgs e)
+		{
+			var handler = FigureChanged;
+			if (handler != null)
+				handler (this, e);
 		}
-
 		
+		protected virtual void OnFigureInvalidated (FigureEventArgs e)
+		{
+			var handler = FigureInvalidated;
+			if (handler != null)
+				handler (this, e);
+		}
+		
+		protected void WillChange ()
+		{
+			Invalidate ();
+		}
 	}
 }

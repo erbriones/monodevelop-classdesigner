@@ -2,7 +2,9 @@
 //
 // Authors:
 //	Manuel Cerón <ceronman@gmail.com>
+//  Evan Briones <erbriones@gmail.com>
 //
+// Copyright (C) 2010 Evan Briones
 // Copyright (C) 2006, 2007, 2008, 2009 MonoUML Team (http://www.monouml.org)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -32,22 +34,42 @@ using MonoHotDraw.Commands;
 using MonoHotDraw.Handles;
 using MonoHotDraw.Util;
 
-namespace MonoHotDraw.Tools {
-
-	public class SelectionTool: AbstractTool {
-	
-		public SelectionTool (IDrawingEditor editor): base (editor) {
+namespace MonoHotDraw.Tools
+{
+	public class SelectionTool: AbstractTool
+	{
+		public SelectionTool (IDrawingEditor editor) : base (editor)
+		{
+		}
+		
+		#region Key Events
+		public override void KeyDown (KeyEvent ev) {
+			if (DelegateTool != null)
+				DelegateTool.KeyDown (ev);
+			
+			if (ev.Key == Gdk.Key.Delete)
+				DeleteFigures (ev.View);
 		}
 
-		public override void MouseDown (MouseEvent ev) {
+		public override void KeyUp (KeyEvent ev)
+		{
+			if (DelegateTool != null)
+				DelegateTool.KeyUp (ev);
+		}
+		#endregion
+
+		#region Mouse Events
+		public override void MouseDown (MouseEvent ev)
+		{
 			base.MouseDown (ev);
-			IDrawingView view = ev.View;
 			
-			IHandle handle = view.FindHandle (ev.X, ev.Y);
+			var view = ev.View;
+			var handle = view.FindHandle (ev.X, ev.Y);
+			
 			if (handle != null)
-				DelegateTool = new HandleTracker (Editor, new UndoableHandle(handle));
+				DelegateTool = new HandleTool (Editor, new UndoableHandle (handle));
 			else {
-				IFigure figure = view.Drawing.FindFigure (ev.X, ev.Y);
+				var figure = view.Drawing.FindFigure (ev.X, ev.Y);
 				var button_event = (Gdk.EventButton) ev.GdkEvent;
 				
 				if (button_event.Button == 3)
@@ -58,88 +80,67 @@ namespace MonoHotDraw.Tools {
 					DelegateTool = new SelectAreaTool (Editor);
 			}
 			
-			if (DelegateTool != null) {
+			if (DelegateTool != null)
 				DelegateTool.MouseDown (ev);
-			}
 		}
 		
-		public override void MouseUp (MouseEvent ev) {
-			if (DelegateTool != null) {
+		public override void MouseUp (MouseEvent ev)
+		{
+			if (DelegateTool != null)
 				DelegateTool.MouseUp (ev);
-			}
 		}
 		
-		public override void MouseDrag (MouseEvent ev) {
-			if (DelegateTool != null) {
+		public override void MouseDrag (MouseEvent ev)
+		{
+			if (DelegateTool != null)
 				DelegateTool.MouseDrag (ev);
-			}
 		}
 		
-		public override void MouseMove (MouseEvent ev) {
-			IDrawingView view = ev.View;
-			Widget widget = (Widget) view;
-			IHandle handle = view.FindHandle (ev.X, ev.Y);
-			if (handle != null) {
+		public override void MouseMove (MouseEvent ev)
+		{
+			var view = ev.View;
+			var handle = view.FindHandle (ev.X, ev.Y);
+			var widget = (Widget) view;
+			
+			if (handle != null)
 				widget.GdkWindow.Cursor = handle.CreateCursor ();
-			}
 			else {
-				IFigure figure = view.Drawing.FindFigure (ev.X, ev.Y);
-				if (figure != null) {
+				var figure = view.Drawing.FindFigure (ev.X, ev.Y);
+
+				if (figure != null)
 					widget.GdkWindow.Cursor = CursorFactory.GetCursorFromType (Gdk.CursorType.Fleur);
-				}
-				else { 
+				else
 					widget.GdkWindow.Cursor = null;
-				}
 			}
 			
-			if (DelegateTool != null) {
+			if (DelegateTool != null)
 				DelegateTool.MouseMove (ev);
-			}
 		}
 		
-		public override void KeyDown (KeyEvent ev) {
-			if (DelegateTool != null) {
-				DelegateTool.KeyDown (ev);
-			}
-			if (ev.Key == Gdk.Key.Delete) {
-				DeleteFigures (ev.View);
-			}
-		}
-
-		public override void KeyUp (KeyEvent ev) {
-			if (DelegateTool != null) {
-				DelegateTool.KeyUp (ev);
-			}
-		}
-		
+		#endregion
+			
+		#region Delegate Tool
 		protected ITool DelegateTool {
 			set { 
-				if (_delegateTool != null && _delegateTool.Activated) {
+				if (_delegateTool != null && _delegateTool.Activated)
 					_delegateTool.Deactivate ();
-				}
 
 				_delegateTool = value;
-				if (_delegateTool != null) {
+				if (_delegateTool != null)
 					_delegateTool.Activate ();
-				}
 			}
 			get { return _delegateTool; }
 		}
 		
-		private void DeleteFigures (IDrawingView view) {
-			List <IFigure> figures = new List <IFigure> ();
-			
-			foreach (IFigure fig in view.SelectionEnumerator) {
-				figures.Add (fig);
-			}
+		private void DeleteFigures (IDrawingView view)
+		{
+			IEnumerable<IFigure> figures = view.SelectionEnumerator.ToFigures ();
 			
 			view.ClearSelection ();
-			
-			foreach (IFigure fig in figures) {
-				view.Drawing.Remove (fig);
-			}
+			view.RemoveRange (figures);
 		}
 				
 		private ITool _delegateTool;
+		#endregion
 	}
 }

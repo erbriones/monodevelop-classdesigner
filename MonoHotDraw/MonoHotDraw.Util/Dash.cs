@@ -23,11 +23,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-namespace MonoHotDraw.Util {
-	
-	public sealed class Dash {
-	
-		private Dash () {
+namespace MonoHotDraw.Util
+{	
+	public sealed class Dash
+	{
+		private Dash ()
+		{
 		}
 	
 		public static double [] DotDash {

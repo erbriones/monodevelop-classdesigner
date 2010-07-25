@@ -30,7 +30,7 @@ using MonoHotDraw.Figures;
 
 namespace MonoDevelop.ClassDesigner
 {
-	public class AbstractLine : LineConnection
+	public class AbstractLine : LineConnectionFigure
 	{
 		bool route_manually;
 

@@ -33,10 +33,10 @@ using MonoHotDraw.Handles;
 using MonoHotDraw.Tools;
 using MonoHotDraw.Util;
 
-namespace MonoHotDraw.Samples {
-
-	public class AssociationFigure: LineConnection {
-	
+namespace MonoHotDraw.Samples
+{
+	public class AssociationFigure : LineConnectionFigure
+	{
 		public AssociationFigure(): base() {
 			_name = new AssociationCentreLabel("", 0.5, -20.0);
 			_roleA = new AssociationSideLabel("", -15.0, 35.0);
@@ -84,14 +84,14 @@ namespace MonoHotDraw.Samples {
 			}
 		}
 		
-		public override void BasicDraw(Context context) {
+		protected override void BasicDraw(Context context) {
 			base.BasicDraw(context);
 			foreach (LabelFigure label in _labels) {
 				label.BasicDraw(context);
 			}
 		}
 		
-		public override void BasicDrawSelected(Context context) {
+		protected override void BasicDrawSelected(Context context) {
 			_roleA.BasicDrawSelected(context, StartPoint);
 			_multiplicityA.BasicDrawSelected(context, StartPoint);
 			_roleB.BasicDrawSelected(context, EndPoint);
@@ -132,7 +132,7 @@ namespace MonoHotDraw.Samples {
 		
 		public override IEnumerable<IHandle> HandlesEnumerator {
 			get {
-				foreach (IHandle handle in base.HandlesEnumerator) {
+				foreach (IHandle handle in base.Handles) {
 					yield return handle;
 				}
 					

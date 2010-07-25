@@ -23,9 +23,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-namespace MonoHotDraw.Locators {
-
-	public enum QuickActionPosition	{
+namespace MonoHotDraw.Locators
+{
+	public enum QuickActionPosition {
 		Up, 
 		Bottom, 
 		Left, 

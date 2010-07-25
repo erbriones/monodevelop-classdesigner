@@ -28,53 +28,70 @@ using Gdk;
 using System;
 using MonoHotDraw.Commands;
 
-namespace MonoHotDraw.Tools {
-
-	public abstract class AbstractTool: ITool {
-	
-		protected AbstractTool (IDrawingEditor editor) {
+namespace MonoHotDraw.Tools
+{
+	public abstract class AbstractTool : ITool
+	{
+		protected AbstractTool (IDrawingEditor editor)
+		{
 			Editor = editor;
 			Undoable = true;
 		}
-
+		
+		#region Public Properties
 		public IDrawingEditor Editor { get; set;}
 		public IDrawingView View { get; set; }
 		public bool Activated { get; protected set; }
 		public virtual IUndoActivity UndoActivity { get; set; }
 		public bool Undoable { get; set; }
+		#endregion
 		
-		public virtual void Activate () {
+		#region Tool Activation
+		public virtual void Activate ()
+		{
 			Activated = true;
 		}
 		
-		public virtual void Deactivate () {
+		public virtual void Deactivate ()
+		{
 			Activated = false;
 		}
+		#endregion
 			
-		public virtual void KeyDown (KeyEvent ev) {
+		#region KeyEvents
+		public virtual void KeyDown (KeyEvent ev)
+		{
 		}
 			
-		public virtual void KeyUp (KeyEvent ev) {
+		public virtual void KeyUp (KeyEvent ev)
+		{
 		}
-
+		#endregion
+		
+		#region Mouse Events
 		public virtual void MouseDown (MouseEvent ev) {
 			SetAnchorCoords (ev.X, ev.Y);
 			View = ev.View;
 		}
-
-		public virtual void MouseDrag (MouseEvent ev) {
-		}
-			
-		public virtual void MouseMove (MouseEvent ev){
-		}
-			
-		public virtual void MouseUp (MouseEvent ev) {
-		}
 		
-		protected void PushUndoActivity() {
-			if (!Undoable) {
+		public virtual void MouseDrag (MouseEvent ev)
+		{
+		}
+			
+		public virtual void MouseMove (MouseEvent ev)
+		{
+		}
+			
+		public virtual void MouseUp (MouseEvent ev)
+		{
+		}
+		#endregion
+		
+		#region Protected Members
+		protected void PushUndoActivity ()
+		{
+			if (!Undoable)
 				return;
-			}
 			
 			IUndoActivity activity = UndoActivity;
 			if (activity != null && activity.Undoable && Editor.UndoManager != null) {
@@ -85,10 +102,12 @@ namespace MonoHotDraw.Tools {
 
 		protected double AnchorX { get; set; }
 		protected double AnchorY { get; set; }
-
-		protected void SetAnchorCoords (double x, double y) {
+		protected void SetAnchorCoords (double x, double y)
+		{
 			AnchorX = x;
 			AnchorY = y;
 		}
+		
+		#endregion
 	}
 }

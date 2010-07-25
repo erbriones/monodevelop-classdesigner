@@ -23,11 +23,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 //
-namespace MonoHotDraw.Commands {
-
-	public class NullUndoActivity : AbstractUndoActivity {
-		
-		public NullUndoActivity (IDrawingView view) : base (view) {
+namespace MonoHotDraw.Commands
+{
+	public class NullUndoActivity : AbstractUndoActivity
+	{	
+		public NullUndoActivity (IDrawingView view) : base (view)
+		{
 			Undoable = false;
 			Redoable = false;
 		}

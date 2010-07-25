@@ -34,12 +34,12 @@ namespace MonoHotDraw.Connectors
 {
 	public interface IConnector : ICloneable, ISerializable
 	{
+		RectangleD DisplayBox { get; }
+		IFigure Owner { get; }
+
 		PointD FindStart (IConnectionFigure connection);
 		PointD FindEnd (IConnectionFigure connection);
 		bool ContainsPoint (double x, double y);
 		void Draw (Context context);
-		
-		IFigure Owner { get; }
-		RectangleD DisplayBox { get; }
 	}
 }

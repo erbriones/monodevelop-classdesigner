@@ -27,26 +27,29 @@ using System;
 using Cairo;
 using MonoHotDraw.Figures;
 
-namespace MonoHotDraw.Locators {
-	
-	public class AbsoluteLocator: ILocator {
-		
-		public AbsoluteLocator(): this(0.0, 0.0) {
+namespace MonoHotDraw.Locators
+{	
+	public class AbsoluteLocator : ILocator
+	{
+		public AbsoluteLocator () : this (0.0, 0.0)
+		{
 		}
 		
-		public AbsoluteLocator(double x, double y) {
+		public AbsoluteLocator (double x, double y)
+		{
 			this.x = x;
 			this.y = y;
 		}
-		
-		public PointD Locate(IFigure owner) {
+
+		public PointD Locate (IFigure owner)
+		{
 			PointD topleft = owner.DisplayBox.TopLeft;
 			return new PointD {
 				X = topleft.X + x,
 				Y = topleft.Y + y,
 			};
 		}
-		
+
 		double x;
 		double y;
 	}

@@ -25,19 +25,17 @@
 
 using Cairo;
 using Gdk;
-using System;
 
-namespace MonoHotDraw {
-	
-	public class MouseEvent : Event {
-		
-		public MouseEvent (IDrawingView view, Gdk.Event gdkEvent, PointD point): base(view, gdkEvent) {
-			_drawingPoint = point;
+namespace MonoHotDraw
+{	
+	public class MouseEvent : Event
+	{	
+		public MouseEvent (IDrawingView view, Gdk.Event gdkEvent, PointD point) : base (view, gdkEvent)
+		{
+			DrawingPoint = point;
 		}
 		
-		public PointD DrawingPoint {
-			get { return _drawingPoint; }
-		}
+		public PointD DrawingPoint { get; private set; }
 		
 		public double X {
 			get { return DrawingPoint.X; }
@@ -46,7 +44,5 @@ namespace MonoHotDraw {
 		public double Y {
 			get { return DrawingPoint.Y; }
 		}
-		
-		private PointD _drawingPoint;
 	}
 }

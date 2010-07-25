@@ -30,6 +30,8 @@ namespace MonoDevelop.ClassDesigner.Figures
 {
 	public interface ICollapsable
 	{
-		bool Collapsed { get; set; }
+		bool IsCollapsed { get; }
+		void Collapse ();
+		void Expand ();
 	}
 }

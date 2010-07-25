@@ -35,7 +35,8 @@ namespace MonoHotDraw.Figures
 		public RectangleFigure () : base ()
 		{
 		}
-
+		
+		#region Drawing Members
 		protected override void BasicDraw (Context context)
 		{
 			RectangleD displayBox = DisplayBox;
@@ -50,5 +51,6 @@ namespace MonoHotDraw.Figures
 			context.Color = LineColor;
 			context.Stroke ();
 		}
+		#endregion
 	}
 }

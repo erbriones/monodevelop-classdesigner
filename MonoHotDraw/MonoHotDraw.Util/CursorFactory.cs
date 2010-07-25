@@ -25,25 +25,30 @@
 
 using System.Collections.Generic;
 
-namespace MonoHotDraw.Util {
-
-	public sealed class CursorFactory {
-	
-		private CursorFactory () {
+namespace MonoHotDraw.Util
+{
+	public sealed class CursorFactory
+	{	
+		private CursorFactory ()
+		{
 		}
 		
+		#region Utility Method
 		public static Gdk.Cursor GetCursorFromType (Gdk.CursorType cursorType) {
 			Gdk.Cursor cursor = null;
 
-			if (CursorClass.Cursors.TryGetValue (cursorType, out cursor) == false) {
+			if (CursorCatalog.Cursors.TryGetValue (cursorType, out cursor) == false) {
 				cursor = new Gdk.Cursor (cursorType);
-				CursorClass.Cursors.Add (cursorType, cursor);
+				CursorCatalog.Cursors.Add (cursorType, cursor);
 			}
 			return cursor;
 		}
+		#endregion
 		
-		class CursorClass {
-			static CursorClass () {
+		class CursorCatalog
+		{
+			static CursorCatalog ()
+			{
 				Cursors = new Dictionary <Gdk.CursorType, Gdk.Cursor> ();
 			}
 			

@@ -24,16 +24,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-namespace MonoHotDraw.Commands {
-
-	public class UndoableCommand : ICommand {
-		
-		public ICommand WrappedCommand { get; protected set; }
-		
-		public UndoableCommand (ICommand wrappedCommand) {
+namespace MonoHotDraw.Commands
+{
+	public class UndoableCommand : ICommand
+	{	
+		public UndoableCommand (ICommand wrappedCommand)
+		{
 			WrappedCommand = wrappedCommand;
 		}
-
+		
+		#region Properties
+		public ICommand WrappedCommand { get; protected set; }
+		#endregion
+		
+		#region ICommand implementation
 		public IDrawingEditor DrawingEditor {
 			get { return WrappedCommand.DrawingEditor; }
 		}
@@ -52,10 +56,11 @@ namespace MonoHotDraw.Commands {
 		
 		public IUndoActivity UndoActivity {
 			get { return new AbstractUndoActivity (DrawingView); }
-			set {  }
+			set {}
 		}
 		
-		public void Execute () {
+		public void Execute ()
+		{
 			WrappedCommand.Execute ();
 
 			IUndoActivity undoableCommand = WrappedCommand.UndoActivity;
@@ -64,5 +69,6 @@ namespace MonoHotDraw.Commands {
 				DrawingEditor.UndoManager.ClearRedos ();
 			}
 		}
+		#endregion
 	}
 }

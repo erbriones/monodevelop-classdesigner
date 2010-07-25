@@ -30,23 +30,23 @@ using MonoHotDraw.Figures;
 using MonoHotDraw.Commands;
 using MonoHotDraw.Util;
 
-namespace MonoHotDraw.Handles {
-
-	public abstract class AbstractHandle : IHandle {
-	
+namespace MonoHotDraw.Handles
+{
+	public abstract class AbstractHandle : IHandle
+	{	
 		public static readonly double Size = 8.0;
 	
-		protected AbstractHandle (IFigure owner) {
-			Owner     = owner;
+		protected AbstractHandle (IFigure owner)
+		{
+			Owner = owner;
 			LineWidth = 1.0;
 			FillColor = new Cairo.Color (0.2, 1.0, 0.2, 0.8);
 			LineColor = new Cairo.Color (0.0, 0.0, 0.0, 1.0);
 		}
 		
-		public virtual Gdk.Cursor CreateCursor () {
-			return null;
-		}
+		public abstract PointD Locate ();
 		
+		#region Pulic Api
 		public virtual double Width {
 			get { return Size; }
 			set {}
@@ -58,72 +58,84 @@ namespace MonoHotDraw.Handles {
 		}
 
 		public virtual IFigure Owner { get; set; }
-		
 		public virtual IUndoActivity UndoActivity { get; set; }
 			
 		public virtual double LineWidth {
-			get { return _lineWidth; }
+			get { return lineWidth; }
 			set {
 				if (value >= 0) {
-					_lineWidth = value;
+					lineWidth = value;
 				}
 			}
 		}
 		
 		public Color FillColor { get; set; }	
-		
 		public Color LineColor { get; set; }
 
-		public bool ContainsPoint (double x, double y) {
-			RectangleD displayBox = new RectangleD(Locate());
-			displayBox.Inflate(Width/2, Height/2);
-			return displayBox.Contains(x, y);
+		public virtual Gdk.Cursor CreateCursor ()
+		{
+			return null;
+		}
+		
+		public bool ContainsPoint (double x, double y)
+		{
+			var displayBox = new RectangleD (Locate ());
+			displayBox.Inflate (Width/2, Height/2);
+			return displayBox.Contains (x, y);
 		}
 
-		public virtual void Draw (Context context, IDrawingView view) {
-			RectangleD rect = ViewDisplayBox(view);
-			context.Save();
+		public virtual void Draw (Context context, IDrawingView view)
+		{
+			RectangleD rect = ViewDisplayBox (view);
+			context.Save ();
 			context.LineWidth = LineWidth;
 			context.Rectangle (GdkCairoHelper.CairoRectangle (rect));
 			context.Color = FillColor;
 			context.FillPreserve ();
 			context.Color = LineColor;
 			context.Stroke ();
-			context.Restore();
+			context.Restore ();
 		}
 
-		public virtual void InvokeStart (double x, double y, IDrawingView view) {
-			CreateUndoActivity(view);
+		public virtual void InvokeStart (double x, double y, IDrawingView view)
+		{
+			CreateUndoActivity (view);
 		}
 
-		public virtual void InvokeStep (double x, double y, IDrawingView view) {
+		public virtual void InvokeStep (double x, double y, IDrawingView view)
+		{
 		}
 
-		public virtual void InvokeEnd (double x, double y, IDrawingView view) {
-			UpdateUndoActivity();
+		public virtual void InvokeEnd (double x, double y, IDrawingView view)
+		{
+			UpdateUndoActivity ();
+		}
+		#endregion
+	
+		#region AbstractHandle Members
+		protected virtual void CreateUndoActivity (IDrawingView view)
+		{
 		}
 		
-		public abstract PointD Locate ();
-		
-		protected virtual void CreateUndoActivity(IDrawingView view) {
+		protected virtual void UpdateUndoActivity ()
+		{
 		}
 		
-		protected virtual void UpdateUndoActivity() {
-		}
-		
-		protected virtual RectangleD ViewDisplayBox(IDrawingView view) {
+		protected virtual RectangleD ViewDisplayBox (IDrawingView view)
+		{
 			if (view == null)
-				throw new ArgumentNullException("view");
+				throw new ArgumentNullException ("view");
 			
-			PointD center = Locate();
-			center = view.DrawingToView(center.X, center.Y);
-			RectangleD displayBox = new RectangleD(center);
-			displayBox.Inflate(Width/2, Height/2);
-			displayBox.OffsetDot5();
+			PointD center = Locate ();
+			center = view.DrawingToView (center.X, center.Y);
+			var displayBox = new RectangleD (center);
+			displayBox.Inflate (Width/2 * view.Scale, Height/2 * view.Scale);
+			displayBox.OffsetDot5 ();
 			
 			return displayBox;
 		}
 
-		private double  _lineWidth;
+		private double lineWidth;
+		#endregion
 	}
 }

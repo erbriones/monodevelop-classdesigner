@@ -26,59 +26,70 @@
 using System;
 using MonoHotDraw.Figures;
 
-namespace MonoHotDraw.Commands {	
-	
-	public class BringToFrontCommand: AbstractCommand {
-		
-		public BringToFrontCommand (string name, IDrawingEditor editor): base (name, editor) {
+namespace MonoHotDraw.Commands
+{		
+	public class BringToFrontCommand: AbstractCommand
+	{	
+		public BringToFrontCommand (string name, IDrawingEditor editor) : base (name, editor)
+		{
 		}
-
+		
+		#region Public Members
 		public override bool IsExecutable {
 			get { return DrawingView.SelectionCount > 0; }
 		}
 		
-		public override void Execute () {
+		public override void Execute ()
+		{
 			base.Execute ();
 
 			UndoActivity = CreateUndoActivity ();
 			UndoActivity.AffectedFigures = new FigureCollection (DrawingView.SelectionEnumerator);
-			foreach (IFigure figure in UndoActivity.AffectedFigures) {
+			
+			foreach (IFigure figure in UndoActivity.AffectedFigures)
 				DrawingView.Drawing.BringToFront (figure);
-			}
 		}
 		
-		protected override IUndoActivity CreateUndoActivity () {
+		#endregion
+		
+		#region Protected Members
+		protected override IUndoActivity CreateUndoActivity ()
+		{
 			return new BringToFrontUndoActivity (DrawingView);
 		}
+		#endregion
 		
-		class BringToFrontUndoActivity : AbstractUndoActivity {
-			public BringToFrontUndoActivity (IDrawingView drawingView): base (drawingView) {
+		#region UndoActivity
+		class BringToFrontUndoActivity : AbstractUndoActivity
+		{
+			public BringToFrontUndoActivity (IDrawingView drawingView) : base (drawingView)
+			{
 				Undoable = true;
 				Redoable = true;
 			}
 
-			public override bool Undo () {
+			public override bool Undo ()
+			{
 				if (base.Undo () == false)
 					return false;
 
-				foreach (IFigure figure in AffectedFigures) {
+				foreach (IFigure figure in AffectedFigures)
 					DrawingView.Drawing.SendToBack (figure);
-				}
-
+				
 				return true;
 			}
 
-			public override bool Redo () {
+			public override bool Redo ()
+			{
 				if (Redoable == false)
 					return false;
 
-				foreach (IFigure figure in AffectedFigures) {
+				foreach (IFigure figure in AffectedFigures)
 					DrawingView.Drawing.BringToFront (figure);
-				}
 
 				return true;
 			}
 		}
-
+		#endregion
 	}
 }

@@ -23,28 +23,19 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
-using Cairo;
 using Gdk;
 
-namespace MonoHotDraw {
-	
-	public abstract class Event {
-		
-		protected Event (IDrawingView view, Gdk.Event gdkEvent) {
-			_gdkEvent = gdkEvent;
-			_view = view;
+namespace MonoHotDraw
+{	
+	public abstract class Event
+	{
+		protected Event (IDrawingView view, Gdk.Event gdkEvent)
+		{
+			GdkEvent = gdkEvent;
+			View = view;
 		}
 		
-		public Gdk.Event GdkEvent {
-			get { return _gdkEvent; }
-		}
-		
-		public IDrawingView View {
-			get { return _view; }
-		}
-		
-		private Gdk.Event _gdkEvent;
-		private IDrawingView _view;
+		public Gdk.Event GdkEvent { get; protected set; }
+		public IDrawingView View { get; protected set; }
 	}
 }

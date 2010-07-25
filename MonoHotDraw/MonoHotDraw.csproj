@@ -49,7 +49,6 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="ContainerCanvas.cs" />
-    <Compile Include="DrawingEventArgs.cs" />
     <Compile Include="Event.cs" />
     <Compile Include="gtk-gui\generated.cs" />
     <Compile Include="gtk-gui\MonoHotDraw.SteticComponent.cs" />
@@ -65,11 +64,9 @@
     <Compile Include="MonoHotDraw.Commands\CopyCommand.cs" />
     <Compile Include="MonoHotDraw.Commands\CutCommand.cs" />
     <Compile Include="MonoHotDraw.Commands\DeleteCommand.cs" />
-    <Compile Include="MonoHotDraw.Commands\DeleteFromDrawingVisitor.cs" />
     <Compile Include="MonoHotDraw.Commands\DuplicateCommand.cs" />
     <Compile Include="MonoHotDraw.Commands\FigureTransferCommand.cs" />
     <Compile Include="MonoHotDraw.Commands\ICommand.cs" />
-    <Compile Include="MonoHotDraw.Commands\InsertIntoDrawingVisitor.cs" />
     <Compile Include="MonoHotDraw.Commands\IUndoActivity.cs" />
     <Compile Include="MonoHotDraw.Commands\NullUndoActivity.cs" />
     <Compile Include="MonoHotDraw.Commands\PasteCommand.cs" />
@@ -119,7 +116,6 @@
     <Compile Include="MonoHotDraw.Tools\DragCreationTool.cs" />
     <Compile Include="MonoHotDraw.Tools\DragTool.cs" />
     <Compile Include="MonoHotDraw.Tools\FigureTool.cs" />
-    <Compile Include="MonoHotDraw.Tools\HandleTracker.cs" />
     <Compile Include="MonoHotDraw.Tools\ITool.cs" />
     <Compile Include="MonoHotDraw.Tools\MultiLineTextTool.cs" />
     <Compile Include="MonoHotDraw.Tools\PolyLineFigureTool.cs" />
@@ -148,9 +144,7 @@
     <Compile Include="MonoHotDraw.Figures\EllipseFigure.cs" />
     <Compile Include="MonoHotDraw.Figures\FigureCollection.cs" />
     <Compile Include="MonoHotDraw.Figures\IFigure.cs" />
-    <Compile Include="MonoHotDraw.Figures\IFigureVisitor.cs" />
     <Compile Include="MonoHotDraw.Figures\ImageFigure.cs" />
-    <Compile Include="MonoHotDraw.Figures\LineConnection.cs" />
     <Compile Include="MonoHotDraw.Figures\LineTerminal.cs" />
     <Compile Include="MonoHotDraw.Figures\MultiLineTextFigure.cs" />
     <Compile Include="MonoHotDraw.Figures\PolyLineFigure.cs" />
@@ -159,11 +153,19 @@
     <Compile Include="MonoHotDraw.Figures\TriangleArrowLineTerminal.cs" />
     <Compile Include="MonoHotDraw.Figures\VStackFigure.cs" />
     <Compile Include="MonoHotDraw.Figures\CompositeFigure.cs" />
-    <Compile Include="MonoHotDraw.Figures\FigureEventArgs.cs" />
     <Compile Include="MonoHotDraw.Figures\HStackFigure.cs" />
     <Compile Include="MonoHotDraw.Figures\IConnectionFigure.cs" />
     <Compile Include="MonoHotDraw.Figures\TextFigure.cs" />
     <Compile Include="MonoHotDraw.Tools\MenuTool.cs" />
+    <Compile Include="DrawingEvent.cs" />
+    <Compile Include="MonoHotDraw.Commands\CommandManager.cs" />
+    <Compile Include="MonoHotDraw.Figures\LineConnectionFigure.cs" />
+    <Compile Include="MonoHotDraw.Figures\FigureEvent.cs" />
+    <Compile Include="MonoHotDraw.Tools\HandleTool.cs" />
+    <Compile Include="MonoHotDraw.Vistor\DeleteFromDrawingVisitor.cs" />
+    <Compile Include="MonoHotDraw.Vistor\InsertIntoDrawingVisitor.cs" />
+    <Compile Include="MonoHotDraw.Vistor\IFigureVisitor.cs" />
+    <Compile Include="MonoHotDraw.Vistor\DrawInRegionVisitor.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -179,10 +181,16 @@
     <Folder Include="MonoHotDraw.Locators\" />
     <Folder Include="MonoHotDraw.Serialization\" />
     <Folder Include="MonoHotDraw.Util\" />
+    <Folder Include="MonoHotDraw.Vistor\" />
+    <Folder Include="MonoHotDraw.Figures\" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
-      <Properties InternalTargetFrameworkVersion="3.5" />
+      <Properties InternalTargetFrameworkVersion="3.5">
+        <Policies>
+          <DotNetNamingPolicy DirectoryNamespaceAssociation="Flat" ResourceNamePolicy="FileFormatDefault" />
+        </Policies>
+      </Properties>
     </MonoDevelop>
   </ProjectExtensions>
 </Project>

@@ -24,27 +24,26 @@
 // THE SOFTWARE.
 
 using Cairo;
-using System;
 using MonoHotDraw.Figures;
 using MonoHotDraw.Locators;
 
-namespace MonoHotDraw.Handles {
-
-	public abstract class LocatorHandle : AbstractHandle {
-	
-		protected LocatorHandle (IFigure owner, ILocator loc): base (owner) {
-			_locator = loc;
+namespace MonoHotDraw.Handles
+{
+	public abstract class LocatorHandle : AbstractHandle
+	{
+		protected LocatorHandle (IFigure owner, ILocator locator): base (owner)
+		{
+			this.locator = locator;
 		}
 
-		public override PointD Locate () {
-			if (_locator != null) {
-				return _locator.Locate (Owner);
-			}
-			else {
+		public override PointD Locate ()
+		{
+			if (locator != null)
+				return locator.Locate (Owner);
+			else
 				return new PointD (0, 0);
-			}
 		}
 		
-		private ILocator _locator;
+		private ILocator locator;
 	}
 }

@@ -36,11 +36,11 @@ namespace MonoHotDraw.Figures
 		double _lineDistance;
 		double _pointDistance;
 		
-		public TriangleArrowLineTerminal (): this (10.0, 20.0)
+		public TriangleArrowLineTerminal () : this (10.0, 20.0)
 		{
 		}
 	
-		public TriangleArrowLineTerminal (double lDistance, double pDistance): base ()
+		public TriangleArrowLineTerminal (double lDistance, double pDistance) : base ()
 		{
 			_lineDistance = lDistance;
 			_pointDistance = pDistance;
@@ -52,11 +52,14 @@ namespace MonoHotDraw.Figures
 			_pointDistance = info.GetDouble ("PointDistance");
 		}
 		
+		
+		
 		public override PointD Draw (Context context, PointD a, PointD b)
 		{
-			var leftPoint = new PointD ();
-			var middlePoint = new PointD ();
-			var rightPoint = new PointD ();
+			PointD leftPoint;
+			PointD middlePoint;
+			PointD rightPoint;
+
 			Geometry.GetArrowPoints (a, b, _lineDistance, _pointDistance, 
 									out leftPoint, out rightPoint, out middlePoint);
 			
@@ -70,6 +73,16 @@ namespace MonoHotDraw.Figures
 			return middlePoint;
 		}
 		
+		public override RectangleD InvalidateRect (PointD b)
+		{
+			var distance = Math.Max (_lineDistance * 2, _pointDistance);
+			var rect = new RectangleD (b.X, b.Y, 0.0, 0.0);
+			rect.Inflate (distance, distance);
+			
+			return rect;
+		}
+
+		#region ISerializable
 		public override void GetObjectData (SerializationInfo info, StreamingContext context)
 		{
 			info.AddValue ("LineDistance", _lineDistance);
@@ -77,14 +90,6 @@ namespace MonoHotDraw.Figures
 
 			base.GetObjectData (info, context);
 		}
-		
-		public override RectangleD InvalidateRect (PointD b)
-		{
-			var distance = Math.Max (_lineDistance*2, _pointDistance);
-			var r = new RectangleD (b.X, b.Y, 0.0, 0.0);
-			r.Inflate (distance, distance);
-			
-			return r;
-		}
+		#endregion
 	}
 }

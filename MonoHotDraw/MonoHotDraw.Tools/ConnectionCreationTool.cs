@@ -37,14 +37,14 @@ namespace MonoHotDraw.Tools
 {
 	public class ConnectionCreationTool : CreationTool
 	{
-	
-		public ConnectionCreationTool (IDrawingEditor editor, IConnectionFigure fig): base (editor, fig)
+		public ConnectionCreationTool (IDrawingEditor editor, IConnectionFigure fig) : base (editor, fig)
 		{
 			_connection = fig;
 			_connection.DisconnectStart ();
 			_connection.DisconnectEnd ();
 		}
 		
+		#region Mouse Events
 		public override void MouseDrag (MouseEvent ev)
 		{
 			if (_handle != null)
@@ -71,7 +71,8 @@ namespace MonoHotDraw.Tools
 			}
 		}
 		
-		public override void MouseUp (MouseEvent ev) {
+		public override void MouseUp (MouseEvent ev)
+		{
 			if (_handle != null)
 				_handle.InvokeEnd (ev.X, ev.Y, ev.View);
 						
@@ -99,7 +100,9 @@ namespace MonoHotDraw.Tools
 			else
 				widget.GdkWindow.Cursor = CursorFactory.GetCursorFromType (Gdk.CursorType.Crosshair);
 		}
-		
+		#endregion
+				
+		#region UndoActivity
 		public class ConnectionCreationToolUndoActivity : AbstractUndoActivity
 		{
 			public ConnectionCreationToolUndoActivity (IDrawingView view) : base (view)
@@ -137,7 +140,9 @@ namespace MonoHotDraw.Tools
 			public IConnector StartConnector { set; get; }
 			public IConnector EndConnector { set; get; }
 		}
+		#endregion
 		
+		#region Tool Members
 		protected override void CreateUndoActivity ()
 		{
 			var activity = new ConnectionCreationToolUndoActivity (Editor.View);
@@ -145,8 +150,9 @@ namespace MonoHotDraw.Tools
 			activity.StartConnector = _connection.StartConnector;
 			UndoActivity = activity;
 		}
-		
+
 		private IHandle _handle;
-		private IConnectionFigure _connection;
+		private IConnectionFigure _connection;	
+		#endregion
 	}
 }

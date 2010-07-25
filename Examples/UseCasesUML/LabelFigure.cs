@@ -38,7 +38,7 @@ namespace MonoHotDraw.Samples {
 		public LabelFigure(string text): base(text) {
 		}
 		
-		public override void BasicDrawSelected(Context context) {
+		protected override void BasicDrawSelected(Context context) {
 			if (Text != "") {
 				return;
 			}

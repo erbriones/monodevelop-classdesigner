@@ -29,21 +29,31 @@ using System;
 using Cairo;
 using MonoHotDraw.Figures;
 using MonoHotDraw.Util;
+using MonoHotDraw.Visitor;
 
-namespace MonoHotDraw.Commands {
+namespace MonoHotDraw.Commands
+{
+	public class PasteCommand : FigureTransferCommand
+	{
 
-	public class PasteCommand : FigureTransferCommand {
-
-		public PasteCommand (string name, IDrawingEditor editor) : base (name, editor) {
+		public PasteCommand (string name, IDrawingEditor editor) : base (name, editor)
+		{
 		}
+		
+		protected override IUndoActivity CreateUndoActivity ()
+		{
+			return new PasteUndoActivity (DrawingView);
+		}		
 
+		#region Public Api
 		public override bool IsExecutable {
 			get { return Clipboard.GetInstance ().Contents != null; }
 		}
 
 		// FIXME: LastClick was removed
 		// TODO: Check that clipboard contents are FigureCollection 
-//		public override void Execute () {
+		public override void Execute ()
+		{
 //			base.Execute ();
 //			FigureCollection figures = Clipboard.GetInstance ().Contents as FigureCollection;
 //			if (figures == null)
@@ -53,58 +63,53 @@ namespace MonoHotDraw.Commands {
 //			UndoActivity.AffectedFigures = figures;
 //
 //			PointD lastClick = DrawingView.LastClick;
-//			RectangleD r     = GetBounds (figures);
+//			RectangleD r     =  figures.GetBounds ();
 //			
 //			DrawingView.ClearSelection ();
 //			
 //			UndoActivity.AffectedFigures = InsertFigures (UndoActivity.AffectedFigures, lastClick.X - r.X, lastClick.Y - r.Y);
-//		}
+		}
+		
+		#endregion
 
-		protected override IUndoActivity CreateUndoActivity () {
-			return new PasteUndoActivity (DrawingView);
-		}
+		#region UndoActivity
 		
-		// TODO: Move this to FigureCollection
-		private RectangleD GetBounds (FigureCollection figures) {
-			RectangleD rectangle = new RectangleD (0, 0, 0, 0);
-			foreach (IFigure figure in figures) {
-				rectangle.Add (figure.DisplayBox);
-			}
-			return rectangle;
-		}
-		
-		internal class PasteUndoActivity : AbstractUndoActivity {
-			public PasteUndoActivity (IDrawingView drawingView) : base (drawingView) {
+		internal class PasteUndoActivity : AbstractUndoActivity
+		{
+			public PasteUndoActivity (IDrawingView drawingView) : base (drawingView)
+			{
 				Undoable = true;
 				Redoable = true;
 			}
-
-			public override bool Undo () {
+			
+			public override bool Redo ()
+			{
+				var visitor = new InsertIntoDrawingVisitor (DrawingView.Drawing);
 				
-				// TODO: This doesn't seem neccesary
-				if (base.Undo () == false)
-					return false;
+				DrawingView.ClearSelection ();
+				
+				foreach (IFigure figure in AffectedFigures)
+					figure.AcceptVisitor (visitor);
+				
+				DrawingView.AddToSelection (visitor.AddedFigures); // Create new selection with pasted figure
 
-				DeleteFromDrawingVisitor visitor = new DeleteFromDrawingVisitor (DrawingView.Drawing);
-				foreach (IFigure figure in AffectedFigures) {
-					figure.Visit (visitor);
-				}
-				DrawingView.ClearSelection ();
 				return true;
 			}
-			
-            // FIXME: InsertFigures was removed
-//			public override bool Redo () {
-//				// do not call execute directly as the selection might has changed
-//				if (!Redoable) 
-//					return false;
-//					
-//				DrawingView.ClearSelection ();
-//				AffectedFigures = DrawingView.InsertFigures (AffectedFigures, 0, 0, false);
-//
-//				return true;
-//			}
-		}
 
+			public override bool Undo ()
+			{	
+				var visitor = new DeleteFromDrawingVisitor (DrawingView.Drawing);
+
+				foreach (IFigure figure in AffectedFigures)
+					figure.AcceptVisitor (visitor);
+				
+				// Remove pasted figures from selection 
+				foreach (IFigure fig in visitor.DeletedFigures)
+					DrawingView.RemoveFromSelection (fig);
+						
+				return true;
+			}			
+		}
+		#endregion
 	}
 }

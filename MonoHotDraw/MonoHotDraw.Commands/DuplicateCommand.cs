@@ -27,28 +27,36 @@ using System;
 using System.Collections.Generic;
 using MonoHotDraw.Figures;
 
-namespace MonoHotDraw.Commands {
-
-	public class DuplicateCommand : FigureTransferCommand {
-		
-		public DuplicateCommand (string name, IDrawingEditor editor) : base (name, editor) {
+namespace MonoHotDraw.Commands
+{
+	public class DuplicateCommand : FigureTransferCommand
+	{	
+		public DuplicateCommand (string name, IDrawingEditor editor) : base (name, editor)
+		{
 		}
 		
-		public override void Execute () {
-			base.Execute ();
-			UndoActivity = CreateUndoActivity ();
-			FigureCollection figures = new FigureCollection (DrawingView.SelectionEnumerator).Clone ();
-			UndoActivity.AffectedFigures = figures;
-			DrawingView.ClearSelection ();
-			UndoActivity.AffectedFigures = base.InsertFigures (UndoActivity.AffectedFigures, 10, 10);
-		}
-
+		#region Public Members
 		public override bool IsExecutable {
 			get { return DrawingView.SelectionCount > 0; }
 		}
 		
-		protected override IUndoActivity CreateUndoActivity () {
+		public override void Execute ()
+		{
+			base.Execute ();
+			var figures = new FigureCollection (DrawingView.SelectionEnumerator).Clone ();
+			UndoActivity = CreateUndoActivity ();
+			UndoActivity.AffectedFigures = figures;
+			DrawingView.ClearSelection ();
+			
+			UndoActivity.AffectedFigures = base.InsertFigures (UndoActivity.AffectedFigures, 10, 10);
+		}
+		#endregion
+		
+		#region Protected Members
+		protected override IUndoActivity CreateUndoActivity ()
+		{
 			return new PasteCommand.PasteUndoActivity (DrawingView);
 		}
+		#endregion
 	}
 }

@@ -29,10 +29,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 //using MonoDevelop.Core;
+
 using MonoDevelop.Ide;
 using MonoDevelop.Projects;
 using MonoDevelop.Projects.Dom;
 using MonoDevelop.Projects.Dom.Parser;
+
+using MonoHotDraw.Figures;
 
 namespace MonoDevelop.ClassDesigner.Figures
 {
@@ -40,16 +43,17 @@ namespace MonoDevelop.ClassDesigner.Figures
 	{
 		public DelegateFigure (IType domType) : base (domType)
 		{
-			FigureColor = new Cairo.Color (0.8, 0.1, 0.8, 0.4);
+			FillColor = new Cairo.Color (0.8, 0.1, 0.8, 0.4);
 		}
 		
 		protected override ClassType ClassType {
 			get { return ClassType.Delegate; }
 		}
 		
+		/*
 		public override void UpdateGroups ()
 		{				
-			var parameters = new List<IMemberFigure> ();
+			var parameters = new List<TypeMemberFigure> ();
 			var compartment = Compartments
 				.Where (c => c.Name == "Parameters")
 				.SingleOrDefault ();
@@ -59,32 +63,27 @@ namespace MonoDevelop.ClassDesigner.Figures
 			if (invoke == null)
 				return;
 			
-			parameters.AddRange (compartment.FiguresEnumerator);
+			parameters.AddRange (compartment.Figures.OfType<TypeMemberFigure> ());
 			 
 			if (parameters.Count () == 0)
 			{
 				foreach (var p in invoke.Parameters) {
 					var icon = ImageService.GetPixbuf (p.StockIcon, IconSize.Menu);
-					parameters.Add (new TypeMemberFigure (icon, p, false));
+					parameters.Add ((IFigure) new TypeMemberFigure (icon, p, false));
 				}
 			}
 			
 			// FIXME: How does grouping change in vs.net class diagram?
 			if (grouping == GroupingSetting.Alphabetical)
-				compartment.AddMembers (parameters.OrderBy (p => p.Name));
+				compartment.AddRange (parameters.OrderBy (p => p.Name));
 			else if (grouping == GroupingSetting.Kind)
-				compartment.AddMembers (parameters);
+				compartment.AddRange (parameters);
 			else
-				compartment.AddMembers (parameters);
+				compartment.AddRange (parameters);
 			
-			compartment.AddMembers (parameters);
+			compartment.AddRange (parameters);
 			AddMemberGroup (compartment);
 		}
-		
-		protected override void CreateCompartments ()
-		{
-			var parameters = new TypeMemberGroupFigure ("Parameters");
-			AddCompartment (parameters);
-		}
+		*/
 	}
 }

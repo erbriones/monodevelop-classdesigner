@@ -28,21 +28,26 @@ using Gdk;
 using MonoHotDraw.Figures;
 using MonoHotDraw.Util;
 
-namespace MonoHotDraw.Tools {
-
-	public class ResizeCreationTool: CreationTool {
-	
-		public ResizeCreationTool (IDrawingEditor editor, IFigure ptype): base (editor, ptype) {
+namespace MonoHotDraw.Tools
+{
+	public class ResizeCreationTool: CreationTool
+	{
+		public ResizeCreationTool (IDrawingEditor editor, IFigure ptype) : base (editor, ptype)
+		{
 		}
 		
-		public override void MouseDown (MouseEvent ev) {
+		#region Mouse Events
+		public override void MouseDown (MouseEvent ev)
+		{
 			base.MouseDown (ev);
 			Prototype.DisplayBox = new RectangleD (ev.X, ev.Y, 0.0, 0.0);
 		}
 		
-		public override void MouseDrag (MouseEvent ev) {
+		public override void MouseDrag (MouseEvent ev)
+		{
 			Prototype.DisplayBox = new RectangleD (new PointD (AnchorX, AnchorY), 
-				                                       new PointD (ev.X, ev.Y));
+				                                   new PointD (ev.X, ev.Y));
 		}
+		#endregion
 	}
 }

@@ -30,7 +30,8 @@ namespace MonoHotDraw.Util {
 
 	public sealed class CairoFigures {
 	
-		private CairoFigures () {
+		private CairoFigures ()
+		{
 		}
 
 		public static void CurvedRectangle (Cairo.Context c, RectangleD rect, double radius) {

@@ -35,51 +35,46 @@ using MonoHotDraw.Figures;
 
 namespace MonoDevelop.ClassDesigner.Commands
 {
-	internal sealed class CollapsableCommand : FigureCommandHandler
+	internal sealed class CollapsableCommands : FigureCommandHandler
 	{
 		#region Commands
 		[CommandHandler (DesignerCommands.Collapse)]
 		protected void CollapseItem ()
 		{
-			var designer = (ClassDesigner) Designer;
-			
-			foreach (IFigure figure in designer.View.SelectionEnumerator) {
+			foreach (IFigure figure in Designer.View.SelectionEnumerator) {
 				var c = figure as ICollapsable;
 					
 				if (c != null)		
-					c.Collapsed = true;
+					c.Collapse ();
 			}
 		}
 		
 		[CommandHandler (DesignerCommands.Expand)]
 		protected void ExpandItem ()
 		{
-			var designer = (ClassDesigner) Designer;
-
-			foreach (IFigure figure in designer.View.SelectionEnumerator) {
+			foreach (IFigure figure in Designer.View.SelectionEnumerator) {
 				var c = figure as ICollapsable;
 					
 				if (c != null)
-					c.Collapsed = false;
+					c.Expand ();
 			}
 		}
 		
 		[CommandUpdateHandler (DesignerCommands.Collapse)]
 		protected void UpdateCollapseItem (CommandInfo info)
 		{
-			var designer = (ClassDesigner) Designer;
 			info.Enabled = false;
 			info.Visible = true;
 			
-			if (designer.View.SelectionCount == 0) {
+			if (Designer.View.SelectionCount == 0) {
 				info.Visible = false;	
 				return;
 			}
 			
-			foreach (IFigure figure in designer.View.SelectionEnumerator) {
+			foreach (IFigure figure in Designer.View.SelectionEnumerator) {
 				var c = figure as ICollapsable;
 				if (c != null) {
-					if (!c.Collapsed) {
+					if (!c.IsCollapsed) {
 						info.Visible = info.Enabled = true;
 						return;
 					}
@@ -90,22 +85,19 @@ namespace MonoDevelop.ClassDesigner.Commands
 		[CommandUpdateHandler (DesignerCommands.Expand)]
 		protected void UpdateExpandItem (CommandInfo info)
 		{
-			var designer = (ClassDesigner) Designer;
 			info.Enabled = false;
 			info.Visible = true;
 			
-			if (designer.View.SelectionCount == 0) {
+			if (Designer.View.SelectionCount == 0) {
 				info.Visible = false;
 				return;
 			}
 			
-			foreach (IFigure figure in designer.View.SelectionEnumerator) {
+			foreach (IFigure figure in Designer.View.SelectionEnumerator) {
 				var c = figure as ICollapsable;
-				if (c != null) {
-					if (c.Collapsed) {
+				if (c != null && c.IsCollapsed) {
 						info.Visible = info.Enabled = true;
 						return;
-					}
 				}
 			}
 		}

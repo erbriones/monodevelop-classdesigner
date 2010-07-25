@@ -44,7 +44,7 @@ public partial class MainWindow: Gtk.Window
 	}
 
 	protected virtual void OnAddLineConnectionActionActivated (object sender, System.EventArgs e) {
-		LineConnection connection = new LineConnection();
+		LineConnectionFigure connection = new LineConnectionFigure();
 		connection.ConnectionChanged += delegate {
 			System.Console.WriteLine("Connection Changed");
 		};

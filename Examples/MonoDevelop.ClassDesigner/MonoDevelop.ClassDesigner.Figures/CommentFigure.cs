@@ -38,11 +38,10 @@ namespace MonoDevelop.ClassDesigner.Figures
 			if (String.IsNullOrEmpty (comment))
 				Text = "Add your comment here.";
 		}
-		
+
 		protected override void BasicDraw (Cairo.Context context)
 		{
-			RectangleD rect = DisplayBox;
-			
+			RectangleD rect = DisplayBox;			
 			CairoFigures.RoundedRectangle (context, rect, 7.5);
 
 			context.Color = new Cairo.Color (1.0, 1.0, 0.7, 0.8);
@@ -53,7 +52,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 			base.BasicDraw (context);
 		}
 		
-		public override void BasicDrawSelected (Cairo.Context context)
+		protected override void BasicDrawSelected (Cairo.Context context)
 		{
 			RectangleD rect = DisplayBox;
 			rect.OffsetDot5 ();
@@ -63,6 +62,10 @@ namespace MonoDevelop.ClassDesigner.Figures
 			context.LineWidth = 3.0;
 			context.Color = new Cairo.Color(0.0, 0.0, 0.0, 1.0);
 			context.Stroke ();
+		}
+		
+		public override bool CanConnect {
+			get { return false; }
 		}
 		
 		public override string Text {

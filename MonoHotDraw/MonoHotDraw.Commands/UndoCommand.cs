@@ -26,33 +26,38 @@
 using System;
 using MonoHotDraw.Commands;
 
-namespace MonoHotDraw.Commands {
-
-	public class UndoCommand : AbstractCommand {
-		
-		public UndoCommand (string name, IDrawingEditor editor) : base (name, editor) {
+namespace MonoHotDraw.Commands
+{
+	public class UndoCommand : AbstractCommand
+	{
+		public UndoCommand (string name, IDrawingEditor editor) : base (name, editor)
+		{
 		}
 		
-		// TODO: Make more readable.
-		public override void Execute () {
+		public override bool IsExecutable {
+			get {
+				if (DrawingEditor.UndoManager == null)
+					return false;
+				
+				return DrawingEditor.UndoManager.Undoable;
+			}
+		}
+		
+		public override void Execute ()
+		{
 			base.Execute ();
-			UndoManager manager = DrawingEditor.UndoManager;
-
-			if (manager == null || manager.Undoable == false) {
-				return;
-			}
-
-			IUndoActivity lastUndoable  = manager.PopUndo ();
-			// Execute undo
-			bool hasBeenUndone = lastUndoable.Undo ();
-
-			// Add to redo
-			if (hasBeenUndone && lastUndoable.Redoable) {
-				manager.PushRedo (lastUndoable);
-			}
 			
-			//lastUndoable.getDrawingView().checkDamage();
-			//DrawingEditor.fre getDrawingEditor().figureSelectionChanged(lastUndoable.getDrawingView());
+			if (!IsExecutable)
+				return;
+			
+			UndoManager manager = DrawingEditor.UndoManager;
+			IUndoActivity lastUndoable  = manager.PopUndo ();
+			
+			// 1. Executes undo
+			// 2. If successful try to push redo
+			// 3. UndoManager will determine if its redoable
+			if (lastUndoable.Undo ())
+				manager.PushRedo (lastUndoable);
 		}
 	}
 }

@@ -27,30 +27,39 @@ using Cairo;
 using MonoHotDraw.Connectors;
 using MonoHotDraw.Figures;
 
-namespace MonoHotDraw.Handles {
-
-	public class ChangeConnectionStartHandle: ChangeConnectionHandle {
-	
-		public ChangeConnectionStartHandle (IConnectionFigure owner): base (owner) {
+namespace MonoHotDraw.Handles
+{
+	public class ChangeConnectionStartHandle : ChangeConnectionHandle
+	{
+		public ChangeConnectionStartHandle (IConnectionFigure owner) : base (owner)
+		{
 		}
-
-		public override PointD Locate () {
+		
+		public override PointD Locate ()
+		{
 			return Connection.StartPoint;
 		}
-
+		#region Protected Members
+		protected override PointD Point {
+			set { Connection.StartPoint = value; }
+		}
+		
 		protected override IConnector Target {
 			get { return Connection.StartConnector; }
 		}
 
-		protected override void Connect (IConnector connector) {
+		protected override void Connect (IConnector connector)
+		{
 			Connection.ConnectStart (connector);
 		}
 
-		protected override void Disconnect () {
+		protected override void Disconnect ()
+		{
 			Connection.DisconnectStart ();
 		}
 		
-		protected override bool IsConnectionPossible (IFigure figure) {
+		protected override bool IsConnectionPossible (IFigure figure)
+		{
 			if (!figure.Includes (Connection) &&
 				figure.CanConnect &&
 				Connection.CanConnectStart (figure)) {
@@ -59,14 +68,11 @@ namespace MonoHotDraw.Handles {
 			}
 			return false;
 		}
-
-		protected override PointD Point {
-			set { Connection.StartPoint = value; }
-		}
 		
-		protected override PointD FindPoint (IConnector connector) {
+		protected override PointD FindPoint (IConnector connector)
+		{
 			return connector.FindStart(Connection);
 		}
-
+		#endregion
 	}
 }

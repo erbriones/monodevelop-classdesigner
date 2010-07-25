@@ -30,7 +30,7 @@ using MonoHotDraw.Figures;
 
 namespace MonoHotDraw.Samples {
 
-	public class GeneralizationFigure: LineConnection {
+	public class GeneralizationFigure: LineConnectionFigure {
 	
 		public GeneralizationFigure(): base() {
 			EndTerminal = new TriangleArrowLineTerminal();

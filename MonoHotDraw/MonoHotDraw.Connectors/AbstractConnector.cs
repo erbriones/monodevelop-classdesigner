@@ -37,8 +37,6 @@ namespace MonoHotDraw.Connectors
 	[Serializable]
 	public abstract class AbstractConnector : IConnector
 	{
-		IFigure _owner;
-		
 		protected AbstractConnector (IFigure owner)
 		{
 			Owner = owner;
@@ -46,23 +44,16 @@ namespace MonoHotDraw.Connectors
 
 		protected AbstractConnector (SerializationInfo info, StreamingContext context)
 		{
-			_owner = (IFigure) info.GetValue ("Owner", typeof (IFigure));
+			Owner = (IFigure) info.GetValue ("Owner", typeof (IFigure));
 		}
 
-		public virtual IFigure Owner {
-			get { return _owner; }
-			protected set { _owner = value; }
-		}
-
+		#region Public Api
 		public virtual RectangleD DisplayBox {
 			get { return Owner.DisplayBox; }
 		}
 		
-		public virtual object Clone ()
-		{
-			return GenericCloner.Clone <AbstractConnector> (this);
-		}
-
+		public virtual IFigure Owner { get; protected set; }
+		
 		public virtual bool ContainsPoint (double x, double y)
 		{
 			return Owner.ContainsPoint (x, y);
@@ -81,10 +72,20 @@ namespace MonoHotDraw.Connectors
 		{
 			return DisplayBox.Center;
 		}
+		#endregion
 		
+		#region ICloneable implentation
+		public virtual object Clone ()
+		{
+			return GenericCloner.Clone <AbstractConnector> (this);
+		}
+		#endregion
+		
+		#region ISerializable implementation
 		public virtual void GetObjectData (SerializationInfo info, StreamingContext context)
 		{
 			info.AddValue ("Owner", Owner);
 		}
+		#endregion
 	}
 }

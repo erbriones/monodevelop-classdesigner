@@ -26,87 +26,108 @@
 // THE SOFTWARE.
 
 using System;
+using System.Collections.Generic;
+
 using Cairo;
-using Gdk;
+
 using MonoHotDraw.Figures;
+using MonoHotDraw.Handles;
 using MonoHotDraw.Util;
+
 using MonoDevelop.Projects.Dom;
 
 namespace MonoDevelop.ClassDesigner.Figures
 {	
-	public class TypeMemberFigure: HStackFigure, IMemberFigure
+	public class MemberFigure : HStackFigure
 	{
-		bool allow_formatting;
-		bool _hidden;
-		IBaseMember _memberInfo;
-		TextFigure _retvalue;
-		TextFigure _name;
-		ImageFigure _icon;
+		TextFigure retval;
+		TextFigure name;
+		ImageFigure icon;
 		
 		// For testing purposes
-		public TypeMemberFigure (Pixbuf icon, string name, string retval, bool hidden)
+		public MemberFigure (Gdk.Pixbuf icon, string name, string retval, bool hidden)
 		{
-			_icon = new ImageFigure (icon);
-			_name = new TextFigure (name);
-			_retvalue = new TextFigure (retval);
+			this.icon = new ImageFigure (icon);
+			this.name = new TextFigure (name);
+			this.retval = new TextFigure (retval);
 			
-			_name.Padding = 0.0;
-			_name.FontSize = 10;
-			_retvalue.Padding = 0.0;
-			_retvalue.FontSize = 10;
-			_retvalue.FontColor = new Cairo.Color(0, 0, 1.0);
+			this.name.Padding = 2.0;
+			this.name.FontSize = 10;
+			this.retval.Padding = 0.0;
+			this.retval.FontSize = 10;
+			this.retval.FontColor = new Cairo.Color(0, 0, 1.0);
 			
 			Hidden = hidden;
 			AllowFormatting = true;
 			Alignment = HStackAlignment.Bottom;
 			
-			Add (_icon);
-			Add (_retvalue);
-			Add (_name);
+			Add (this.icon);
+			Add (this.retval);
+			Add (this.name);
 		}
 		
-		public TypeMemberFigure (Pixbuf icon, IBaseMember memberInfo, bool hidden) : base ()
+		public MemberFigure (Gdk.Pixbuf icon, IBaseMember memberInfo, bool hidden) : base ()
 		{
-			_icon = new ImageFigure (icon);
-			_memberInfo = memberInfo;
+			this.icon = new ImageFigure (icon);
 			
 			if (memberInfo.ReturnType != null)
-				_retvalue = new TextFigure (memberInfo.ReturnType.Name);
+				retval = new TextFigure (memberInfo.ReturnType.Name);
 			else
-				_retvalue = new TextFigure (String.Empty);
+				retval = new TextFigure (String.Empty);
 					
-			_name = new TextFigure (memberInfo.Name);
-			_hidden = hidden;
+			name = new TextFigure (memberInfo.Name);
 			
-			_name.Padding = 0.0;
-			_name.FontSize = 10;
-			_retvalue.Padding = 0.0;
-			_retvalue.FontSize = 10;
-			_retvalue.FontColor = new Cairo.Color(0, 0, 1.0);
+			MemberInfo = memberInfo;
+			Hidden = hidden;
+			
+			name.Padding = 1.0;
+			name.FontSize = 10;
+			retval.Padding = 0;
+			retval.FontSize = 10;
+			retval.FontColor = new Cairo.Color(0, 0, 1.0);
 			
 			AllowFormatting = true;
 			Alignment = HStackAlignment.Bottom;
 			
-			Add(_icon);
-			Add(_retvalue);
-			Add(_name);
+			Add (this.icon);
+			Add (retval);
+			Add (name);
 		}
 
-		internal bool AllowFormatting {
-			get { return allow_formatting; }
-			set { allow_formatting = value; }
+		protected override void BasicDraw (Context context)
+		{
+			if (Hidden)
+				return;
+			
+			base.BasicDraw (context);
 		}
-		public bool Hidden {
-			get { return _hidden; }
-			set { _hidden = value; }
+		
+		protected override void BasicDrawSelected (Context context)
+		{
+			if (Hidden)
+				return;
+			
+			base.BasicDrawSelected (context);
 		}
+				
+		public void Show ()
+		{
+			Hidden = false;
+			Invalidate ();
+		}
+		
+		public void Hide ()
+		{
+			Hidden = true;
+			Invalidate ();
+		}
+		
+		internal bool AllowFormatting { get; set; }
+		public IBaseMember MemberInfo { get; private set; }
+		public bool Hidden { get; private set; }
 		
 		public string Name {
-			get { return _name.Text; }
-		}
-		
-		public IBaseMember MemberInfo {
-			get { return _memberInfo; }
+			get { return name.Text; }
 		}
 		
 		public void UpdateFormat (MembersFormat format)
@@ -114,21 +135,19 @@ namespace MonoDevelop.ClassDesigner.Figures
 			if (!AllowFormatting)
 				return;
 			
-			Remove (_retvalue);
-			Remove (_name);
-			Remove (_icon);
+			Clear ();
 			
 			if (format == MembersFormat.Name) {
-				Add (_icon);
-				Add (_name);
+				Add (icon);
+				Add (name);
 			} else if (format == MembersFormat.FullSignature) {
-				Add (_icon);
-				Add (_retvalue);
-				Add (_name);
+				Add (icon);
+				Add (retval);
+				Add (name);
 			} else if (format == MembersFormat.NameAndType) {
-				Add (_icon);
-				Add (_retvalue);
-				Add (_name);				
+				Add (icon);
+				Add (retval);
+				Add (name);				
 			}
 		}
 	}

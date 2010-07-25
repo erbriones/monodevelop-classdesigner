@@ -29,12 +29,17 @@ using Gtk;
 using Gdk;
 using MonoHotDraw.Util;
 
-namespace MonoHotDraw {
-	
-	public class ContainerCanvas : Container {
-		
-		public ContainerCanvas(): base () {
-			_children = new Dictionary<Widget,ContainerCanvasChild>();
+namespace MonoHotDraw
+{	
+	public class ContainerCanvas : Container
+	{	
+		private Dictionary<Widget, ContainerCanvasChild> _children; 
+		private Gtk.Adjustment _hadjustment;
+		private Gtk.Adjustment _vadjustment;
+
+		public ContainerCanvas (): base ()
+		{
+			_children = new Dictionary <Widget, ContainerCanvasChild> ();
 			CanFocus = true;
 			Color = new Cairo.Color (1, 1, 1);
 			
@@ -42,22 +47,24 @@ namespace MonoHotDraw {
 			Vadjustment = NewDefaultAdjustment();
 		}
 		
-		protected ContainerCanvas (IntPtr raw) : base(raw)
+		protected ContainerCanvas (IntPtr raw) : base (raw)
 		{
 		}
 		
-		public class ContainerCanvasChild: Container.ContainerChild {
-			
-			public ContainerCanvasChild (ContainerCanvas parent, Widget widget, int x, int y): 
-			    base(parent, widget) {
+		public class ContainerCanvasChild : Container.ContainerChild 
+		{
+			public ContainerCanvasChild (ContainerCanvas parent, Widget widget, int x, int y) : base (parent, widget)
+			{
 				widget.Parent = parent;
 				Move (x, y);
 			}
 			
-			public void Move (int x, int y) {
+			public void Move (int x, int y)
+			{
 				_x = x;
 				_y = y;
-				Child.QueueResize();
+	
+				Child.QueueResize ();
 			}
 			
 			public int X {
@@ -72,7 +79,7 @@ namespace MonoHotDraw {
 			private int _y;
 		}
 		
-		public override ContainerChild this[Widget w] {
+		public override ContainerChild this [Widget w] {
 			get {
 				ContainerCanvasChild child;
 				if (_children.TryGetValue(w, out child) ) {
@@ -82,11 +89,13 @@ namespace MonoHotDraw {
 			}
 		}
 		
-		public void AddWidget(Gtk.Widget w, double x, double y) {
-			_children[w] = new ContainerCanvasChild(this, w, (int)x, (int)y);
+		public void AddWidget(Gtk.Widget w, double x, double y)
+		{
+			_children[w] = new ContainerCanvasChild (this, w, (int)x, (int)y);
 		}
 		
-		public void MoveWidget(Gtk.Widget w, double x, double y) {
+		public void MoveWidget(Gtk.Widget w, double x, double y)
+		{
 			ContainerCanvasChild child = this[w] as ContainerCanvasChild;
 			
 			if (child != null) {
@@ -95,16 +104,16 @@ namespace MonoHotDraw {
 			}
 		}
 		
-		public void RemoveWidget(Gtk.Widget w) {
-			if (_children.ContainsKey (w) ) {
+		public void RemoveWidget(Gtk.Widget w)
+		{
+			if (_children.ContainsKey (w))
 				Remove (w);
-			}
 		}
 		
-		public void ClearWidgets () {
-			foreach (Gtk.Widget  child in _children.Keys) {
+		public void ClearWidgets ()
+		{
+			foreach (Gtk.Widget child in _children.Keys)
 				Remove (child);
-			}
 		}
 		
 		public Adjustment Hadjustment {
@@ -112,29 +121,26 @@ namespace MonoHotDraw {
 			
 			set {
 				if (_hadjustment != value) {
-					if (_hadjustment != null) {
+					if (_hadjustment != null)
 						_hadjustment.ValueChanged -= OnAdjustmentValueChanged;
-					}
+
 					_hadjustment = value;
-					if (_hadjustment != null) {
+					if (_hadjustment != null)
 						_hadjustment.ValueChanged += OnAdjustmentValueChanged;
-					}
 				}
 			}
 		}
 
 		public Adjustment Vadjustment {
 			get { return _vadjustment; }
-			
 			set {
 				if (_vadjustment != value) {
-					if (_vadjustment != null) { 
+					if (_vadjustment != null)
 						_vadjustment.ValueChanged -= OnAdjustmentValueChanged;
-					}
+
 					_vadjustment = value;
-					if (_vadjustment != null) { 
+					if (_vadjustment != null)
 						_vadjustment.ValueChanged += OnAdjustmentValueChanged;
-					}
 				}
 			}
 		}
@@ -146,9 +152,11 @@ namespace MonoHotDraw {
 			}
 		}
 	
-		protected override void ForAll (bool include_internals, Callback callback) {
+		protected override void ForAll (bool include_internals, Callback callback)
+		{
 			if (_children == null)
 				return;			
+			
 			foreach (ContainerCanvasChild  child in _children.Values) {
 				if (child.Child == null)
 					continue;
@@ -157,11 +165,13 @@ namespace MonoHotDraw {
 			}
 		}
 		
-		protected override void OnAdded (Widget w) {
+		protected override void OnAdded (Widget w)
+		{
 			AddWidget (w, 0, 0);
 		}
 		
-		protected override void OnRemoved (Gtk.Widget w) {
+		protected override void OnRemoved (Gtk.Widget w)
+		{
 			ContainerCanvasChild child = this[w] as ContainerCanvasChild;
 			
 			if (child != null) {
@@ -171,7 +181,8 @@ namespace MonoHotDraw {
 			}
 		}
 		
-		protected override void OnSizeRequested (ref Requisition req) {
+		protected override void OnSizeRequested (ref Requisition req)
+		{
 			req.Width = 0;
 			req.Height = 0;
 			
@@ -187,7 +198,8 @@ namespace MonoHotDraw {
 			}
 		}
 		
-		protected override void OnSizeAllocated (Rectangle allocation) {
+		protected override void OnSizeAllocated (Rectangle allocation)
+		{
 			base.OnSizeAllocated (allocation);
 			Requisition childReq;
 			
@@ -203,8 +215,9 @@ namespace MonoHotDraw {
 			}
 		}
 		
-		protected override void OnRealized () {
-			SetFlag(Gtk.WidgetFlags.Realized);
+		protected override void OnRealized ()
+		{
+			SetFlag (Gtk.WidgetFlags.Realized);
 			
 			Gdk.WindowAttr attributes = new Gdk.WindowAttr();
 			attributes.WindowType = Gdk.WindowType.Child;
@@ -233,20 +246,19 @@ namespace MonoHotDraw {
 			Color = new Cairo.Color(1.0, 1.0, 1.0);
 		}
 		
-		protected override void OnSetScrollAdjustments (Adjustment hadj, Adjustment vadj) {
+		protected override void OnSetScrollAdjustments (Adjustment hadj, Adjustment vadj)
+		{
 			Hadjustment = hadj;
 			Vadjustment = vadj;
 		}
 		
-		protected virtual void OnAdjustmentValueChanged(object sender, System.EventArgs args) {	
+		protected virtual void OnAdjustmentValueChanged(object sender, System.EventArgs args)
+		{	
 		}
 		
-		private Adjustment NewDefaultAdjustment() {
+		private Adjustment NewDefaultAdjustment ()
+		{
 			return new Adjustment(0.0, 0.0, 0.0, 0.0, 0.0, 0.0);
-		}
-		
-		private Dictionary<Widget, ContainerCanvasChild> _children; 
-		private Gtk.Adjustment _hadjustment;
-		private Gtk.Adjustment _vadjustment;
+		}		
 	}
 }

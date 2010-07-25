@@ -27,20 +27,24 @@ using System;
 using System.Collections.Generic;
 using MonoHotDraw.Figures;
 
-namespace MonoHotDraw.Commands {
-
-	public class CopyCommand: FigureTransferCommand {
-		
-		public CopyCommand (string name, IDrawingEditor editor): base (name, editor) {
+namespace MonoHotDraw.Commands
+{
+	public class CopyCommand : FigureTransferCommand
+	{
+		public CopyCommand (string name, IDrawingEditor editor) : base (name, editor)
+		{
 		}
 		
-		public override void Execute () {
-			base.Execute ();
-			CopyFigures (new FigureCollection (DrawingView.SelectionEnumerator));
-		}
-
+		#region Public Members
 		public override bool IsExecutable {
 			get { return DrawingView.SelectionCount > 0; }
 		}
+		
+		public override void Execute ()
+		{
+			base.Execute ();
+			CopyFigures (new FigureCollection (DrawingView.SelectionEnumerator));
+		}
+		#endregion
 	}
 }

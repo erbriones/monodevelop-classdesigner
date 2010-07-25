@@ -34,9 +34,9 @@ namespace MonoHotDraw.Figures
 	[Serializable]
 	public class CircularLineTerminal : LineTerminal
 	{		
-		double _scaleX;
-		double _scaleY;
-		double _radius;
+		private double _scaleX;
+		private double _scaleY;
+		private double _radius;
 		
 		public CircularLineTerminal () : this (1.0, 1.0, 5.0)
 		{
@@ -56,6 +56,8 @@ namespace MonoHotDraw.Figures
 			_radius = info.GetDouble ("Radius");
 		}		
 		
+		#region Public Api
+		//FIXME: Figure produces invalid results
 		public override PointD Draw (Context context, PointD a, PointD b)
 		{
 			// Save context 
@@ -64,7 +66,7 @@ namespace MonoHotDraw.Figures
 			if (_scaleX != _scaleY)
 				context.Scale(_scaleX, _scaleY);
 			
-			var midpoint = new PointD(a.X + 2 * _radius, a.Y + 2 * _radius);
+			var midpoint = new PointD (a.X + 2 * _radius, a.Y + 2 * _radius);
 			
 			context.Arc (midpoint.X, midpoint.Y, _radius, 0, (2 * Math.PI));
 			context.Restore ();
@@ -81,6 +83,7 @@ namespace MonoHotDraw.Figures
 				
 			base.GetObjectData (info, context);
 		}
+		#endregion
 	}
 }
 

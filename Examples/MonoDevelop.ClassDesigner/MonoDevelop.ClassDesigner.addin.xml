@@ -84,6 +84,7 @@
 		<CommandItem id="MonoDevelop.Ide.Commands.EditCommands.Paste"/>
 		<CommandItem id="MonoDevelop.Ide.Commands.EditCommands.Delete" _label="Remove from Diagram"/>
 		<SeparatorItem id="Separator6" />
+		<CommandItem id="MonoDevelop.Diagram.DiagramCommands.Layout" />
 		<CommandItem id="MonoDevelop.Ide.Commands.EditCommands.SelectAll"/>
 		<!--
 		<SeparatorItem id="Separator7" />
@@ -93,9 +94,10 @@
 
 	<!-- Extensions -->
 	<Extension path="/MonoDevelop/ClassDesigner/FigureCommandHandlers">
+		<FigureCommand class="MonoDevelop.Diagram.Commands.LayoutCommands" id="Layout" />
 		<FigureCommand class="MonoDevelop.Diagram.Commands.EditingCommands" id="EditCommands" />
 		<FigureCommand class="MonoDevelop.ClassDesigner.Commands.AssociationCommands" id="IAssociation" />
-		<FigureCommand class="MonoDevelop.ClassDesigner.Commands.CollasableCommand" id="ICollaspable" />
+		<FigureCommand class="MonoDevelop.ClassDesigner.Commands.CollapsableCommands" id="ICollaspable" />
 		<FigureCommand class="MonoDevelop.ClassDesigner.Commands.ClassCommands" id="ClassFigure" />
 		<FigureCommand class="MonoDevelop.Diagram.Commands.ZoomCommands" id="IZoomable" />
 	</Extension>

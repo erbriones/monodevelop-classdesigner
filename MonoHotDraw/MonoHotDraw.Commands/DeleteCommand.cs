@@ -27,50 +27,59 @@ using System;
 using System.Linq;
 using MonoHotDraw.Figures;
 
-namespace MonoHotDraw.Commands {
+namespace MonoHotDraw.Commands
+{
+	public class DeleteCommand : FigureTransferCommand
+	{
 
-	public class DeleteCommand : FigureTransferCommand {
-
-		public DeleteCommand (string name, IDrawingEditor editor) : base (name, editor) {
+		public DeleteCommand (string name, IDrawingEditor editor) : base (name, editor)
+		{
 		}
 
-		public override bool IsExecutable {
+		public override bool IsExecutable
+		{
 			get { return DrawingView.SelectionCount > 0; }
 		}
 		
-		public override void Execute () {
+		public override void Execute ()
+		{
 			base.Execute ();
 			FigureCollection figures = GetWithDependents (new FigureCollection (DrawingView.SelectionEnumerator));
 			DeleteFigures (figures);
 		}
 
-		protected override IUndoActivity CreateUndoActivity () {
+		protected override IUndoActivity CreateUndoActivity ()
+		{
 			return new DeleteUndoActivity (this);
 		}
 
-		class DeleteUndoActivity : AbstractUndoActivity {
+		class DeleteUndoActivity : AbstractUndoActivity
+		{
 	
-			public DeleteUndoActivity (FigureTransferCommand command) : base (command.DrawingView) {
+			public DeleteUndoActivity (FigureTransferCommand command) : base (command.DrawingView)
+			{
 				_command = command;
 				Undoable = true;
 				Redoable = true;
 			}
 			
-			public override bool Undo () {
+			public override bool Undo ()
+			{
 				if (base.Undo () && AffectedFigures.Count() > 0) {
 					DrawingView.ClearSelection ();
-					AffectedFigures = _command.InsertFigures (AffectedFigures.Reverse().ToFigures(), 0, 0);
+					AffectedFigures = _command.InsertFigures (AffectedFigures.Reverse ().ToFigures (), 0, 0);
 					return true;
 				}
 				return false;
 			}
 
-			public override bool Redo () {
+			public override bool Redo ()
+			{
 				// do not call execute directly as the selection might has changed
 				if (Redoable == false)
 					return false;
 
-				_command.DeleteFigures (AffectedFigures.ToFigures()); 
+				_command.DeleteFigures (AffectedFigures.ToFigures ()); 
 				DrawingView.ClearSelection ();
 				return true;
 			}

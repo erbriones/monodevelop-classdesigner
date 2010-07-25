@@ -27,30 +27,40 @@ using System;
 using System.Collections.Generic;
 using MonoHotDraw.Figures;
 
-namespace MonoHotDraw.Commands {
-	public abstract class FigureTransferCommand : AbstractCommand {
-
-		protected FigureTransferCommand (string name, IDrawingEditor editor)  : base (name, editor) {
+namespace MonoHotDraw.Commands
+{
+	public abstract class FigureTransferCommand : AbstractCommand
+	{
+		protected FigureTransferCommand (string name, IDrawingEditor editor) : base (name, editor)
+		{
 		}		
 		
-		protected void CopyFigures (IEnumerable<IFigure> figures) {
-			Clipboard.GetInstance ().Contents = figures;
+		#region Public Members
+		public FigureCollection InsertFigures (IEnumerable<IFigure> figures, double dx, double dy)
+		{
+			return DrawingView.InsertFigures (figures.ToFigures (), dx, dy, false);
 		}
 
-		public void DeleteFigures (IEnumerable<IFigure> figures) {
-			foreach (IFigure figure in figures) {
+		public void DeleteFigures (IEnumerable<IFigure> figures)
+		{
+			foreach (IFigure figure in figures)
 				DrawingView.Remove (figure);
-			}
+				
 			DrawingView.ClearSelection ();
 		}
+		#endregion 
 		
-		public FigureCollection InsertFigures (IEnumerable<IFigure> figures, double dx, double dy) {
-			return DrawingView.InsertFigures (figures.ToFigures(), dx, dy, false);
+		#region ProtectedMembers
+		protected void CopyFigures (IEnumerable<IFigure> figures)
+		{
+			Clipboard.GetInstance ().Contents = figures;
 		}
 		
 		// TODO: Refactor this. Maybe this could go to IDrawing and StandardDrawingView
-		protected FigureCollection GetWithDependents (FigureCollection figures) {
+		protected FigureCollection GetWithDependents (FigureCollection figures)
+		{
 			return figures;
 		}
+		#endregion
 	}
 }

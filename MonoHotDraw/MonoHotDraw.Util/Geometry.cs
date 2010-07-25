@@ -31,18 +31,17 @@ namespace MonoHotDraw.Util
 {
 	public sealed class Geometry
 	{
-	
-		Geometry ()
+		private Geometry ()
 		{
 		}
 	
+		#region Utility Methods
 		public static double AngleFromPoint (RectangleD r, PointD point)
 		{
 			double rx = point.X - r.Center.X;
 			double ry = point.Y - r.Center.Y;
 			return Math.Atan2 (ry * r.Width, rx * r.Height);
 		}
-		
 		
 		//FIXME: Fix so point stays on edge of circle
 		public static PointD EdgePointOfCircle (PointD midpoint, double radius, PointD endpoint)
@@ -317,5 +316,7 @@ namespace MonoHotDraw.Util
 				return null;
 			}
 		}
+		
+		#endregion
 	}
 }

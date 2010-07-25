@@ -25,10 +25,10 @@
 
 using System;
 
-namespace MonoHotDraw.Commands {
-
-	public interface ICommand {
-
+namespace MonoHotDraw.Commands
+{
+	public interface ICommand
+	{
 		IDrawingEditor DrawingEditor { get; }
 		IDrawingView DrawingView { get; }
 		void Execute ();

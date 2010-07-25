@@ -154,7 +154,7 @@ namespace MonoHotDraw.Samples {
 			get {
 				//TODO: Return selected handle
 				foreach (IFigure figure in _list) {
-					foreach (IHandle handle in figure.HandlesEnumerator)
+					foreach (IHandle handle in figure.Handles)
 						yield return handle;
 				}
 			}

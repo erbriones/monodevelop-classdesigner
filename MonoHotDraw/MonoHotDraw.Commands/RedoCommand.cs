@@ -25,30 +25,41 @@
 
 using System;
 
-namespace MonoHotDraw.Commands {
-
-	public class RedoCommand : AbstractCommand {
-		
-		public RedoCommand (string name, IDrawingEditor editor) : base (name, editor) {
+namespace MonoHotDraw.Commands
+{
+	public class RedoCommand : AbstractCommand
+	{	
+		public RedoCommand (string name, IDrawingEditor editor) : base (name, editor)
+		{
 		}
 		
-		public override void Execute () {
+		#region Public Members
+		public override bool IsExecutable {
+			get {
+				if (DrawingEditor.UndoManager == null)
+					return false;
+				
+				return DrawingEditor.UndoManager.Redoable;
+			}
+		}
+		
+		public override void Execute ()
+		{
 			base.Execute ();
-			UndoManager manager = DrawingEditor.UndoManager;
 			
-			if ((manager == null) || manager.Redoable == false) {
+			if (!IsExecutable)
 				return;
-			}
-		
+			
+			UndoManager manager = DrawingEditor.UndoManager;
 			IUndoActivity lastRedoable = manager.PopRedo ();
-			// Execute redo
-			bool hasBeenRedone = lastRedoable.Redo ();
-			// Add to undo stack
-			if (hasBeenRedone && lastRedoable.Undoable) {
+			
+			// 1. Try to execut redo activity
+			// 2. if successful attempt to add undo to manager
+			// 3. undo manager will determine if command is undoable
+			if (lastRedoable.Redo ())
 				manager.PushUndo (lastRedoable);
-			}
-
 		}
-
+		
+		#endregion
 	}
 }

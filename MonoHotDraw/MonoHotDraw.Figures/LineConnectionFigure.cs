@@ -1,5 +1,3 @@
-// TODO: Change nage to LineConnectionFigure
-
 // MonoHotDraw. Diagramming Framework
 //
 // Authors:
@@ -37,16 +35,15 @@ using MonoHotDraw.Locators;
 namespace MonoHotDraw.Figures
 {
 	[Serializable]
-	public class LineConnection : PolyLineFigure, IConnectionFigure, IDeserializationCallback
+	public class LineConnectionFigure : PolyLineFigure, IConnectionFigure, IDeserializationCallback
 	{
-	
-		public LineConnection () : base ()
+		public LineConnectionFigure () : base ()
 		{
 			AddPoint (0.0, 0.0);
 			AddPoint (0.0, 0.0);
 		}
 
-		protected LineConnection (SerializationInfo info, StreamingContext context) : base (info, context)
+		protected LineConnectionFigure (SerializationInfo info, StreamingContext context) : base (info, context)
 		{
 			_endConnector = (IConnector) info.GetValue ("EndConnector", typeof (IConnector));
 			_startConnector = (IConnector) info.GetValue ("StartConnector", typeof (IConnector));
@@ -54,7 +51,7 @@ namespace MonoHotDraw.Figures
 		
 		public event EventHandler ConnectionChanged;
 
-		public LineConnection (IFigure fig1, IFigure fig2) : this ()
+		public LineConnectionFigure (IFigure fig1, IFigure fig2) : this ()
 		{
 			if (fig1 != null)
 				ConnectStart (fig1.ConnectorAt (0.0, 0.0));
@@ -183,7 +180,7 @@ namespace MonoHotDraw.Figures
 			get { return new ChangeConnectionEndHandle (this); }
 		}
 
-		public override void BasicMoveBy (double x, double y)
+		protected override void BasicMoveBy (double x, double y)
 		{
 			for (int i = 1; i < PointCount - 1; i++) {
 				PointD newpoint = PointAt (i);
@@ -217,7 +214,7 @@ namespace MonoHotDraw.Figures
 			UpdateConnection ();
 		}
 
-		public override IEnumerable <IHandle> HandlesEnumerator {
+		public override IEnumerable <IHandle> Handles {
 			get {
 				if (PointCount < 2)
 					yield break;

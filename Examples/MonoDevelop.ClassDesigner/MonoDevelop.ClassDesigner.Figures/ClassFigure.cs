@@ -48,7 +48,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 			hideInheritance = false;
 			HideAssociations = false;
 			nestedFigures = new List<IFigure> ();
-			FigureColor = new Cairo.Color (0.1, 0.1, 0.9, 0.4);
+			FillColor = new Cairo.Color (0.1, 0.1, 0.9, 0.4);
 		}
 		
 		public bool HideInheritance {

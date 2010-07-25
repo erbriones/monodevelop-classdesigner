@@ -31,10 +31,7 @@ using MonoHotDraw.Util;
 namespace MonoHotDraw.Figures
 {	
 	public class ImageFigure : AbstractFigure
-	{
-		Pixbuf _pixbuf;
-		ImageSurface _image;
-		
+	{		
 		public ImageFigure (Pixbuf pixbuf) : base ()
 		{
 			Image = pixbuf;
@@ -45,16 +42,17 @@ namespace MonoHotDraw.Figures
 			Image = image.Pixbuf;
 		}
 		
+		#region Public Members
 		public Pixbuf Image {
-			get {
-				return _pixbuf;
-			}
+			get { return _pixbuf; }
 			set {
 				_pixbuf = value;
 				_image = GdkCairoHelper.PixbufToImageSurface (_pixbuf);
 			}
 		}
+		#endregion
 		
+		#region Protected Members
 		protected override RectangleD BasicDisplayBox {
 			get {
 				return new RectangleD {
@@ -63,22 +61,27 @@ namespace MonoHotDraw.Figures
 					Width = _image.Width,
 					Height = _image.Height,
 				};
-			}
-			
+			}	
 			set { Position = value.TopLeft; }
 		}
 		
-		protected override void BasicDraw(Context context)
+		protected PointD Position { get; set; }
+		
+		protected override void BasicDraw (Context context)
 		{
 			RectangleD r = DisplayBox;
 			_image.Show (context, Math.Round (r.X), Math.Round (r.Y));
 		}
 		
-		public override void BasicDrawSelected (Cairo.Context context)
+		protected override void BasicDrawSelected (Cairo.Context context)
 		{
 			context.Rectangle (GdkCairoHelper.CairoRectangle (DisplayBox));
 		}
+		#endregion
 		
-		protected PointD Position { get; set; }
+		#region Private Members
+		Pixbuf _pixbuf;
+		ImageSurface _image;
+		#endregion
 	}
 }

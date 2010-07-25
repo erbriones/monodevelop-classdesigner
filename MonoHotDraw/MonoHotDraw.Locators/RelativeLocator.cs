@@ -27,27 +27,32 @@ using Cairo;
 using MonoHotDraw.Figures;
 using MonoHotDraw.Util;
 
-namespace MonoHotDraw.Locators {
-
-	public class RelativeLocator: ILocator {
-
-		public RelativeLocator (): this (0.0, 0.0) {
+namespace MonoHotDraw.Locators
+{
+	public class RelativeLocator : ILocator
+	{
+		public RelativeLocator () : this (0.0, 0.0)
+		{
 		}
 
-		public RelativeLocator (double x, double y) {
-			_relativeX = x;
-			_relativeY = y;
+		public RelativeLocator (double x, double y)
+		{
+			relativeX = x;
+			relativeY = y;
 		}
-
-		public PointD Locate (IFigure owner) {
-			if (owner != null) {
-				RectangleD r = owner.DisplayBox;
-				return new PointD (r.X + r.Width * _relativeX, r.Y + r.Height * _relativeY);
-			}
+		
+		#region ILocator implementation
+		public PointD Locate (IFigure owner)
+		{
+			if (owner == null)
+				return new PointD (0, 0);
 			
-			return new PointD (0, 0);
+			RectangleD r = owner.DisplayBox;
+			return new PointD (r.X + r.Width * relativeX, r.Y + r.Height * relativeY);
 		}
-
+		#endregion
+		
+		#region Locators
 		public static ILocator East {
 			get { return new RelativeLocator (1.0, 0.5); }
 		}
@@ -83,8 +88,12 @@ namespace MonoHotDraw.Locators {
 		public static ILocator Center {
 			get { return new RelativeLocator (0.5, 0.5); }
 		}
-
-		private double _relativeX;
-		private double _relativeY;
+		
+		#endregion
+		
+		#region Private Members
+		private double relativeX;
+		private double relativeY;
+		#endregion
 	}
 }

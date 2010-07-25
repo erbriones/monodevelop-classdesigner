@@ -1,8 +1,10 @@
 // MonoHotDraw. Diagramming Framework
 //
 // Authors:
-//	Mario Carrión <mario@monouml.org>
+//	Manuel Cerón <ceronman@gmail.com>
+//  Evan Briones <erbriones@gmail.com>
 //
+// Copyright (C) 2010 Evan Briones
 // Copyright (C) 2006, 2007, 2008, 2009 MonoUML Team (http://www.monouml.org)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,36 +25,39 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
-using System.Collections.Generic;
-using MonoHotDraw.Figures;
+using Gdk;
 using MonoHotDraw.Handles;
 
-namespace MonoHotDraw.Commands {
-	public class InsertIntoDrawingVisitor : IFigureVisitor {
-		
-		public InsertIntoDrawingVisitor (IDrawing drawing) {
-			Drawing       = drawing;
-			_addedFigures = new FigureCollection ();
+namespace MonoHotDraw.Tools
+{
+	public class HandleTool: AbstractTool
+	{
+		public HandleTool (IDrawingEditor editor, IHandle anchor) : base (editor)
+		{
+			anchorHandle = anchor;
 		}
 		
-		public IDrawing Drawing { get; set; }
-
-		public FigureCollection GetAddedFigures () {
-			return _addedFigures;
+		#region Mouse Events 
+		public override void MouseDown (MouseEvent ev)
+		{
+			base.MouseDown (ev);
+			var view = ev.View;
+			anchorHandle.InvokeStart (ev.X, ev.Y, view);
 		}
-
-		public void VisitFigure (IFigure hostFigure) {
-			if (_addedFigures.Contains (hostFigure) == false 
-				&& Drawing.Includes (hostFigure) == false) {
-				Drawing.Add (hostFigure);
-				_addedFigures.Add (hostFigure);
-			}
+		
+		public override void MouseUp (MouseEvent ev)
+		{
+			anchorHandle.InvokeEnd (ev.X, ev.Y, ev.View);
 		}
-
-		public void VisitHandle (IHandle hostHandle) {
+		
+		public override void MouseDrag (MouseEvent ev)
+		{
+			anchorHandle.InvokeStep (ev.X, ev.Y, ev.View);
 		}
-
-		private FigureCollection _addedFigures;
+		#endregion
+		
+		#region HandleTool Members
+		private IHandle anchorHandle;
+		#endregion
 	}
 }

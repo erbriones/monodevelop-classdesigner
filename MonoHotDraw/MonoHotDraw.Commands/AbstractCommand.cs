@@ -25,36 +25,41 @@
 
 using System;
 
-namespace MonoHotDraw.Commands {
-
-	public abstract class AbstractCommand: ICommand {
-
-		protected AbstractCommand (string name, IDrawingEditor editor) {
+namespace MonoHotDraw.Commands
+{
+	public abstract class AbstractCommand: ICommand
+	{
+		protected AbstractCommand (string name, IDrawingEditor editor)
+		{
 			Name = name;
 			DrawingEditor = editor;
 		}
 		
+		#region Public API
 		public virtual IDrawingEditor DrawingEditor { get; private set; }
 		public virtual string Name { get; private set; }
 		public virtual IUndoActivity UndoActivity {	get; set; }
-		
+	
 		public virtual IDrawingView DrawingView {
-			get {
-				return DrawingEditor.View;
-			}
+			get { return DrawingEditor.View; }
 		}
 		
 		public virtual bool IsExecutable {
 			get { return true; }
 		}
 		
-		public virtual void Execute () {
+		public virtual void Execute ()
+		{
 			if (DrawingView == null)
 				throw new ArgumentNullException ("You can not execute command with no drawing view.");
 		}
-
-		protected virtual IUndoActivity CreateUndoActivity () { 
+		#endregion
+		
+		#region Protected Members
+		protected virtual IUndoActivity CreateUndoActivity ()
+		{ 
 			return new NullUndoActivity (DrawingView);
 		}
+		#endregion
 	}
 }

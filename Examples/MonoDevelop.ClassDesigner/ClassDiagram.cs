@@ -27,35 +27,33 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Xml;
 using System.Xml.Linq;
+
 using Gdk;
 using MonoDevelop.Core;
 using MonoDevelop.ClassDesigner.Figures;
+using MonoDevelop.ClassDesigner.Visitor;
+
 using MonoDevelop.Projects;
 using MonoDevelop.Projects.Dom;
 using MonoDevelop.Projects.Dom.Parser;
 using MonoDevelop.Ide;
+
 using MonoHotDraw;
 using MonoHotDraw.Figures;
 using MonoHotDraw.Util;
 
 namespace MonoDevelop.ClassDesigner
 {
-	public class ClassDiagram 
+	public sealed class ClassDiagram : StandardDrawing
 	{	
-		readonly int majorVersion;
-		readonly int minorVersion;
-
-		GroupingSetting groupSetting;		
-		MembersFormat membersFormat;
-		List<IFigure> figures;
-		
 		public ClassDiagram () : this (GroupingSetting.Member, MembersFormat.FullSignature)
 		{
 		}
 		
-		public ClassDiagram (GroupingSetting grouping, MembersFormat format): this (grouping, format, null)
+		public ClassDiagram (GroupingSetting grouping, MembersFormat format) : this (grouping, format, null)
 		{
 		}
 		
@@ -65,30 +63,30 @@ namespace MonoDevelop.ClassDesigner
 			minorVersion = 1;
 			groupSetting = grouping;
 			membersFormat = format;
-			
-			if (figures == null)
-				this.figures = new List<IFigure> ();
-			else
-				this.figures = new List<IFigure> (figures);			
+			typeCache = new Dictionary<string, IFigure> ();
+			builderList = new LinkedList<IType> ();
+			checkList = new List<IType> ();
+			CreatedFigure += OnCreatedHandler;
 		}
 		
+		public override void Dispose ()
+		{
+			CreatedFigure -= OnCreatedHandler;
+		}
+
 		public MembersFormat Format {
 			get { return membersFormat; }
 			set {
-				TypeFigure.format = membersFormat;
-				
 				if (membersFormat == value)
 					return;
 				
 				membersFormat = value;
 				
-				foreach (var figure in figures) {
+				var visitor = new MemberFormatVisitor (this);
+				foreach (var figure in Figures) {
 					var tf = figure as TypeFigure;
-					
-					if (tf == null)
-						continue;
-					
-					tf.Update (TypeFigure.UpdateStatus.MEMBERS_FORMAT);
+					if (tf != null)
+						visitor.VisitFigure (tf);
 				}
 			}	
 		}
@@ -96,56 +94,51 @@ namespace MonoDevelop.ClassDesigner
 		public GroupingSetting Grouping {
 			get { return groupSetting; }
 			set {
-				TypeFigure.grouping = value;
-
 				if (groupSetting == value)
 					return;
 				
 				groupSetting = value;
-			
-				foreach (var figure in figures) {
+				var visitor = new GroupFormatVisitor (this, null);
+				
+				foreach (var figure in Figures) {
 					var tf = figure as TypeFigure;
-					
 					if (tf == null)
 						continue;
 					
-					tf.Update (TypeFigure.UpdateStatus.GROUPING);
+					visitor.TypeFigure = tf;
+				
+					foreach (IFigure fig in tf.Compartments)
+						fig.AcceptVisitor (visitor);
 				}
 			}
 		}
 		
-		public IEnumerable<IFigure> Figures {
-			get { return figures; }
-		}
-
-		bool HasFigure (string fullName)
+		bool HasTypeFigure (string fullName)
 		{		
-			return figures.Where (f => f is TypeFigure).Any (tf => ((TypeFigure) tf).Name.FullName == fullName);
+			return Figures.Where (f => f is TypeFigure)
+				.Any (tf => ((TypeFigure) tf).Name.FullName == fullName);
 		}
 		
-		public IFigure BaseInheritanceLineFromDiagram (IType superClass)
+		public void BaseInheritanceLineFromDiagram (IType superClass)
 		{
 			var superFigure = GetFigure (superClass.FullName) as ClassFigure;
 			var subFigure = GetFigure (superClass.BaseType.FullName) as ClassFigure;
 			
 			if(superFigure == null || subFigure == null)
-				return null;
+				return;
 			
-			var line = new InheritanceConnectionFigure (subFigure, superFigure);
-			figures.Add(line);
-			
-			return line;
+			Add (new InheritanceConnectionFigure (subFigure, superFigure));
 		}
 		
-		public IEnumerable<IFigure> DerivedInheritanceLinesFromDiagram (IType subClass)
+		public void DerivedInheritanceLinesFromDiagram (IType subClass)
 		{
 			var tmp = new List<IFigure> ();
 			var subFigure = GetFigure (subClass.FullName) as ClassFigure;
 			
 			if (subFigure == null)
-				return null;
+				return;
 			
-			foreach (IFigure f in figures) {
+			foreach (IFigure f in Figures) {
 				var tf = f as ClassFigure;
 				
 				if (tf == null)
@@ -155,11 +148,8 @@ namespace MonoDevelop.ClassDesigner
 					continue;
 				
 				var line = new InheritanceConnectionFigure (subFigure, tf);
-				figures.Add (line);
-				tmp.Add (line);
+				Add (line);
 			}
-			
-			return tmp.DefaultIfEmpty ();
 		}
 		
 		public IFigure CreateFigure (IType type)
@@ -169,7 +159,7 @@ namespace MonoDevelop.ClassDesigner
 			if (type == null)
 				return null;
 			
-			if (HasFigure (type.FullName))
+			if (HasTypeFigure (type.FullName))
 				return null;
 			
 			if (type.ClassType == ClassType.Class) {
@@ -190,10 +180,11 @@ namespace MonoDevelop.ClassDesigner
 			} else {
 				return null;
 			}
-
+	
 			
-			figure.Update (TypeFigure.UpdateStatus.ALL);
-			figures.Add (figure);
+//			figure.Build ();
+//			figure.Update (TypeFigure.UpdateStatus.ALL);
+			Add (figure);
 			
 			return figure;
 		}
@@ -203,7 +194,7 @@ namespace MonoDevelop.ClassDesigner
 			if (fullName == null)
 				return null;
 			
-			var figure = figures
+			var figure = Figures
 				.Where (f => f is TypeFigure)
 				.Where (tf => ((TypeFigure) tf).Name.FullName == fullName)
 				.SingleOrDefault ();
@@ -298,8 +289,6 @@ namespace MonoDevelop.ClassDesigner
 			else
 				figure = new CommentFigure (attribute.Value);
 			
-			figures.Add (figure);
-			
 			//
 			// Position Element
 			//
@@ -309,6 +298,8 @@ namespace MonoDevelop.ClassDesigner
 				.SingleOrDefault ();
 			
 			PositionFigure (position, figure, true);
+			
+			Add (figure);
 		}
 				
 		
@@ -345,8 +336,8 @@ namespace MonoDevelop.ClassDesigner
 				.Where (a => a.Name == "Collapsed")
 				.SingleOrDefault ();
 			
-			if (collapsed != null)
-				figure.Collapsed = !Boolean.Parse (collapsed.Value);
+			if (collapsed != null && !Boolean.Parse (collapsed.Value))
+				figure.Collapse ();
 	
 			//
 			// Position Element
@@ -379,19 +370,22 @@ namespace MonoDevelop.ClassDesigner
 					if (member == null)
 						return;
 					
-					foreach (var c in figure.Compartments) {
-						var memberFigure = c.FiguresEnumerator
+					foreach (var c in figure.Figures) {
+						var memberFigure = c.Figures
+							.OfType<MemberFigure> ()
 							.Where (f => f.Name == member.Name)
 							.SingleOrDefault ();
 						
 						if (memberFigure == null)
 							continue;
 						
-						c.Hide (memberFigure);
-						
+						memberFigure.Hide ();
 					}
 				}
-				figure.UpdateGroups (); // Update to remove empty groups
+				// FIXME:
+				// Make sure Empty Compartments Hidden
+				// ie. hidelist = figure.Figures.Where (c == c.IsEmpty);
+				// hidelist.ForEach (f => f.Hide ());
 			}
 			
 			//
@@ -437,12 +431,12 @@ namespace MonoDevelop.ClassDesigner
 					
 					IFigure startfig;
 										
-					if (HasFigure (property.ReturnType.FullName))
+					if (HasTypeFigure (property.ReturnType.FullName))
 						startfig = GetFigure (property.ReturnType.FullName);
 					else
 						startfig = CreateFigure (property.ReturnType.Type);					
 					
-					figures.Add (new AssociationConnectionFigure (property, ConnectionType.Association, startfig, figure));
+					Add (new AssociationConnectionFigure (property, ConnectionType.Association, startfig, figure));
 				}
 			}
 			
@@ -470,13 +464,13 @@ namespace MonoDevelop.ClassDesigner
 					
 					IFigure startfig;
 										
-					if (HasFigure (property.ReturnType.FullName))
+					if (HasTypeFigure (property.ReturnType.FullName))
 						startfig = GetFigure (property.ReturnType.FullName);
 					else
 						startfig = CreateFigure (property.ReturnType.Type);
 					
 					if (startfig is System.Collections.ICollection)
-						figures.Add (new AssociationConnectionFigure (property, ConnectionType.CollectionAssociation,
+						Add (new AssociationConnectionFigure (property, ConnectionType.CollectionAssociation,
 						                                  startfig, figure));
 					else
 						throw new ArgumentException ("The type is not a valid collection.");
@@ -498,7 +492,8 @@ namespace MonoDevelop.ClassDesigner
 					if (name == null)
 						continue;
 					
-					var compartment = figure.Compartments
+					var compartment = figure.Figures
+						.OfType<CompartmentFigure> ()
 						.Where (c => c.Name == name.Value)
 						.SingleOrDefault ();
 					
@@ -510,7 +505,8 @@ namespace MonoDevelop.ClassDesigner
 					if (collapsed == null)
 						continue;
 					
-					compartment.Collapsed = Boolean.Parse (collapsed.Value);
+					if (Boolean.Parse (collapsed.Value))
+						compartment.Hide ();
 				}
 			}
 			
@@ -600,7 +596,7 @@ namespace MonoDevelop.ClassDesigner
 			    )
 			);
 
-			foreach (IFigure figure in figures) {
+			foreach (IFigure figure in Figures) {
 				XElement element;
 				var tf = figure as TypeFigure;
 				
@@ -626,7 +622,7 @@ namespace MonoDevelop.ClassDesigner
 				if (tf != null) {
 					element.Add (new XAttribute ("Name", ((TypeFigure) figure).Name.FullName));
 						
-					if (!tf.Expanded)
+					if (tf.IsCollapsed)
 						element.Add (new XAttribute ("Collapsed", "true"));
 				}
 				
@@ -649,7 +645,7 @@ namespace MonoDevelop.ClassDesigner
 				element.Add (position);
 				
 				if (tf != null) {
-					var clist = tf.Compartments.Where (c => c.Collapsed);
+					var clist = tf.Figures.OfType<CompartmentFigure>().Where (c => c.IsCollapsed);
 										
 					if (clist.Count () > 0) {
 						foreach (var c in clist)
@@ -729,9 +725,130 @@ namespace MonoDevelop.ClassDesigner
 			
 				if (handler != null)
 					handler (this, e);
-		}		
+		}
 		
+		protected void OnCreatedHandler (object o, FigureEventArgs e)
+		{
+			Add (e.Figure);
+			IFigure last = FiguresReversed.LastOrDefault ();
+			
+			if (last == null)
+				return;
+	
+			RectangleD rect = last.DisplayBox;
+			rect.Inflate (25 + e.Figure.DisplayBox.Width, 25 + e.Figure.DisplayBox.Height);
+			
+			if (rect.X2 < BasicDisplayBox.X2 + 100)
+				e.Figure.MoveTo (rect.X2, rect.Y);	
+			else
+				e.Figure.MoveTo (rect.Y2 + 25, 0);
+		}
+		
+		protected void OnCreated (FigureEventArgs e)
+		{
+			var handler = CreatedFigure;
+			if (handler != null)
+				handler (e.Figure, e);			
+		}
+
 		public event EventHandler<DiagramEventArgs> MembersFormatChanged;
 		public event EventHandler<DiagramEventArgs> GroupSettingChanged;
+		public event FigureEventHandler CreatedFigure;
+		
+		#region Private Member
+
+		public void AddToBuilder (IEnumerable<IType> types)
+		{
+			lock (checkList) {
+				checkList.AddRange (types);
+			}
+			
+			StartCheck ();
+		}
+		
+		private void CheckTypes ()
+		{
+			IType[] typeList;
+			int i = 0;
+			
+			lock (checkList) {
+				typeList = checkList.ToArray ();
+				checkList.Clear ();
+			}
+			
+			
+			foreach (IType type in typeList) {
+				Console.WriteLine ("Checking {0}", type.FullName);
+				if (HasTypeFigure (type.FullName))
+					continue;
+			
+				lock (builderList)
+					builderList.AddLast (new LinkedListNode<IType> (type));
+				
+				GLib.Idle.Add (FigureBuilder);				
+			}
+			
+			diagramThread = null;
+		}
+		
+		private bool FigureBuilder ()
+		{	
+			lock (builderList) {
+				int max = Math.Min (builderList.Count, 10);
+				
+				for (int i = 0; i < max; builderList.RemoveFirst (), i++) {
+					var type = builderList.First ();
+					var figure = CreateFigure (type);
+					
+					if (figure == null)
+						continue;
+					
+					Console.WriteLine ("Building {0}", type.FullName);
+					
+					OnCreated (new FigureEventArgs (figure, RectangleD.Empty));		
+					
+					var tf = figure as TypeFigure;
+					if (tf == null)
+						continue;
+					
+					foreach (IFigure fig in tf.Compartments)
+						fig.AcceptVisitor (new GroupFormatVisitor (this, tf));
+					
+				}
+				
+				if (builderList.Count > 0)
+					return true;
+				
+				return false;
+			}
+		}
+		
+		void StartCheck ()
+		{
+			if (diagramThread != null)
+				return;
+			
+			var builder = new ThreadStart (CheckTypes);
+			diagramThread = new Thread (builder) {
+				Name = "Class Designer Figure Builder",
+				IsBackground = true,
+				Priority = ThreadPriority.Lowest,
+			};
+			
+			diagramThread.Start ();
+		}
+		
+		readonly int majorVersion;
+		readonly int minorVersion;
+
+		GroupingSetting groupSetting;		
+		MembersFormat membersFormat;
+		
+		Dictionary <string,IFigure> typeCache;
+		List<IType> checkList;
+		LinkedList<IType> builderList;
+		Thread diagramThread;
+		#endregion
+
 	}
 }

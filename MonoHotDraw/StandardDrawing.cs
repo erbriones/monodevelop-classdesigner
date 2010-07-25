@@ -30,93 +30,46 @@ using Cairo;
 using MonoHotDraw.Figures;
 using MonoHotDraw.Util;
 
-namespace MonoHotDraw {
-	
+namespace MonoHotDraw
+{	
 	[Serializable]
-	public class StandardDrawing : CompositeFigure, IDrawing {
-	
-		public event EventHandler <DrawingEventArgs> DrawingInvalidated;
-		public event EventHandler <DrawingEventArgs> SizeAllocated;
-		public event EventHandler <FigureEventArgs> FigureAdded;
-		public event EventHandler <FigureEventArgs> FigureRemoved;
+	public class StandardDrawing : CompositeFigure, IDrawing
+	{
+		public event DrawingEventHandler DrawingInvalidated;
+		public event DrawingEventHandler SizeAllocated;
+		public event FigureEventHandler FigureAdded;
+		public event FigureEventHandler FigureRemoved;
 
-		public StandardDrawing (): base () {
+		public StandardDrawing () : base ()
+		{
+		}
+		
+		#region Drawing Api
+		public void Draw (Context context, FigureCollection figures)
+		{
+			foreach (IFigure figure in figures)
+				figure.Draw (context);
 		}
 
-		public void Draw (Context context, FigureCollection figures)	{
-			foreach (IFigure fig in figures) {
-				fig.Draw (context);
-			}
+		public virtual void Dispose ()
+		{	
 		}
 		
 		public override RectangleD DisplayBox {
 			get { return _displayBox; }
 			set { _displayBox = value; }
 		}
-		
-		public IList<IFigure> FigureCollection {
-			get { return base.Figures; }
-		}
-		
-		public override void Add (IFigure figure)
-		{
-			base.Add (figure);
-			figure.FigureChanged += FigureChangedHandler;
-			OnFigureAdded(new FigureEventArgs (figure, figure.DisplayBox));
-			RecalculateDisplayBox ();
-		}
-		
-		public override void Remove (IFigure figure)
-		{
-			base.Remove (figure);
-			figure.FigureChanged -= FigureChangedHandler;
-			OnFigureRemoved (new FigureEventArgs (figure, figure.DisplayBox));
-			RecalculateDisplayBox ();
-		}
-				
-		protected override void FigureInvalidatedHandler (object sender, FigureEventArgs args) {
-			OnDrawingInvalidated (new DrawingEventArgs (this, args.Rectangle));
-		}
-		
-		protected virtual void OnFigureAdded (FigureEventArgs e) {
-			var handler = FigureAdded;
-			
-			if (handler != null) {
-				handler (this, e);
-			}
-		}
-		
-		protected virtual void OnFigureRemoved (FigureEventArgs e) {
-			var handler = FigureRemoved;
-			
-			if (handler != null) {
-				handler (this, e);
-			}
-		}
-		
-		protected virtual void OnDrawingInvalidated (DrawingEventArgs args) {
-			if (DrawingInvalidated != null) {
-				DrawingInvalidated (this, args);
-			}
-		}
-		
-		protected virtual void OnSizeAllocated ()
-		{
-			if (SizeAllocated != null) {
-				SizeAllocated (this, new DrawingEventArgs (this, DisplayBox) );
-			}
-		}
-		
+
 		public void RecalculateDisplayBox ()
 		{
 			_displayBox = new RectangleD (0.0, 0.0);
 			bool first_flag = true;
-			foreach (IFigure figure in FiguresEnumerator) {
+			
+			foreach (IFigure figure in Figures) {
 				if (first_flag) {
 					_displayBox = figure.DisplayBox;
 					first_flag = false;
-				} 
-				else {
+				} else {
 					_displayBox.Add (figure.DisplayBox);
 				}
 			}
@@ -124,12 +77,57 @@ namespace MonoHotDraw {
 			OnSizeAllocated ();
 		}
 		
-		private void FigureChangedHandler (object sender, FigureEventArgs args) {
-			if (_displayBox.Contains (args.Rectangle)) {
+		protected virtual void OnDrawingInvalidated (DrawingEventArgs args)
+		{
+			var handler = DrawingInvalidated;
+			
+			if (handler != null)
+				handler (this, args);
+		}
+		
+		protected virtual void OnSizeAllocated ()
+		{
+			var handler = SizeAllocated;
+			
+			if (handler != null)
+				 handler (this, new DrawingEventArgs (this, DisplayBox));
+		}
+		#endregion
+
+		protected override void OnChildInvalidated (object sender, FigureEventArgs args)
+		{
+			OnDrawingInvalidated (new DrawingEventArgs (this, args.Rectangle));
+		}
+	
+		protected sealed override void OnChildAdded (FigureEventArgs e)
+		{
+			var handler = FigureAdded;
+			e.Figure.FigureChanged += OnFigureChanged;
+			
+			if (handler != null)
+				handler (this, e);
+			
+			RecalculateDisplayBox ();
+		}
+		
+		protected sealed override void OnChildRemoved (FigureEventArgs e)
+		{
+			var handler = FigureRemoved;
+			e.Figure.FigureChanged -= OnFigureChanged;			
+
+			if (handler != null)
+				handler (this, e);
+			
+			RecalculateDisplayBox ();
+		}
+		
+		private void OnFigureChanged (object sender, FigureEventArgs args)
+		{
+			if (_displayBox.Contains (args.Rectangle))
 				return;
-			}
+			
 			_displayBox.Add (args.Rectangle);
-			//OnSizeAllocated ();
+			OnSizeAllocated ();
 		}
 		
 		private RectangleD _displayBox;

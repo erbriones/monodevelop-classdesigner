@@ -32,9 +32,11 @@ using MonoHotDraw.Figures;
 using MonoHotDraw.Handles;
 using MonoHotDraw.Util;
 
-namespace MonoHotDraw {
-
-	public interface IDrawingView {
+namespace MonoHotDraw
+{
+	public interface IDrawingView
+	{
+		event EventHandler VisibleAreaChanged;
 	
 		void Add (IFigure figure);
 		void AddRange (IEnumerable<IFigure> figures);
@@ -67,8 +69,6 @@ namespace MonoHotDraw {
 		void MoveWidget (Gtk.Widget w, double x, double y);
 		void RemoveWidget (Gtk.Widget w);
 		void ClearWidgets ();
-		
-		event EventHandler VisibleAreaChanged;
 	}
 }
 

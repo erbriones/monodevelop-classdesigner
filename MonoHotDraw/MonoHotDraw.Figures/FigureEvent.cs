@@ -28,23 +28,17 @@ using MonoHotDraw.Util;
 
 namespace MonoHotDraw.Figures
 {
+	public delegate void FigureEventHandler (object o, FigureEventArgs e);
+
 	public class FigureEventArgs : EventArgs
-	{
-		IFigure figure;
-		RectangleD rectangle;
-		
+	{		
 		public FigureEventArgs (IFigure fig, RectangleD rect)
 		{
-			figure = fig;
-			rectangle = rect;
+			Figure = fig;
+			Rectangle = rect;
 		}
 
-		public IFigure Figure {
-			get { return figure; }
-		}
-
-		public RectangleD Rectangle	{
-			get { return rectangle;	}
-		}
+		public IFigure Figure { get; private set; }
+		public RectangleD Rectangle	{ get; private set; }
 	}
 }

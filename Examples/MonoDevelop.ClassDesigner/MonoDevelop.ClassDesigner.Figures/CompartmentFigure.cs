@@ -33,135 +33,122 @@ using MonoHotDraw.Figures;
 using MonoHotDraw.Handles;
 using MonoHotDraw.Locators;
 using MonoHotDraw.Util;
+using MonoHotDraw.Visitor;
 
-namespace MonoDevelop.ClassDesigner.Figures {
-	
-	public class TypeMemberGroupFigure : VStackFigure
+namespace MonoDevelop.ClassDesigner.Figures
+{	
+	public class CompartmentFigure : VStackFigure, ICollapsable
 	{
 		string _name;
-		bool _collapsed;
 		TextFigure compartmentName;
 		VStackFigure membersStack;
-		List<IMemberFigure> hidden;
 		ToggleButtonHandle expandHandle;
 			
-		public TypeMemberGroupFigure (string name) : base ()
+		public CompartmentFigure (string name) : base ()
 		{
-			Spacing = 5;
+			Spacing = 1;
 			Alignment = VStackAlignment.Left;
 			
 			_name = name;
-			hidden = new List<IMemberFigure> ();
 			compartmentName = new TextFigure (name);
 			compartmentName.Padding = 0;
 			compartmentName.FontSize = 10;
 			compartmentName.FontColor = new Cairo.Color(0.3, 0.0, 0.0);			
 			
-			Add (compartmentName);
-
 			membersStack = new VStackFigure();
 			membersStack.Spacing = 2;
 			
-			expandHandle = new ToggleButtonHandle(this, new AbsoluteLocator(-10, 7.5));
-			expandHandle.Toggled += delegate(object sender, ToggleEventArgs e) {
-				if (e.Active) {
-					_collapsed = false;
-					Add(membersStack);
-				}
-				else {
-					_collapsed = true;
-					Remove(membersStack);
-				}
-			};
+			expandHandle = new ToggleButtonHandle (this, new AbsoluteLocator(-10, 7.5));
+			expandHandle.Toggled += OnToggled;
 			
-			expandHandle.Active = true;
+			Add (compartmentName);
+			Expand ();
 		}
 		
-		public override IEnumerable<IHandle> HandlesEnumerator {
-			get {
-				yield return expandHandle;
-			}
+		public override IEnumerable<IHandle> Handles {
+			get { yield return expandHandle; }
+		}
+		
+		void OnToggled (object o, ToggleEventArgs e)
+		{
+			if (e.Active)
+				Add (membersStack);
+			else
+				Remove (membersStack);
+		}
+		
+		public new void AddRange (IEnumerable<IFigure> figures)
+		{
+			foreach (IFigure figure in figures)
+				membersStack.Add (figure);
 		}
 		
 		public override RectangleD InvalidateDisplayBox {
 			get {
 				RectangleD rect = base.InvalidateDisplayBox;
-				rect.Inflate(15, 0);
+				rect.Inflate (15, 0);
 				return rect;
 			}
 		}
 		
-		public new IEnumerable<IMemberFigure> FiguresEnumerator {
-			get {
-				foreach (var f in membersStack.FiguresEnumerator)
-					yield return (IMemberFigure) f;
-				
-				foreach (var f in hidden)
-					yield return f;
-			}
+		protected override void BasicDraw (Cairo.Context context)
+		{
+			if (!Hidden)
+				base.BasicDraw (context);
 		}
-				
+		
+		protected override void BasicDrawSelected (Cairo.Context context)
+		{
+			if (!Hidden)
+				base.BasicDrawSelected (context);
+		}
+		
 		public string Name {
 			get { return _name; }
 		}
 		
-		public bool Collapsed {
-			get { return _collapsed; }
-			set {
-				if (value)
-					expandHandle.Active = false;
-				else
-					expandHandle.Active = true;
-				
-				_collapsed = value;
-			}
+		#region ICollapsable
+		public bool IsCollapsed {
+			get { return !expandHandle.Active; }
 		}
+		
+		public void Expand ()
+		{
+			expandHandle.Active = true;
+		}
+		
+		public void Collapse ()
+		{
+			expandHandle.Active = true;
+		}
+		#endregion
 		
 		public bool IsEmpty {
-			get {
-				return membersStack.FiguresEnumerator.ToFigures ().Count == 0;
+			get {		
+				if (membersStack.Figures.Count () == 0)
+					return true;
+				
+				foreach (MemberFigure member in membersStack.Figures) {
+					if (!member.Hidden)
+						return false;
+				}
+				
+				return true;
 			}
 		}
-				
-		public void AddMembers (IEnumerable<IMemberFigure> members)
+		
+		public bool Hidden { get; private set; }
+		
+		public void Hide ()
 		{
-			if (members == null)
-				return;
-			
-			foreach (var member in members)
-				AddMember (member);
+			Hidden = true;
+			Invalidate ();
 		}
 		
-		public void AddMember(IMemberFigure member) {		
-			if (member.Hidden)
-				hidden.Add (member);
-			else
-				membersStack.Add ((IFigure) member);
-		}
-		
-		public void Hide (IMemberFigure figure)
+		public void Show ()
 		{
-			if (hidden.Contains (figure))
-				return;
-			
-			figure.Hidden = true;
-			membersStack.Remove ((IFigure) figure);
-			hidden.Add (figure);
-		}
-		
-		public void Show (IMemberFigure figure)
-		{
-			figure.Hidden = false;
-			membersStack.Add ((IFigure) figure);
-			
-			if (hidden.Contains (figure))
-				hidden.Remove (figure);
-		}
-		
-		public override void Clear ()
-		{
-			membersStack.Clear ();
-			hidden.Clear ();
+			Hidden = false;
+			Invalidate ();
 		}
 	}
 }

@@ -35,7 +35,6 @@ namespace MonoHotDraw.Figures
 	[Serializable]
 	public abstract class LineTerminal : ICloneable, ISerializable
 	{
-	
 		protected LineTerminal ()
 		{
 		}
@@ -44,16 +43,8 @@ namespace MonoHotDraw.Figures
 		{
 		}
 		
-		public virtual object Clone ()
-		{
-			return GenericCloner.Clone <LineTerminal> (this);
-		}		
-		
+		#region Public Api
 		public abstract PointD Draw (Context context, PointD a, PointD b);
-		
-		public virtual void GetObjectData (SerializationInfo info, StreamingContext context)
-		{
-		}
 		
 		public virtual RectangleD InvalidateRect (PointD b)
 		{
@@ -62,5 +53,19 @@ namespace MonoHotDraw.Figures
 			
 			return r;
 		}
+		#endregion
+
+		#region ICloneable
+		public virtual object Clone ()
+		{
+			return GenericCloner.Clone <LineTerminal> (this);
+		}		
+		#endregion
+		
+		#region ISerializable
+		public virtual void GetObjectData (SerializationInfo info, StreamingContext context)
+		{
+		}
+		#endregion		
 	}
 }

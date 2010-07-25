@@ -24,18 +24,18 @@
 // THE SOFTWARE.
 
 using System;
-using Cairo;
 using Gdk;
 
-namespace MonoHotDraw {
-	
-	public class KeyEvent: Event {
-		
-		public KeyEvent(IDrawingView view, Gdk.Event gdkEvent) : base(view, gdkEvent) {
+namespace MonoHotDraw
+{
+	public class KeyEvent : Event
+	{
+		public KeyEvent (IDrawingView view, Gdk.Event gdkEvent) : base (view, gdkEvent)
+		{
 		}
 		
 		public Gdk.Key Key {
-			get { return (GdkEvent as EventKey).Key; }
+			get { return ((EventKey) GdkEvent).Key; }
 		}
 	}
 }

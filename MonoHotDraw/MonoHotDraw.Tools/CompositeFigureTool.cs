@@ -27,26 +27,29 @@ using Gdk;
 using Gtk;
 using MonoHotDraw.Figures;
 
-namespace MonoHotDraw.Tools {
+namespace MonoHotDraw.Tools
+{
 	// NOTE: Should this be inside CompositeFigure??
-	public class CompositeFigureTool: FigureTool {
-		public CompositeFigureTool (IDrawingEditor editor, IFigure fig, ITool dt): base (editor, fig, dt) {
+	public class CompositeFigureTool : FigureTool
+	{
+		public CompositeFigureTool (IDrawingEditor editor, IFigure fig, ITool dt): base (editor, fig, dt)
+		{
 		}
 
-		public override ITool DefaultTool {
+		public override ITool DefaultTool
+		{
 			get {
-				if (DelegateTool != null) {
+				if (DelegateTool != null)
 					return DelegateTool;
-				}
-				else {
+				else
 					return base.DefaultTool;
-				}
 			}
-			
 			set { base.DefaultTool = value; }
 		}
-
-		public override void MouseDown (MouseEvent ev) {
+		
+		#region Mouse Events
+		public override void MouseDown (MouseEvent ev)
+		{
 			IFigure fig = ((CompositeFigure) Figure).FindFigure (ev.X, ev.Y);
 			
 			if (fig != null) {
@@ -60,21 +63,22 @@ namespace MonoHotDraw.Tools {
 				DelegateTool.MouseDown (ev);
 			}
 		}
+		#endregion
 		
+		#region Delegate Tool
 		protected ITool DelegateTool {
 			set { 
-				if (_delegateTool != null) {
+				if (_delegateTool != null)
 					_delegateTool.Deactivate ();
-				}
 
 				_delegateTool = value;
-				if (_delegateTool != null) {
+				if (_delegateTool != null)
 					_delegateTool.Activate ();
-				}
 			}
 			get { return _delegateTool; }
 		}
 
 		private ITool _delegateTool;
+		#endregion
 	}
 }

@@ -29,18 +29,16 @@ using MonoHotDraw.Figures;
 using MonoHotDraw.Commands;
 using MonoHotDraw.Util;
 
-namespace MonoHotDraw.Handles {
-	
-	public class UndoableHandle: IHandle {
-		
-		public UndoableHandle(IHandle wrappedHandle)	{
+namespace MonoHotDraw.Handles
+{	
+	public class UndoableHandle : IHandle
+	{
+		public UndoableHandle(IHandle wrappedHandle)
+		{
 			WrappedHandle = wrappedHandle;
 		}
 		
-		public bool ContainsPoint (double x, double y) {
-			return WrappedHandle.ContainsPoint(x, y);
-		}
-		
+		#region Public Api		
 		public double Width {
 			get { return WrappedHandle.Width; }
 		}
@@ -48,38 +46,7 @@ namespace MonoHotDraw.Handles {
 		public double Height {
 			get { return WrappedHandle.Width; }
 		}
-		
-		public PointD Locate () {
-			return WrappedHandle.Locate();
-		}
-		
-		public void InvokeStart (double x, double y, IDrawingView view) {
-			WrappedHandle.InvokeStart(x, y, view);
-		}
-		
-		public void InvokeStep (double x, double y, IDrawingView view) {
-			WrappedHandle.InvokeStep(x, y, view);
-		}
-		
-		public void InvokeEnd (double x, double y, IDrawingView view) {
-			WrappedHandle.InvokeEnd(x, y, view);
-			
-			IUndoActivity activity = WrappedHandle.UndoActivity;
-			
-			if (activity != null && activity.Undoable && view.Editor.UndoManager != null) {
-				view.Editor.UndoManager.PushUndo(activity);
-				view.Editor.UndoManager.ClearRedos();
-			}
-		}
-			
-		public void Draw (Context context, IDrawingView view) {
-			WrappedHandle.Draw(context, view);
-		}
-		
-		public Gdk.Cursor CreateCursor () {
-			return WrappedHandle.CreateCursor();
-		}
-		
+
 		public IFigure Owner {
 			get { return WrappedHandle.Owner; }
 		}
@@ -90,5 +57,48 @@ namespace MonoHotDraw.Handles {
 		}
 		
 		public IHandle WrappedHandle { get; private set; }
+		
+		public bool ContainsPoint (double x, double y)
+		{
+			return WrappedHandle.ContainsPoint (x, y);
+		}
+
+		public PointD Locate ()
+		{
+			return WrappedHandle.Locate ();
+		}
+		
+		public void InvokeStart (double x, double y, IDrawingView view)
+		{
+			WrappedHandle.InvokeStart (x, y, view);
+		}
+		
+		public void InvokeStep (double x, double y, IDrawingView view)
+		{
+			WrappedHandle.InvokeStep (x, y, view);
+		}
+		
+		public void InvokeEnd (double x, double y, IDrawingView view)
+		{
+			WrappedHandle.InvokeEnd (x, y, view);
+			
+			IUndoActivity activity = WrappedHandle.UndoActivity;
+			
+			if (activity != null && activity.Undoable && view.Editor.UndoManager != null) {
+				view.Editor.UndoManager.PushUndo (activity);
+				view.Editor.UndoManager.ClearRedos ();
+			}
+		}
+			
+		public void Draw (Context context, IDrawingView view)
+		{
+			WrappedHandle.Draw (context, view);
+		}
+		
+		public Gdk.Cursor CreateCursor ()
+		{
+			return WrappedHandle.CreateCursor ();
+		}		
+		#endregion
 	}
 }

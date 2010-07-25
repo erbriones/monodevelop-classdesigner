@@ -25,22 +25,23 @@
 
 using System;
 
-namespace MonoHotDraw.Commands {
-
-	public sealed class Clipboard {
-
-		private Clipboard () {
+namespace MonoHotDraw.Commands
+{
+	public sealed class Clipboard
+	{
+		private Clipboard ()
+		{
 		}
 		
-		public static Clipboard GetInstance () {
-			if (_instance == null)
-				_instance = new Clipboard ();
-			return _instance;
+		public static Clipboard GetInstance ()
+		{
+			if (instance == null)
+				instance = new Clipboard ();
+			
+			return instance;
 		}
 		
 		public object Contents { get; set; }
-
-		private object _content;
-		private static Clipboard _instance; 
+		private static Clipboard instance; 
 	}
 }

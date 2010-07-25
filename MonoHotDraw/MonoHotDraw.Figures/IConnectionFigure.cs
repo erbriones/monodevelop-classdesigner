@@ -32,16 +32,8 @@ namespace MonoHotDraw.Figures
 {
 	public interface IConnectionFigure : IFigure
 	{
-		void ConnectStart (IConnector start);
-		void ConnectEnd (IConnector end);
-		void UpdateConnection ();
-		void DisconnectStart ();
-		void DisconnectEnd ();
-		bool CanConnectEnd (IFigure figure);
-		bool CanConnectStart (IFigure figure);
-		PointD PointAt (int index);
-		void SplitSegment (double x, double y);
-		
+		event EventHandler ConnectionChanged;
+
 		int PointCount { get; }
 		IConnector StartConnector { get; }
 		IConnector EndConnector { get; }
@@ -51,8 +43,16 @@ namespace MonoHotDraw.Figures
 		IFigure EndFigure { get; }
 		IHandle StartHandle { get; }
 		IHandle EndHandle { get; }
-	
-		event EventHandler ConnectionChanged;
+
+		void ConnectStart (IConnector start);
+		void ConnectEnd (IConnector end);
+		void UpdateConnection ();
+		void DisconnectStart ();
+		void DisconnectEnd ();
+		bool CanConnectEnd (IFigure figure);
+		bool CanConnectStart (IFigure figure);
+		PointD PointAt (int index);
+		void SplitSegment (double x, double y);
 	}
 }
 

@@ -40,7 +40,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 		
 		public StructFigure (IType domType) : base(domType)
 		{
-			FigureColor = new Cairo.Color (0.0, 0.2, 0.9, 0.4);
+			SetAttribute (FigureAttribute.FillColor, new Cairo.Color (0.0, 0.2, 0.9, 0.4));
 			nestedFigures = new List<IFigure> ();
 			HideAssociations = false;
 		}

@@ -26,10 +26,10 @@
 using Cairo;
 using MonoHotDraw.Figures;
 
-namespace MonoHotDraw.Locators {
-
-	public interface ILocator {
-	
+namespace MonoHotDraw.Locators
+{
+	public interface ILocator
+	{
 		PointD Locate (IFigure owner);
 	}
 }

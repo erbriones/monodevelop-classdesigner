@@ -31,20 +31,66 @@ using Pango;
 using MonoHotDraw.Figures;
 using MonoHotDraw.Util;
 
-namespace MonoHotDraw.Tools {
-
-	public class MultiLineTextTool: TextTool {
-	
-		public MultiLineTextTool (IDrawingEditor editor, MultiLineTextFigure fig, ITool dt): base (editor, fig, dt) {	
-			_textview = new Gtk.TextView ();
-			_textview.Buffer.Changed += new System.EventHandler (ChangedHandler);
-			_textview.ModifyFont (fig.PangoLayout.FontDescription.Copy ());
-			_textview.RightMargin = 5;
-			_textview.Justification = ConvertJustificaton ();
+namespace MonoHotDraw.Tools
+{
+	public class MultiLineTextTool : TextTool
+	{
+		public MultiLineTextTool (IDrawingEditor editor, MultiLineTextFigure fig, ITool dt) : base (editor, fig, dt)
+		{	
+			textview = new Gtk.TextView ();
+			textview.Buffer.Changed += new System.EventHandler (ChangedHandler);
+			textview.ModifyFont (fig.PangoLayout.FontDescription.Copy ());
+			textview.RightMargin = 5;
+			textview.Justification = ConvertJustificaton ();
 		}
 		
-		private Gtk.Justification ConvertJustificaton () {
-			Pango.Alignment alignment = ((MultiLineTextFigure)Figure).FontAlignment;
+		#region Tool Activation
+		public override void Deactivate ()
+		{
+			if (!showingWidget) {
+				View.RemoveWidget (textview);
+				UpdateUndoActivity ();
+				PushUndoActivity ();
+			}
+			
+			base.Deactivate ();
+		}
+		#endregion
+		
+		#region Mouse Events
+		public override void MouseDown (MouseEvent ev)
+		{
+			var view = ev.View;
+			SetAnchorCoords (ev.X, ev.Y);
+			View = view;
+			
+			Gdk.EventType type = ev.GdkEvent.Type;
+			
+			if (type == EventType.TwoButtonPress) {
+				CreateUndoActivity ();
+				showingWidget = true;
+				textview.Buffer.Text = ((MultiLineTextFigure) Figure).Text;
+				
+				View.AddWidget (textview, 0, 0);
+				CalculateTextViewSize ();
+				
+				textview.Show ();
+				textview.GrabFocus ();
+				
+				//selects all
+				textview.Buffer.SelectRange (textview.Buffer.StartIter, textview.Buffer.EndIter);
+				
+				return;
+			}
+			
+			DefaultTool.MouseDown (ev);
+		}
+		#endregion
+		
+		#region MultiLineTextTool Members
+		private Gtk.Justification ConvertJustificaton ()
+		{
+			Pango.Alignment alignment = ((MultiLineTextFigure) Figure).FontAlignment;
 			
 			switch (alignment) {
 				case Pango.Alignment.Center: 
@@ -58,63 +104,32 @@ namespace MonoHotDraw.Tools {
 			}
 		}
 
-		private void ChangedHandler (object sender, EventArgs args)	{
-			((MultiLineTextFigure)Figure).Text = _textview.Buffer.Text;
+		private void ChangedHandler (object sender, EventArgs args)
+		{
+			((MultiLineTextFigure) Figure).Text = textview.Buffer.Text;
 			CalculateTextViewSize ();
 		}
 		
-		private void CalculateTextViewSize () {
-			int padding = (int)(Figure as MultiLineTextFigure).Padding;
+		private void CalculateTextViewSize ()
+		{
+			var padding = (int) ((MultiLineTextFigure) Figure).Padding;
 			RectangleD r = Figure.DisplayBox;
-			r.Inflate(-padding, -padding);
+			r.Inflate (-padding, -padding);
 			
 			// Drawing Coordinates must be translated to View's coordinates in order to 
 			// Correctly put the widget in the DrawingView
-			PointD point = View.DrawingToView(r.X, r.Y);
+			PointD point = View.DrawingToView (r.X, r.Y);
 
-			int x = (int) point.X;
-			int y = (int) point.Y;
-			int w = (int) Math.Max (r.Width, 10.0) + _textview.RightMargin * 2;
-			int h = (int) Math.Max (r.Height, 10.0);
+			var x = (int) point.X;
+			var y = (int) point.Y;
+			var w = (int) Math.Max (r.Width, 10.0) + textview.RightMargin * 2;
+			var h = (int) Math.Max (r.Height, 10.0);
 			
-			_textview.SetSizeRequest (w, h);
-			View.MoveWidget (_textview, x, y);
+			textview.SetSizeRequest (w, h);
+			View.MoveWidget (textview, x, y);
 		}
 
-		public override void MouseDown (MouseEvent ev) {
-			IDrawingView view = ev.View;
-			SetAnchorCoords (ev.X, ev.Y);
-			View = view;
-			
-			Gdk.EventType type = ev.GdkEvent.Type;
-			if (type == EventType.TwoButtonPress) {
-				CreateUndoActivity();
-				_showingWidget = true;
-				_textview.Buffer.Text = ((MultiLineTextFigure)Figure).Text;
-				
-				View.AddWidget(_textview, 0, 0);
-				CalculateTextViewSize();
-				
-				_textview.Show();
-				_textview.GrabFocus();
-				
-				//selects all
-				_textview.Buffer.SelectRange(_textview.Buffer.StartIter, _textview.Buffer.EndIter);
-				
-				return;
-			}
-			DefaultTool.MouseDown (ev);
-		}
-
-		public override void Deactivate () {
-			if (_showingWidget) {
-				View.RemoveWidget (_textview);
-				UpdateUndoActivity();
-				PushUndoActivity();
-			}
-			base.Deactivate();
-		}
-		
-		private Gtk.TextView _textview;
+		private Gtk.TextView textview;
+		#endregion
 	}
 }

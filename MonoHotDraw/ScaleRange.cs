@@ -30,27 +30,15 @@ namespace MonoHotDraw
 {
 	public class ScaleRange
 	{
-		double max;
-		double min;
-		double step;
-		
 		public ScaleRange(double maximum, double minimum, double step)
 		{
-			max = maximum;
-			min = minimum;
-			this.step = step;
+			Maximum = maximum;
+			Minimum = minimum;
+			Step = step;
 		}
 		
-		public double Step {
-			get { return step; }
-		}
-		
-		public double Maximum {
-			get { return max; }
-		}
-		
-		public double Minimum {
-			get { return min; }
-		}
+		public double Maximum { get; private set; }
+		public double Minimum { get; private set; }
+		public double Step { get; private set; }
 	}
 }

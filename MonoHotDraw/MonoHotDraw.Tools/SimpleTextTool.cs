@@ -75,7 +75,7 @@ namespace MonoHotDraw.Tools {
 			
 			if (type == EventType.TwoButtonPress) {
 				CreateUndoActivity();
-				_showingWidget = true;
+				showingWidget = true;
 				_entry.Text = (Figure as TextFigure).Text;
 				
 				View.AddWidget (_entry, 0,0);

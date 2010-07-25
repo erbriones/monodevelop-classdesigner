@@ -32,11 +32,15 @@ using MonoHotDraw.Connectors;
 using MonoHotDraw.Handles;
 using MonoHotDraw.Tools;
 using MonoHotDraw.Util;
+using MonoHotDraw.Visitor;
 
 namespace MonoHotDraw.Figures
 { 
 	public interface IFigure : ICloneable, ISerializable
 	{
+		event FigureEventHandler FigureInvalidated;
+		event FigureEventHandler FigureChanged;
+
 		void MoveBy (double x, double y);
 		void MoveTo (double x, double y);
 		bool Includes (IFigure figure);
@@ -47,18 +51,19 @@ namespace MonoHotDraw.Figures
 		IConnector ConnectorAt (double x, double y);
 		ITool CreateFigureTool (IDrawingEditor editor, ITool defaultTool);
 		
+		// Child management
+		void Add (IFigure figure);
+		void Remove (IFigure figure);
+		
 		RectangleD DisplayBox { get; set; }
-		IEnumerable <IFigure> FiguresEnumerator { get; }
-		IEnumerable <IHandle> HandlesEnumerator { get; }
+		IEnumerable <IFigure> Figures { get; }
+		IEnumerable <IHandle> Handles { get; }
 		bool CanConnect { get; }
 		
 		object GetAttribute (FigureAttribute attribute);
 		void SetAttribute (FigureAttribute attribute, object value);
 		
-		void Visit (IFigureVisitor visitor);
-
-		event EventHandler <FigureEventArgs> FigureInvalidated;
-		event EventHandler <FigureEventArgs> FigureChanged;
+		void AcceptVisitor (IFigureVisitor visitor);
 	}
 }
 

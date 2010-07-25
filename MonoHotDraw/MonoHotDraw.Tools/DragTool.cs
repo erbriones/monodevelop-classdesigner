@@ -29,82 +29,86 @@ using Cairo;
 using MonoHotDraw.Figures;
 using MonoHotDraw.Commands;
 
-namespace MonoHotDraw.Tools {
-
-	public class DragTool: AbstractTool {
-	
-		public DragTool (IDrawingEditor editor, IFigure anchor): base (editor) {
+namespace MonoHotDraw.Tools
+{
+	public class DragTool : AbstractTool
+	{
+		public DragTool (IDrawingEditor editor, IFigure anchor): base (editor)
+		{
 			AnchorFigure = anchor;
 		}
-
+		
 		public IFigure AnchorFigure { get; set; }
-		protected double LastX { get; set; }
-		protected double LastY { get; set; }
 		public bool HasMoved { get; protected set; }
 		
-		protected void SetLastCoords (double x, double y) {
-			LastX = x;
-			LastY = y;
-		}
-
-		public override void MouseDown (MouseEvent ev) {
+		#region Mouse Events
+		public override void MouseDown (MouseEvent ev)
+		{
 			base.MouseDown (ev);
-			IDrawingView view = ev.View;
+			
+			var view = ev.View;
 			
 			SetLastCoords (ev.X, ev.Y);
-			
-			Gdk.ModifierType state = (ev.GdkEvent as EventButton).State;
+			Gdk.ModifierType state = ((EventButton) ev.GdkEvent).State;
 
 			bool shift_pressed = (state & ModifierType.ShiftMask) != 0;
 
-			if (shift_pressed) {
+			if (shift_pressed)
 				view.ToggleSelection (AnchorFigure);
-			}
 				
 			else if (!view.IsFigureSelected (AnchorFigure)) {
 				view.ClearSelection ();
 				view.AddToSelection (AnchorFigure);
 			}
+			
 			CreateUndoActivity();
 		}
 
-		public override void MouseDrag (MouseEvent ev) {
+		public override void MouseDrag (MouseEvent ev)
+		{
 			HasMoved = (Math.Abs (ev.X - AnchorX) > 4 || Math.Abs (ev.Y - AnchorX) > 4);
-
+			
 			if (HasMoved) {
-				foreach (IFigure figure in ev.View.SelectionEnumerator) {
+				foreach (IFigure figure in ev.View.SelectionEnumerator)
 					figure.MoveBy (ev.X - LastX, ev.Y - LastY);
-				}
 			}
 			SetLastCoords (ev.X, ev.Y);
 		}
 		
-		public override void MouseUp (MouseEvent ev) {
-			UpdateUndoActivity();
-			PushUndoActivity();
+		public override void MouseUp (MouseEvent ev)
+		{
+			UpdateUndoActivity ();
+			PushUndoActivity ();
 		}
 		
-		public class DragToolUndoActivity: AbstractUndoActivity {
-			public DragToolUndoActivity(IDrawingView drawingView): base (drawingView) {
+		#endregion
+		
+		#region UndoActivity
+		public class DragToolUndoActivity : AbstractUndoActivity
+		{
+			public DragToolUndoActivity (IDrawingView drawingView) : base (drawingView)
+			{
 				Undoable = true;
 				Redoable = true;
 			}
 			
-			public override bool Undo () {
-				if (!base.Undo()  )
+			public override bool Undo ()
+			{
+				if (!base.Undo ())
 					return false;
 				
 				double deltaX = StartPoint.X - EndPoint.X;
 				double deltaY = StartPoint.Y - EndPoint.Y;
 			
-				foreach (IFigure figure in AffectedFigures) {
+				foreach (IFigure figure in AffectedFigures)
 					figure.MoveBy(deltaX, deltaY);
-				}
+
 				return true;
 			}
 			
-			public override bool Redo () {
-				if (!base.Redo() )
+			public override bool Redo ()
+			{
+				if (!base.Redo ())
 					return false;
 				
 				double deltaX = EndPoint.X - StartPoint.X;
@@ -112,31 +116,45 @@ namespace MonoHotDraw.Tools {
 				
 				foreach (IFigure figure in AffectedFigures) {
 					figure.MoveBy(deltaX, deltaY);
+				
 				}
+				
 				return true;
 			}
 			
 			public PointD StartPoint { get; set; }
 			public PointD EndPoint { get; set; } 
 		}
+		#endregion
 		
-		protected void CreateUndoActivity() {
-			IDrawingView view = Editor.View;
-			DragToolUndoActivity activity = new DragToolUndoActivity(view);
+		#region Protected Members
+		protected double LastX { get; set; }
+		protected double LastY { get; set; }
+
+		protected void CreateUndoActivity ()
+		{
+			var view = Editor.View;
+			var activity = new DragToolUndoActivity(view);
 			activity.AffectedFigures = view.SelectionEnumerator.ToFigures();
 			activity.StartPoint = new PointD(AnchorX, AnchorY);
 			UndoActivity = activity;
 		}
 		
-		protected void UpdateUndoActivity() {
-			if (HasMoved){
-				DragToolUndoActivity activity = UndoActivity as DragToolUndoActivity;
-				activity.EndPoint = new PointD(LastX, LastY);
-			}
-			
-			else {
-				UndoActivity = null;
-			}
+		protected void SetLastCoords (double x, double y)
+		{
+			LastX = x;
+			LastY = y;
 		}
+		
+		protected void UpdateUndoActivity ()
+		{
+			if (HasMoved) {
+				var activity = (DragToolUndoActivity) UndoActivity;
+				activity.EndPoint = new PointD (LastX, LastY);
+			} else 
+				UndoActivity = null;
+		}
+		
+		#endregion
 	}
 }

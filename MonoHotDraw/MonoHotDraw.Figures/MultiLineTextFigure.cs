@@ -31,24 +31,26 @@ using MonoHotDraw.Tools;
 
 namespace MonoHotDraw.Figures
 {
-
 	[Serializable]
-	public class MultiLineTextFigure: TextFigure
+	public class MultiLineTextFigure : TextFigure
 	{
-	
 		public MultiLineTextFigure (string text):  base (text)
 		{
 		}
 		
+		#region Public Members
 		public override ITool CreateFigureTool (IDrawingEditor editor, ITool dt)
 		{
 			return TextEditable ? new MultiLineTextTool (editor, this, dt) : dt;
 		}
+		#endregion
 		
+		#region MultiLineTextFigure Members
 		protected override void SetupLayout (Cairo.Context context)
 		{
 			base.SetupLayout (context);
 			PangoLayout.SingleParagraphMode = false;
 		}
+		#endregion
 	}
 }

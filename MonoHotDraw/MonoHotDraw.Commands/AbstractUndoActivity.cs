@@ -28,29 +28,35 @@ using System;
 using System.Collections.Generic;
 using MonoHotDraw.Figures;
 
-namespace MonoHotDraw.Commands {
-
-	public class AbstractUndoActivity : IUndoActivity {
-	
-		public AbstractUndoActivity (IDrawingView drawingView) {
+namespace MonoHotDraw.Commands
+{
+	public class AbstractUndoActivity : IUndoActivity
+	{
+		public AbstractUndoActivity (IDrawingView drawingView)
+		{
 			DrawingView = drawingView;
 		}
 		
+		#region Public Api
 		public bool Undoable { get; set; }
 		public bool Redoable { get; set; }
 		public IDrawingView DrawingView { get; protected set; }
 		public virtual IEnumerable<IFigure> AffectedFigures { get; set; }
-			
-		public virtual bool Undo () {
+		
+		public virtual bool Undo ()
+		{
 			return Undoable; 
 		}
 
-		public virtual bool Redo () {
+		public virtual bool Redo ()
+		{
 			return Redoable;
 		}
 
-		public void Release () {
+		public void Release ()
+		{
 			AffectedFigures = null;
 		}
+		#endregion 
 	}
 }

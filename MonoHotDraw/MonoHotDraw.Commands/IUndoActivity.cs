@@ -28,15 +28,18 @@ using System;
 using System.Collections.Generic;
 using MonoHotDraw.Figures;
 
-namespace MonoHotDraw.Commands {
-
-	public interface IUndoActivity {
-		bool Undo ();
-		bool Redo();
+namespace MonoHotDraw.Commands
+{
+	public interface IUndoActivity
+	{
 		bool Undoable { get; set; }
 		bool Redoable { get; set; }
-		void Release();
+
 		IDrawingView DrawingView { get; }
 		IEnumerable<IFigure> AffectedFigures { get; set; }
+
+		bool Undo ();
+		bool Redo();
+		void Release();
 	}
 }

@@ -1,7 +1,7 @@
 // MonoHotDraw. Diagramming Framework
 //
 // Authors:
-//	Mario Carrión <mario@monouml.org>
+//	Manuel Cerón <ceronman@gmail.com>
 //
 // Copyright (C) 2006, 2007, 2008, 2009 MonoUML Team (http://www.monouml.org)
 //
@@ -24,35 +24,22 @@
 // THE SOFTWARE.
 
 using System;
-using MonoHotDraw.Figures;
-using MonoHotDraw.Handles;
+using MonoHotDraw.Util;
 
-namespace MonoHotDraw.Commands {
-
-	public class DeleteFromDrawingVisitor : IFigureVisitor {
-
-		public DeleteFromDrawingVisitor (IDrawing drawing) {
-			Drawing         = drawing;
-			_deletedFigures = new FigureCollection ();
-		}
-		
-		public IDrawing Drawing { get; set; }
-		
-		public FigureCollection GetDeletedFigures () {
-			return _deletedFigures;
+namespace MonoHotDraw
+{
+	public delegate void DrawingEventHandler (object obj, DrawingEventArgs args);
+	
+	public class DrawingEventArgs : EventArgs
+	{
+		public DrawingEventArgs (IDrawing draw, RectangleD rect)
+		{
+			Drawing = draw;
+			Rectangle = rect;
 		}
 
-		public void VisitFigure (IFigure hostFigure) {
-			if (_deletedFigures.Contains (hostFigure) == false 
-				&& Drawing.Includes (hostFigure)) {
-				Drawing.Remove (hostFigure);
-				_deletedFigures.Add (hostFigure);
-			}
-		}
-
-		public void VisitHandle (IHandle hostHandle) {
-		}
-		
-		private FigureCollection _deletedFigures;
+		public IDrawing Drawing	{ get; private set; }
+		public RectangleD Rectangle { get; private set; }
 	}
 }
+

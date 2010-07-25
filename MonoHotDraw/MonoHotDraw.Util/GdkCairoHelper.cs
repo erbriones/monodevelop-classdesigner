@@ -31,10 +31,11 @@ namespace MonoHotDraw.Util
 {
 	public sealed class GdkCairoHelper
 	{	
-		GdkCairoHelper ()
+		private GdkCairoHelper ()
 		{
 		}
 		
+		#region Helper Methods
 		public static Cairo.ImageSurface PixbufToImageSurface (Gdk.Pixbuf pixbuf)
 		{
 			var format = Cairo.Format.RGB24;
@@ -105,5 +106,7 @@ namespace MonoHotDraw.Util
 				Y = Math.Truncate(point.Y) + 0.5
 			};
 		}
+		
+		#endregion
 	}
 }

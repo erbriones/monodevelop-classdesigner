@@ -30,10 +30,14 @@ using System.Collections.Generic;
 using MonoHotDraw.Figures;
 using MonoHotDraw.Util;
 
-namespace MonoHotDraw {
-
-	public interface IDrawing {
-	
+namespace MonoHotDraw
+{
+	public interface IDrawing : IDisposable
+	{
+		
+		event DrawingEventHandler DrawingInvalidated;
+		event DrawingEventHandler SizeAllocated;
+		
 		void Add (IFigure figure);
 		void Remove (IFigure figure);
 		void Draw (Context context, FigureCollection figures);
@@ -46,12 +50,9 @@ namespace MonoHotDraw {
 		void SendToBack (IFigure figure);
 
 		RectangleD DisplayBox { get; }
-		IEnumerable <IFigure> FiguresEnumeratorReverse { get; }
-		IEnumerable <IFigure> FiguresEnumerator { get; }
-		IList <IFigure> FigureCollection { get; }
-		
-		event EventHandler <DrawingEventArgs> DrawingInvalidated;
-		event EventHandler <DrawingEventArgs> SizeAllocated;
+		IEnumerable <IFigure> FiguresReversed { get; }
+		IEnumerable <IFigure> Figures { get; }
+		//IList <IFigure> FigureCollection { get; }
 	}
 }
 

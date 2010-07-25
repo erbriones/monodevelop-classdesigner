@@ -26,59 +26,66 @@
 using System;
 using MonoHotDraw.Figures;
 
-namespace MonoHotDraw.Commands {
-
-	public class SendToBackCommand : AbstractCommand {
-		
-		public SendToBackCommand (string name, IDrawingEditor editor) : base (name, editor) {
+namespace MonoHotDraw.Commands
+{
+	public class SendToBackCommand : AbstractCommand
+	{	
+		public SendToBackCommand (string name, IDrawingEditor editor) : base (name, editor)
+		{
 		}
 		
+		#region Public Members
 		public override bool IsExecutable {
 			get { return DrawingView.SelectionCount > 0; }
 		}
 		
-		public override void Execute () {
+		public override void Execute ()
+		{
 			base.Execute ();
 
 			UndoActivity = CreateUndoActivity ();
 			UndoActivity.AffectedFigures = new FigureCollection (DrawingView.SelectionEnumerator);
-			foreach (IFigure figure in UndoActivity.AffectedFigures) {
+	
+			foreach (IFigure figure in UndoActivity.AffectedFigures)
 				DrawingView.Drawing.SendToBack (figure);
-			}
 		}
+		#endregion
 		
-		protected override IUndoActivity CreateUndoActivity () {
+		#region SendToBackCommand Members
+		protected override IUndoActivity CreateUndoActivity ()
+		{
 			return new SendToBackUndoActivity (DrawingView);
 		}
-
-		class SendToBackUndoActivity : AbstractUndoActivity {
-			public SendToBackUndoActivity (IDrawingView drawingView) : base (drawingView) {
+		#endregion
+		
+		#region UndoActivity
+		class SendToBackUndoActivity : AbstractUndoActivity
+		{
+			public SendToBackUndoActivity (IDrawingView drawingView) : base (drawingView)
+			{
 				Undoable = true;
 				Redoable = true;
 			}
 
-			public override bool Undo () {
+			public override bool Undo ()
+			{
 				if (base.Undo () == false)
 					return false;
 
-				foreach (IFigure figure in AffectedFigures) {
+				foreach (IFigure figure in AffectedFigures)
 					DrawingView.Drawing.BringToFront (figure);
-				}
 
 				return true;
 			}
 
-			public override bool Redo () {
-				if (Redoable == false)
-					return false;
-
-				foreach (IFigure figure in AffectedFigures) {
+			public override bool Redo ()
+			{
+				foreach (IFigure figure in AffectedFigures)
 					DrawingView.Drawing.SendToBack (figure);
-				}
 
 				return true;
 			}
 		}
-
+		#endregion
 	}
 }

@@ -33,11 +33,9 @@ using MonoHotDraw.Util;
 
 namespace MonoHotDraw.Figures
 {
-
 	[Serializable]
 	public abstract class BaseBoxFigure : AttributeFigure
 	{
-
 		protected BaseBoxFigure ()
 		{
 		}
@@ -47,30 +45,34 @@ namespace MonoHotDraw.Figures
 			DisplayBox = ((RectangleD) info.GetValue ("DisplayBox", typeof (RectangleD)));
 		}
 		
-		protected override RectangleD BasicDisplayBox {
-			set { _displayBox = value; }
-			get { return _displayBox; }
-		}
-
-		public override IEnumerable <IHandle> HandlesEnumerator {
+		#region Public Api
+		public override IEnumerable <IHandle> Handles {
 			get {
-				if (_handles == null) {
+				if (_handles == null)
 					InstantiateHandles ();
-				}
-
-				foreach (IHandle handle in _handles) {
-					yield return handle;
-				}
+				
+				return _handles;
 			}
 		}
+		#endregion
 		
+		#region ISerializable implementation
 		public override void GetObjectData (SerializationInfo info, StreamingContext context)
 		{
 			info.AddValue ("DisplayBox", _displayBox);
 
 			base.GetObjectData (info, context);
 		}
+		#endregion
 		
+		#region Inheritable Members
+		protected override RectangleD BasicDisplayBox {
+			set { _displayBox = value; }
+			get { return _displayBox; }
+		}
+		#endregion
+		
+		#region Private Members
 		private void InstantiateHandles ()
 		{
 			_handles = new List <IHandle> ();
@@ -83,8 +85,9 @@ namespace MonoHotDraw.Figures
 			_handles.Add (new SouthHandle (this));
 			_handles.Add (new WestHandle (this));
 		}
-
-		private RectangleD     _displayBox;
+		
+		private RectangleD _displayBox;
 		private List <IHandle> _handles;
+		#endregion
 	}
 }

@@ -37,6 +37,7 @@ using MonoDevelop.Diagram.Components;
 using MonoDevelop.ClassDesigner.Gui.Dialogs;
 using MonoDevelop.ClassDesigner.Gui.Toolbox;
 using MonoDevelop.ClassDesigner.Figures;
+using MonoDevelop.ClassDesigner.Visitor;
 using MonoDevelop.Components.Commands;
 using MonoDevelop.Core;
 using MonoDevelop.Projects;
@@ -58,8 +59,6 @@ namespace MonoDevelop.ClassDesigner
 	{
 		static readonly string path = "/MonoDevelop/ClassDesigner/FigureCommandHandlers";
 		static FigureCommandHandlerCollection handlers = new FigureCommandHandlerCollection (path);
-	
-		ClassDiagram diagram;
 		ToolboxList toolboxItems;
 		
 		public ClassDesigner (Project project) : this ()
@@ -79,22 +78,53 @@ namespace MonoDevelop.ClassDesigner
 		
 		protected ClassDesigner () : base (100)
 		{
-			this.Diagram = new ClassDiagram ();
+			View.Drawing = new ClassDiagram ();
+			ProjectDomService.TypesUpdated += OnTypesUpdated;
 			this.UntitledName = "ClassDiagram.cd";
 			this.IsViewOnly = false;
 			//this.View.VisibleAreaChanged
+			
 			SetupTools ();
 		}
 		
+		public override void Dispose ()
+		{
+			ProjectDomService.TypesUpdated -= OnTypesUpdated;
+		}
+		
+		public void Remove (IFigure figure)
+		{
+			View.Remove (figure);
+		}
+		
+		// FIXME: Add new Key to cache and make cache accessible
+		void OnTypesUpdated (object sender, TypeUpdateInformationEventArgs e)
+		{
+			//if (e.Project != this.Project)
+			//	return;
+			
+			var visitor = new TypeUpdateFigureVisitor (View.Drawing, Dom, e.TypeUpdateInformation);
+			IFigure figure;
+			
+			foreach (IType type in e.TypeUpdateInformation.Removed) {
+			//	if (!Diagram.Cache.TryGetValue (type.FullName, out figure))
+					continue;
+					
+			//	Gtk.Application.Invoke ((tf, j) => Remove (tf));
+			}
+			
+			foreach (IType type in e.TypeUpdateInformation.Modified) {				
+			//	if (!typeCache.TryGetValue (type.FullName, out figure))
+					continue;
+				
+			//	Gtk.Application.Invoke ((k, j) => visitor.VisitFigure (tf));
+			}	
+		}
+
+		
 		#region Public API
 		public ClassDiagram Diagram {
-			get { return diagram; }
-			set {
-				if (value == null)
-					return;
-				
-				diagram = value;
-			}
+			get { return (ClassDiagram) View.Drawing; }
 		}
 		
 		public void AddInheritanceLines ()
@@ -145,10 +175,7 @@ namespace MonoDevelop.ClassDesigner
 			if (compilationUnit == null)
 				return;
 			
-			var figures = compilationUnit.Types.Select (t => Diagram.CreateFigure (t)).Where (t => t != null);
-			View.AddRange (figures);
-			
-			AutoLayout ();	
+			Diagram.AddToBuilder (compilationUnit.Types);
 		}
 		
 		public void AddFromNamespace (string ns)
@@ -160,7 +187,7 @@ namespace MonoDevelop.ClassDesigner
 				return;
 			}
 			
-			foreach (IMember item in members) {	
+			foreach (IMember item in members) {
 				if (item.MemberType == MemberType.Namespace) {
 					AddFromNamespace (item.FullName);
 					continue;
@@ -168,27 +195,18 @@ namespace MonoDevelop.ClassDesigner
 					continue; 
 				
 				AddFromType (Dom.GetType (item.FullName));
-			}
-			
-			AutoLayout ();	
+			}			
 		}
 		
 		public override void AddFromProject (Project project)
 		{
 			Project = project;
-			View.AddRange (Dom.Types.Select (t => Diagram.CreateFigure (t)).Where (f => f != null));
-			
-			AutoLayout ();	
+			Diagram.AddToBuilder (Dom.Types);
 		}
  
 		public void AddFromType (IType type)
 		{
-			var figure = Diagram.CreateFigure (type);
-			
-			if (figure == null)
-				return;
-			
-			View.Add (figure);
+			Diagram.AddToBuilder (new IType [] { type });
 		}
 		#endregion
 		
@@ -359,8 +377,7 @@ namespace MonoDevelop.ClassDesigner
 		#region AbstractViewContent Members
 		public override void Load (string fileName)
 		{
-			Diagram.Load (fileName, this.Dom);
-			View.AddRange (diagram.Figures);
+			Diagram.Load (fileName, this.Dom);	
 			IsDirty = false;
 			Control.GrabFocus ();
 		}
@@ -452,7 +469,8 @@ namespace MonoDevelop.ClassDesigner
 		#endregion
 		
 		
-		#region Private Methods			
+		#region Private Methods
+			
 		void AddRange (IEnumerable<string> files)
 		{
 			foreach (string file in files)
@@ -461,6 +479,7 @@ namespace MonoDevelop.ClassDesigner
 		
 		void SetupTools ()
 		{
+	
 			toolboxItems = new ToolboxList ();
 			
 			var icon = ImageService.GetPixbuf (Stock.TextFileIcon, Gtk.IconSize.SmallToolbar);

@@ -32,17 +32,17 @@ using MonoHotDraw.Util;
 namespace MonoHotDraw.Connectors
 {
 	[Serializable]
-	public class ChopBoxConnector: AbstractConnector
+	public class ChopBoxConnector : AbstractConnector
 	{
-	
-		public ChopBoxConnector (IFigure figure): base (figure)
+		public ChopBoxConnector (IFigure figure) : base (figure)
 		{
 		}
 
 		protected ChopBoxConnector (SerializationInfo info, StreamingContext context) : base (info, context)
 		{
 		}
-
+		
+		#region Public Members
 		public override PointD FindStart (IConnectionFigure connection)
 		{
 			if (connection == null)
@@ -55,7 +55,6 @@ namespace MonoHotDraw.Connectors
 
 		public override PointD FindEnd (IConnectionFigure connection)
 		{
-		
 			if (connection == null)
 				return DisplayBox.Center;
 
@@ -63,7 +62,9 @@ namespace MonoHotDraw.Connectors
 
 			return Chop (Owner, point);
 		}
-
+		#endregion
+		
+		#region Protected Members
 		protected virtual PointD Chop (IFigure target, PointD point)
 		{	
 			if (target == null)
@@ -74,5 +75,6 @@ namespace MonoHotDraw.Connectors
 			double angle = Geometry.AngleFromPoint (DisplayBox, point);
 			return Geometry.EdgePointFromAngle (DisplayBox, angle);
 		}
+		#endregion
 	}
 }

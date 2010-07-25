@@ -34,8 +34,7 @@ namespace MonoHotDraw.Connectors
 	[Serializable]
 	public class ChopEllipseConnector : ChopBoxConnector
 	{
-	
-		public ChopEllipseConnector (IFigure figure): base (figure)
+		public ChopEllipseConnector (IFigure figure) : base (figure)
 		{
 		}
 		
@@ -43,6 +42,7 @@ namespace MonoHotDraw.Connectors
 		{
 		}
 		
+		#region Protected Members
 		protected override PointD Chop (IFigure target, PointD point)
 		{
 			if (target.ContainsPoint (point.X, point.Y))
@@ -58,5 +58,6 @@ namespace MonoHotDraw.Connectors
 			
 			return p;
 		}
+		#endregion
 	}
 }

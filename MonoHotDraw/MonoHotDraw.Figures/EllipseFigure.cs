@@ -28,15 +28,17 @@ using System;
 using System.Collections.Generic;
 using MonoHotDraw.Connectors;
 
-namespace MonoHotDraw.Figures {
-
+namespace MonoHotDraw.Figures
+{
 	[Serializable]
-	public class EllipseFigure: BaseBoxFigure {
-	
-		public EllipseFigure (): base () {
+	public class EllipseFigure : BaseBoxFigure
+	{
+		public EllipseFigure () : base ()
+		{
 		}
 
-		protected override void BasicDraw (Context context) {
+		protected override void BasicDraw (Context context)
+		{
 			double midwidth  = DisplayBox.Width / 2.0;
 			double midheight = DisplayBox.Height / 2.0;
 
@@ -52,7 +54,8 @@ namespace MonoHotDraw.Figures {
 			context.Stroke ();
 		}
 		
-		public override IConnector ConnectorAt (double x, double y) {
+		public override IConnector ConnectorAt (double x, double y)
+		{
 			return new ChopEllipseConnector (this);
 		}
 	}

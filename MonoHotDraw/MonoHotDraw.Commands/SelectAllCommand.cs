@@ -26,55 +26,62 @@
 using System;
 using MonoHotDraw.Figures;
 
-namespace MonoHotDraw.Commands {	
-	
-	public class SelectAllCommand : AbstractCommand {
-
-		public SelectAllCommand (string name, IDrawingEditor editor) : base (name, editor) {
+namespace MonoHotDraw.Commands
+{		
+	public class SelectAllCommand : AbstractCommand
+	{
+		public SelectAllCommand (string name, IDrawingEditor editor) : base (name, editor)
+		{
 		}
 		
-		public override void Execute () {
+		#region Public Members
+		public override void Execute ()
+		{
 			base.Execute ();
 
 			UndoActivity = CreateUndoActivity ();
 			UndoActivity.AffectedFigures = new FigureCollection (DrawingView.SelectionEnumerator);
-			foreach (IFigure figure in DrawingView.Drawing.FiguresEnumerator) {
+			
+			foreach (IFigure figure in DrawingView.Drawing.Figures)
 				DrawingView.AddToSelection (figure);
-			}
 		}
-
-		protected override IUndoActivity CreateUndoActivity () {
+		#endregion
+		
+		#region SelectAllCommand Members
+		protected override IUndoActivity CreateUndoActivity ()
+		{
 			return new SelectAllUndoActivity (DrawingView);
 		}
-
-		class SelectAllUndoActivity : AbstractUndoActivity {
-			public SelectAllUndoActivity (IDrawingView drawingView) : base (drawingView) {
+		#endregion
+		
+		#region UndoActivity
+		class SelectAllUndoActivity : AbstractUndoActivity
+		{
+			public SelectAllUndoActivity (IDrawingView drawingView) : base (drawingView)
+			{
 				Undoable = true;
 				Redoable = true;
 			}
 
-			public override bool Undo () {
+			public override bool Undo ()
+			{
 				if (base.Undo () == false)
 					return false;
 
 				DrawingView.ClearSelection ();
-				DrawingView.AddToSelection (AffectedFigures.ToFigures());
+				DrawingView.AddToSelection (AffectedFigures.ToFigures ());
 
 				return true;
 			}
 
-			public override bool Redo () {
-				// do not call execute directly as the selection might has changed
-				if (Redoable) {
-					foreach (IFigure figure in DrawingView.Drawing.FiguresEnumerator) {
-						DrawingView.AddToSelection (figure);
-					}
-					return true;
-				}
+			public override bool Redo ()
+			{
+				foreach (IFigure figure in DrawingView.Drawing.Figures)
+					DrawingView.AddToSelection (figure);
 
-				return false;
+				return true;
 			}
 		}
-
+		#endregion
 	}
 }

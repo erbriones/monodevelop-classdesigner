@@ -33,22 +33,24 @@ namespace MonoHotDraw.Figures
 {	
 	public abstract class StackFigure : CompositeFigure
 	{
-		double _spacing;
-		
 		protected StackFigure () : base ()
 		{
 			Position = new PointD (0.0, 0.0);
-			Spacing = 5.0;
+			spacing = 2.0;
 		}
 		
+		protected abstract double CalculateHeight ();
+		protected abstract double CalculateWidth ();
+		protected abstract void UpdateFiguresPosition ();
+		
 		public double Spacing {
-			get { return _spacing; }
+			get { return spacing; }
 			set { 
-				_spacing = value;
+				spacing = value;
 				CalculateDimensions ();
 			}
 		}
-		
+
 		protected override RectangleD BasicDisplayBox {
 			get {
 				return new RectangleD {
@@ -57,54 +59,44 @@ namespace MonoHotDraw.Figures
 					Width = this.Width,
 					Height = this.Height,
 				};
-			}
-			set {
+			} set {
 				Position = value.TopLeft;
 				UpdateFiguresPosition ();
 			}
 		}
-		
-		protected PointD Position { get; set; }
-		
-		protected double Width { get; set; } 
-		
-		protected double Height { get; set; }
 
-		public virtual void Clear ()	
+		protected double Height { get; set; }
+		protected PointD Position { get; set; }
+		protected double Width { get; set; } 
+
+		protected sealed override void OnChildAdded (FigureEventArgs e)
 		{
-			Figures.ForEach (f => Remove (f));
+			e.Figure.FigureChanged += OnChildChanged;
+			CalculateDimensions ();
+			base.OnChildAdded (e);
 		}
-		
-		public override void Add (IFigure figure)
+	
+		protected sealed override void OnChildRemoved (FigureEventArgs e)
 		{
-			base.Add (figure);
-			figure.FigureChanged += FigureChangedHandler;
+			e.Figure.FigureChanged -= OnChildChanged;
+			CalculateDimensions ();
+			base.OnChildRemoved (e);
+		}
+
+		protected void OnChildChanged (object sender, FigureEventArgs args)
+		{
 			CalculateDimensions ();
 		}
 		
-		public override void Remove (IFigure figure)
-		{
-			base.Remove (figure);
-			figure.FigureChanged -= FigureChangedHandler;
-			CalculateDimensions ();
-		}
-		
-		protected void FigureChangedHandler (object sender, FigureEventArgs args)
-		{
-			CalculateDimensions ();
-		}
-		
-		protected abstract double CalculateWidth ();
-		protected abstract double CalculateHeight ();
-		protected abstract void UpdateFiguresPosition ();
-		
-		void CalculateDimensions ()
+		private void CalculateDimensions ()
 		{
 			WillChange ();
 			Width = CalculateWidth ();
-			Height = CalculateHeight( );
+			Height = CalculateHeight ();
 			UpdateFiguresPosition ();
 			Changed ();
-		}		
+		}
+		
+		private double spacing;
 	}
 }

@@ -29,76 +29,89 @@ using Gdk;
 using MonoHotDraw.Figures;
 using MonoHotDraw.Util;
 
-namespace MonoHotDraw.Tools {
-
-	public class SelectAreaTool: AbstractTool {
-	
-		public SelectAreaTool (IDrawingEditor editor): base (editor) {
+namespace MonoHotDraw.Tools
+{
+	public class SelectAreaTool : AbstractTool
+	{
+		public SelectAreaTool (IDrawingEditor editor) : base (editor)
+		{
 		}
-
-		public override void MouseDown (MouseEvent ev) {
+		
+		#region Mouse Events
+		public override void MouseDown (MouseEvent ev)
+		{
 			base.MouseDown (ev);
 			
-			IDrawingView view = ev.View;
-			
-			EventButton gdk_event = ev.GdkEvent as EventButton;
+			var view = ev.View;
+			var gdk_event = (EventButton) ev.GdkEvent;
 
 			bool shift_pressed = (gdk_event.State & ModifierType.ShiftMask) != 0;
 			
-			if (!shift_pressed) {
+			if (!shift_pressed)
 				view.ClearSelection ();
-			}
 
-			_selectionRect = new RectangleD (ev.X, ev.Y, 0, 0);
+			selectionRectangle = new RectangleD (ev.X, ev.Y, 0, 0);
 			DrawSelectionRect ((Gtk.Widget) view, gdk_event.Window);
+			
 		}
 
-		public override void MouseUp (MouseEvent ev) {
-			IDrawingView view = ev.View;
+		public override void MouseUp (MouseEvent ev)
+		{
+			var view = ev.View;
+			var gdk_event = (EventButton) ev.GdkEvent;
 			
-			Gdk.EventButton gdk_event = ev.GdkEvent as EventButton;
 			DrawSelectionRect ((Gtk.Widget) view, gdk_event.Window);
+			
 			bool shift_pressed = (gdk_event.State & ModifierType.ShiftMask) != 0;
+			
 			SelectFiguresOnRect (view, shift_pressed);
 		}
 
-		public override void MouseDrag (MouseEvent ev) {
+		public override void MouseDrag (MouseEvent ev)
+		{
 			DrawSelectionRect ((Gtk.Widget) ev.View, ev.GdkEvent.Window);
-			PointD anchor = new PointD (AnchorX, AnchorY);
-			PointD corner = new PointD (ev.X, ev.Y);
-			_selectionRect = new RectangleD (anchor, corner);
-			DrawSelectionRect ((Gtk.Widget) ev.View, ev.GdkEvent.Window);
-		}
-		
-		public void SelectFiguresOnRect (IDrawingView view, bool shift_pressed) 	{
-			foreach (IFigure figure in view.Drawing.FiguresEnumeratorReverse) {
-				RectangleD rect = figure.DisplayBox;
-				if (_selectionRect.Contains (rect.X, rect.Y)
-					&& _selectionRect.Contains (rect.X2, rect.Y2)) {
-						if (shift_pressed) {
-							view.ToggleSelection (figure);
-						}
-						else {
-							view.AddToSelection (figure);
-						}
-				}
-			}
-		}
-
-		private void DrawSelectionRect (Gtk.Widget widget, Gdk.Window window) {
-			Gdk.GC gc = (widget.Style.WhiteGC);
-			gc.SetLineAttributes (1,LineStyle.OnOffDash, CapStyle.Butt, JoinStyle.Miter);
-			gc.Function = Function.Xor;
-			_selectionRect.Normalize ();
 			
-			RectangleD r = _selectionRect;
+			var anchor = new PointD (AnchorX, AnchorY);
+			var corner = new PointD (ev.X, ev.Y);
+		
+			selectionRectangle = new RectangleD (anchor, corner);
+			DrawSelectionRect ((Gtk.Widget) ev.View, ev.GdkEvent.Window);
+		}
+		#endregion
+		
+		#region Selection Area Tool Members
+		private void DrawSelectionRect (Gtk.Widget widget, Gdk.Window window)
+		{
+			Gdk.GC gc = widget.Style.WhiteGC;
+			gc.SetLineAttributes (1, LineStyle.OnOffDash, CapStyle.Butt, JoinStyle.Miter);
+			gc.Function = Function.Xor;
+			selectionRectangle.Normalize ();
+			
+			RectangleD r = selectionRectangle;
 			PointD p = View.DrawingToView(r.X, r.Y);
+			
 			window.DrawRectangle (gc, false, (int) p.X,
 			                       (int) p.Y,
 			                       (int) (r.Width * View.Scale),
 			                       (int) (r.Height * View.Scale));
 		}
-
-		private RectangleD _selectionRect;
+		
+		private void SelectFiguresOnRect (IDrawingView view, bool shift_pressed)
+		{
+			foreach (IFigure figure in view.Drawing.FiguresReversed) {
+				RectangleD rect = figure.DisplayBox;
+				
+				if (selectionRectangle.Contains (rect.X, rect.Y) &&
+					selectionRectangle.Contains (rect.X2, rect.Y2)) {
+						if (shift_pressed)
+							view.ToggleSelection (figure);
+						else
+							view.AddToSelection (figure);
+				}
+			}
+		}
+		
+		private RectangleD selectionRectangle;
+		#endregion
 	}
 }

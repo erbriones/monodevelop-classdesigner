@@ -28,37 +28,45 @@ using System;
 using MonoHotDraw.Figures;
 using MonoHotDraw.Util;
 
-namespace MonoHotDraw.Locators {
-
-	public class QuickActionLocator : ILocator {
+namespace MonoHotDraw.Locators
+{
+	public class QuickActionLocator : ILocator
+	{
 	
-		public QuickActionLocator (double padd, double rel, QuickActionPosition pos) {
-			_relative = rel;
-			_position = pos;
-			_padding = padd;
-		}
-				
-		public PointD Locate (IFigure owner) {
-			if (owner != null) {				
-				RectangleD r = owner.DisplayBox;
-				
-				switch (_position) {
-					case QuickActionPosition.Up:
-						return new PointD (r.X + r.Width * _relative, r.Y - _padding);
-					case QuickActionPosition.Bottom:
-						return new PointD (r.X + r.Width * _relative, r.Y2 + _padding);
-					case QuickActionPosition.Left:
-						return new PointD (r.X - _padding, r.Y + r.Height * _relative);
-					case QuickActionPosition.Right:
-						return new PointD (r.X2 + _padding, r.Y + r.Height * _relative);
-				}
-			}
-			
-			return new PointD (0, 0);
+		public QuickActionLocator (double padd, double rel, QuickActionPosition pos)
+		{
+			relative = rel;
+			position = pos;
+			padding = padd;
 		}
 		
-		private double _relative;
-		private double _padding;
-		private QuickActionPosition _position;
+		#region ILocator implementation
+		public PointD Locate (IFigure owner)
+		{
+			if (owner == null)
+				return new PointD (0, 0);
+			
+			RectangleD r = owner.DisplayBox;
+			
+			switch (position) {
+			case QuickActionPosition.Up:
+					return new PointD (r.X + r.Width * relative, r.Y - padding);
+			case QuickActionPosition.Bottom:
+					return new PointD (r.X + r.Width * relative, r.Y2 + padding);
+			case QuickActionPosition.Left:
+					return new PointD (r.X - padding, r.Y + r.Height * relative);
+			case QuickActionPosition.Right:
+					return new PointD (r.X2 + padding, r.Y + r.Height * relative);
+			default:
+					return new PointD(0, 0);
+			}
+		}
+		#endregion
+		
+		#region Private Members
+		private double relative;
+		private double padding;
+		private QuickActionPosition position;
+		#endregion
 	}
 }

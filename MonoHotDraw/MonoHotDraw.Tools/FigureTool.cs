@@ -28,11 +28,12 @@ using System;
 using MonoHotDraw.Figures;
 using MonoHotDraw.Commands;
 
-namespace MonoHotDraw.Tools {
-
-	public class FigureTool: AbstractTool {
-	
-		public FigureTool (IDrawingEditor editor, IFigure fig, ITool dt): base (editor) {
+namespace MonoHotDraw.Tools
+{
+	public class FigureTool: AbstractTool
+	{
+		public FigureTool (IDrawingEditor editor, IFigure fig, ITool dt) : base (editor)
+		{
 			DefaultTool = dt;
 			Figure = fig;
 		}
@@ -40,54 +41,60 @@ namespace MonoHotDraw.Tools {
 		public virtual ITool DefaultTool { get; set; }		
 		public IFigure Figure { get; set; }
 		
-		public override void MouseDown (MouseEvent ev) {
-			if (DefaultTool != null) {
-				DefaultTool.MouseDown (ev);
-			}
-		}
-
-		public override void MouseUp (MouseEvent ev) {
-			if (DefaultTool != null) {
-				DefaultTool.MouseUp (ev);
-			}
-		}
-
-		public override void MouseMove (MouseEvent ev) {
-			if (DefaultTool != null) {
-				DefaultTool.MouseMove (ev);
-			}
-		}
-
-		public override void MouseDrag (MouseEvent ev) {
-			if (DefaultTool != null) {
-				DefaultTool.MouseDrag (ev);
-			}
-		}
-
-		public override void KeyDown (KeyEvent ev) {
-			if (DefaultTool != null) {
-				DefaultTool.KeyDown (ev);
-			}
-		}
-
-		public override void KeyUp (KeyEvent ev) {
-			if (DefaultTool != null) {
-				DefaultTool.KeyUp (ev);
-			}
-		}
-		
-		public override void Activate () {
+		#region Tool Activation
+		public override void Activate ()
+		{
 			base.Activate ();
-			if (DefaultTool != null) {
-				DefaultTool.Activate();
-			}
+			if (DefaultTool != null)
+				DefaultTool.Activate ();
 		}
 		
-		public override void Deactivate () {
+		public override void Deactivate ()
+		{
 			base.Deactivate ();
-			if (DefaultTool != null) {
-				DefaultTool.Deactivate();
-			}
+			if (DefaultTool != null)
+				DefaultTool.Deactivate ();
 		}
+		#endregion
+		
+		#region Key Events
+		public override void KeyDown (KeyEvent ev)
+		{
+			if (DefaultTool != null)
+				DefaultTool.KeyDown (ev);
+		}
+
+		public override void KeyUp (KeyEvent ev)
+		{
+			if (DefaultTool != null)
+				DefaultTool.KeyUp (ev);
+		}
+		#endregion
+		
+		#region Mouse Events
+		public override void MouseDown (MouseEvent ev)
+		{
+			if (DefaultTool != null)
+				DefaultTool.MouseDown (ev);
+		}
+
+		public override void MouseUp (MouseEvent ev)
+		{
+			if (DefaultTool != null)
+				DefaultTool.MouseUp (ev);
+		}
+
+		public override void MouseMove (MouseEvent ev)
+		{
+			if (DefaultTool != null)
+				DefaultTool.MouseMove (ev);
+		}
+
+		public override void MouseDrag (MouseEvent ev)
+		{
+			if (DefaultTool != null)
+				DefaultTool.MouseDrag (ev);
+		}
+		#endregion
 	}
 }

@@ -27,91 +27,100 @@ using System;
 using System.Collections.Generic;
 using MonoHotDraw.Figures;
 
-namespace MonoHotDraw.Commands {
-
-	public class ChangeAttributeCommand : AbstractCommand {
-
-		public ChangeAttributeCommand (string name, FigureAttribute attribute, 
-			object value, IDrawingEditor editor) : base (name, editor) {
-			_attribute = attribute;
-			_value     = value;
+namespace MonoHotDraw.Commands
+{
+	public class ChangeAttributeCommand : AbstractCommand
+	{
+		public ChangeAttributeCommand (string name, FigureAttribute attribute, object value, IDrawingEditor editor)
+			: base (name, editor)
+		{
+			this.attribute = attribute;
+			this.value = value;
 		}
-
+		
+		#region Public Members
 		public override bool IsExecutable {
 			get { return DrawingView.SelectionCount > 0; }
 		}
 
-		public override void Execute () {
+		public override void Execute ()
+		{
 			base.Execute ();
 
 			UndoActivity = CreateUndoActivity ();
 			UndoActivity.AffectedFigures = new FigureCollection (DrawingView.SelectionEnumerator);
-			foreach (IFigure figure in UndoActivity.AffectedFigures) {
-				figure.SetAttribute (_attribute, _value);
-			}
+
+			foreach (IFigure figure in UndoActivity.AffectedFigures)
+				figure.SetAttribute (attribute, value);
+		}
+		#endregion
+		
+		#region ChangeAttributeCommand Members
+		protected override IUndoActivity CreateUndoActivity ()
+		{
+			return new ChangeAttributeUndoActivity (DrawingView, attribute, value);
 		}
 		
-		protected override IUndoActivity CreateUndoActivity () {
-			return new ChangeAttributeUndoActivity (DrawingView, _attribute, _value);
-		}
-
-		class ChangeAttributeUndoActivity : AbstractUndoActivity {
-			public ChangeAttributeUndoActivity (IDrawingView drawingView, 
-				FigureAttribute attribute, object value) : base (drawingView) {
-				_originalValues = new Dictionary<IFigure, object> ();
-				Undoable        = true;
-				Redoable        = true;
-				Attribute       = attribute;
-				Value           = value;
+		private FigureAttribute attribute;
+		private object value;
+		#endregion
+		
+		#region UndoActivity
+		class ChangeAttributeUndoActivity : AbstractUndoActivity
+		{
+			public ChangeAttributeUndoActivity (IDrawingView drawingView, FigureAttribute attribute, object value)
+				: base (drawingView)
+			{
+				originalValues = new Dictionary<IFigure, object> ();
+				Undoable = true;
+				Redoable = true;
+				Attribute = attribute;
+				Value = value;
 			}
 			
 			public override IEnumerable<IFigure> AffectedFigures {
 				get { return base.AffectedFigures; }
 				set { 
 					base.AffectedFigures = value;
-					foreach (IFigure figure in AffectedFigures) {
+			
+					foreach (IFigure figure in AffectedFigures)
 						SetOriginalValue (figure, figure.GetAttribute (Attribute));
-					}
-
 				}
 			}
 			
 			public FigureAttribute Attribute { get; set; }
-			
 			public object Value { get; set; }
 
-			public override bool Undo () {
+			public override bool Undo ()
+			{
 				if (base.Undo () == false)
 					return false;
 
-				foreach (KeyValuePair<IFigure, object> value in _originalValues) {
+				foreach (KeyValuePair<IFigure, object> value in originalValues)
 					value.Key.SetAttribute (Attribute, value.Value);
-				}
 
 				return true;
 			}
 
-			public override bool Redo () {
+			public override bool Redo ()
+			{
 				if (Redoable == false)
 					return false;
 
-				foreach (KeyValuePair<IFigure, object> value in _originalValues) {
+				foreach (KeyValuePair<IFigure, object> value in originalValues)
 					value.Key.SetAttribute (Attribute, Value);
-				}
 
 				return true;
 			}
 			
-			private void SetOriginalValue (IFigure figure, object value) {
-				if (value != null) {
-					_originalValues [figure] = value;
-				}
+			private void SetOriginalValue (IFigure figure, object value)
+			{
+				if (value != null)
+					originalValues [figure] = value;
 			}
 			
-			private Dictionary<IFigure, object> _originalValues;
+			private Dictionary<IFigure, object> originalValues;
 		}
-
-		private FigureAttribute _attribute;
-		private object _value;
+		#endregion
 	}
 }
