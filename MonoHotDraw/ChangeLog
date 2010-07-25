@@ -1,3 +1,7 @@
+2010-07-25  Evan Briones  <erbriones@gmail.com>
+
+	* DrawingEventArgs.cs: Removed
+
 2010-07-13  Evan Briones  <erbriones@gmail.com>
 
 	* IDrawingEditor.cs: Added new DisplayMenu method.
