@@ -1,3 +1,7 @@
+2010-07-25  Evan Briones  <erbriones@gmail.com>
+
+	* LayoutCommands.cs: Add missing Command handler.
+
 2010-07-13  Evan Briones  <erbriones@gmail.com>
 
 	* EditingCommands.cs: Added generic edit command handlers.
