@@ -165,15 +165,12 @@ namespace MonoHotDraw.Figures
 				}
 			
 				return rectangle;
-			}
-			set {
+			} set {
 				RectangleD r = DisplayBox;
 				double dx = value.X - r.X;
 				double dy = value.Y - r.Y;
-				foreach (IFigure figure in FigureCollection) {
-					var af = (AbstractFigure) figure;
-					af.BasicMoveBy (dx, dy);
-				}
+				
+				FigureCollection.ForEach (f => ((AbstractFigure) f).BasicMoveBy (dx, dy));
 			}
 		}
 

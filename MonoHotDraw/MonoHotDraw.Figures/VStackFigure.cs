@@ -76,15 +76,19 @@ namespace MonoHotDraw.Figures
 		
 		protected override void UpdateFiguresPosition ()
 		{
-			var height = 0.0;
+			var stackHeight = 0.0;
+			var point = new PointD (0, 0);
 			
 			foreach (IFigure figure in FigureCollection) {
-				RectangleD r = figure.DisplayBox;
-				r.X = CalculateFigureX (figure);
-				r.Y = Position.Y + height;
-				var af = (AbstractFigure) figure;
-				af.DisplayBox = r;
-				height += r.Height + Spacing;
+				
+				point.X = CalculateFigureX (figure);
+				point.Y = Position.Y + stackHeight;
+						
+				double dx = point.X - figure.DisplayBox.X;
+				double dy = point.Y - figure.DisplayBox.Y;
+				
+				((AbstractFigure) figure).BasicMoveBy (dx, dy);
+				stackHeight += figure.DisplayBox.Height + Spacing;
 			}
 		}
 

@@ -1,3 +1,8 @@
+2010-07-28  Evan Briones <erbriones@gmail.com>
+
+	* CollapsableCommands.cs: Added CanHandle method.
+	Disables expand and collapse if no figures are selected.
+	
 2010-07-13  Evan Briones <erbriones@gmail.com>
 
 	* AssociationCommands.cs: Added new commands for IAssociation.

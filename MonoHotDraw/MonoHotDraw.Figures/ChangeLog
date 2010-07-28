@@ -1,3 +1,11 @@
+2010-07-28  Evan Briones  <erbriones@gmail.com>
+
+	* CompositeFigure.cs: Cleaned up DisplayBox property
+	
+	* HStackFigure.cs:
+	* VStackFigure.cs: Fixed a bug which spawned an infinite loop
+	when updating the stack figure. 
+	
 2010-07-02  Evan Briones  <erbriones@gmail.com>
 
 	* ImageFigure.cs: Added Gtk.Image constructor.

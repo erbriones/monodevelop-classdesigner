@@ -37,6 +37,14 @@ namespace MonoDevelop.ClassDesigner.Commands
 {
 	internal sealed class CollapsableCommands : FigureCommandHandler
 	{
+		public override bool CanHandle (IEnumerable<IFigure> figures)
+		{
+			if (figures == null || figures.Count () == 0)
+				return false;
+			
+			return true;
+		}
+		
 		#region Commands
 		[CommandHandler (DesignerCommands.Collapse)]
 		protected void CollapseItem ()
