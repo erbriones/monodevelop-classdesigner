@@ -111,55 +111,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 		{
 			throw new NotImplementedException ();
 		}
-
-		#endregion
 		
-		/*
-		public override void UpdateGroups ()
-		{
-			
-			if (grouping != GroupingSetting.Kind) {
-				base.UpdateGroups ();
-				return;
-			}
-			
-			string name;
-			
-			if (Name.IsPublic)
-				name = "Public";
-			else if (Name.IsPrivate)
-				name = "Private";
-			else if (Name.IsPrivate)
-				name = "Protected";
-			else if (Name.IsInternal)
-				name = "Internal";
-			else
-				name = "Protected Internal";
-			
-			var compartment = Compartments.Where (c => c.Name == name).SingleOrDefault ();
-			var members = new List<IFigure> ();
-				
-			
-			members.AddRange (Compartments
-			                  .Select (c => c.Figures.Where (m => m != null))
-			                  .OfType<IFigure> ());
-			                  
-			foreach (var c in Compartments) {
-				RemoveMemberGroup (c);
-				compartment.Clear ();
-			}
-			
-			if (members.Count () == 0) {
-				foreach (var m in Name.Members) {
-					var icon = ImageService.GetPixbuf (m.StockIcon, IconSize.Menu);
-					members.Add (new TypeMemberFigure (icon, m, false));
-				}
-			}
-			
-			compartment.AddRange (members);
-			AddMemberGroup (compartment);
-		 
-		}
-		*/	
+		#endregion
 	}
 }

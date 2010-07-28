@@ -69,9 +69,9 @@ namespace MonoDevelop.ClassDesigner.Visitor
 			if (diagram.Grouping == GroupingSetting.Alphabetical)
 				GroupByAlphabetical (compartment);
 			else if (diagram.Grouping == GroupingSetting.Member)
-				GroupByKind (compartment);
-			else
 				GroupByAccess (compartment);
+			else if (diagram.Grouping == GroupingSetting.Kind)
+				GroupByKind (compartment);
 		}
 
 		public void VisitHandle (IHandle hostHandle)
@@ -91,7 +91,40 @@ namespace MonoDevelop.ClassDesigner.Visitor
 			
 			Rebuild (figure, members);
 		}
-		
+				
+		void GroupByAccess (CompartmentFigure figure)
+		{
+			IEnumerable<MemberFigure> members = TypeFigure.Members.Values.OfType<MemberFigure> ();
+			
+			if (figure.Name == "Public" &&
+ 				(TypeFigure.Name.ClassType == ClassType.Delegate || 
+				TypeFigure.Name.ClassType == ClassType.Interface ||
+				TypeFigure.Name.ClassType == ClassType.Enum)) {
+				
+				Rebuild (figure, members.OfType<IFigure> ());
+				return;
+			}
+			
+			if (figure.Name == "Public")
+				members = members.Where (m => m.MemberInfo.IsPublic);
+			else if (figure.Name == "Private")
+				members = members
+					.Where (m => m.MemberInfo.IsPrivate || m.MemberInfo.IsDefault);
+			else if (figure.Name == "Protected")
+				members = members
+					.Where (m => m.MemberInfo.IsProtected);
+			else if (figure.Name == "Protected Internal")
+				members = members.Where (m => m.MemberInfo.IsProtectedAndInternal);
+			else if (figure.Name == "Internal")
+				members = members.Where (m => m.MemberInfo.IsInternal);
+			else {
+				TypeFigure.Remove (figure);
+				return;
+			}
+			
+			Rebuild (figure, members.OfType<IFigure> ());
+		}
+
 		void GroupByKind (CompartmentFigure figure)
 		{
 			IEnumerable<MemberFigure> members = TypeFigure.Members.Values.OfType<MemberFigure> ();
@@ -111,29 +144,6 @@ namespace MonoDevelop.ClassDesigner.Visitor
 				return;
 			}
 				
-			Rebuild (figure, members.OfType<IFigure> ());
-		}
-		
-		void GroupByAccess (CompartmentFigure figure)
-		{
-			IEnumerable<MemberFigure> members = TypeFigure.Members.Values.OfType<MemberFigure> ();
-			if (figure.Name == "Public")
-				members = members.Where (m => ((IMember) m.MemberInfo).IsPublic);
-			else if (figure.Name == "Private")
-				members = members.Where (m => ((IMember) m.MemberInfo).IsPrivate);
-			else if (figure.Name == "Protected")
-				members = members
-					.Where (m => ((IMember) m.MemberInfo).IsProtected && ((IMember) m).IsProtectedOrInternal);
-			else if (figure.Name == "Protected Internal")
-				members = members.Where (m => ((IMember) m.MemberInfo).IsProtectedAndInternal);
-			else if (figure.Name == "Internal")
-				members = members
-					.Where (m => ((IMember) m.MemberInfo).IsInternal && ((IMember) m).IsProtectedOrInternal);
-			else {
-				TypeFigure.Remove (figure);
-				return;
-			}
-			
 			Rebuild (figure, members.OfType<IFigure> ());
 		}
 		

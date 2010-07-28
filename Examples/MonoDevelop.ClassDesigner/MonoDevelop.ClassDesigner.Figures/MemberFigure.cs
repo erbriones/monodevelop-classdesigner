@@ -66,7 +66,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 			Add (this.name);
 		}
 		
-		public MemberFigure (Gdk.Pixbuf icon, IBaseMember memberInfo, bool hidden) : base ()
+		public MemberFigure (Gdk.Pixbuf icon, IMember memberInfo, bool hidden) : base ()
 		{
 			this.icon = new ImageFigure (icon);
 			
@@ -123,7 +123,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 		}
 		
 		internal bool AllowFormatting { get; set; }
-		public IBaseMember MemberInfo { get; private set; }
+		public IMember MemberInfo { get; private set; }
 		public bool Hidden { get; private set; }
 		
 		public string Name {

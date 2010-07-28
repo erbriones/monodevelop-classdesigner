@@ -49,41 +49,5 @@ namespace MonoDevelop.ClassDesigner.Figures
 		protected override ClassType ClassType {
 			get { return ClassType.Delegate; }
 		}
-		
-		/*
-		public override void UpdateGroups ()
-		{				
-			var parameters = new List<TypeMemberFigure> ();
-			var compartment = Compartments
-				.Where (c => c.Name == "Parameters")
-				.SingleOrDefault ();
-			
-			var invoke = Name.Methods.Where (m => m.Name == "Invoke").SingleOrDefault ();
-			
-			if (invoke == null)
-				return;
-			
-			parameters.AddRange (compartment.Figures.OfType<TypeMemberFigure> ());
-			 
-			if (parameters.Count () == 0)
-			{
-				foreach (var p in invoke.Parameters) {
-					var icon = ImageService.GetPixbuf (p.StockIcon, IconSize.Menu);
-					parameters.Add ((IFigure) new TypeMemberFigure (icon, p, false));
-				}
-			}
-			
-			// FIXME: How does grouping change in vs.net class diagram?
-			if (grouping == GroupingSetting.Alphabetical)
-				compartment.AddRange (parameters.OrderBy (p => p.Name));
-			else if (grouping == GroupingSetting.Kind)
-				compartment.AddRange (parameters);
-			else
-				compartment.AddRange (parameters);
-			
-			compartment.AddRange (parameters);
-			AddMemberGroup (compartment);
-		}
-		*/
 	}
 }

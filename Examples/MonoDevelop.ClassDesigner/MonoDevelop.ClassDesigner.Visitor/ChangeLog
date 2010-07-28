@@ -1,0 +1,3 @@
+2010-07-28 Evan Briones  <erbriones@gmail.com>
+
+	* GroupFormatVisitor.cs: Fixed Group By Access. 

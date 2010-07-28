@@ -1,3 +1,10 @@
+2010-07-28  Evan Briones  <erbriones@gmail.com>
+	
+	* MemberFigure.cs: Changed MemberInfo property to IMember from IBaseMember.
+
+	* InterfaceFigure.cs:
+	* DelegateFigure.cs: Removed old Group Format code. 
+
 2010-07-05  Evan Briones  <erbriones@gmail.com>
 	
 	* AssociationLine.cs: added enum minimal change.
