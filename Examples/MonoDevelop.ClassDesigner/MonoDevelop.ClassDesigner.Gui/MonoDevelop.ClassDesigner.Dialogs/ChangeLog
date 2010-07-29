@@ -1,0 +1,8 @@
+2010-07-29  Evan Briones  <erbriones@gmail.com>
+
+	* ChangeLog:
+	* AddFigureDialog.cs: 
+
+2010-07-13  Evan Briones  <erbriones@gmail.com>
+
+	* AddFigureDialog.cs: Added dialog for adding new figures.

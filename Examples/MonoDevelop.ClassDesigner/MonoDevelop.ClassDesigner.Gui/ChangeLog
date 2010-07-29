@@ -1,3 +1,7 @@
+2010-07-29  Evan Briones  <erbriones@gmail.com>
+
+	* MonoDevelop.ClassDesigner.Gui.Dialogs: Added to svn.
+
 2010-07-13  Evan Briones  <erbriones@gmail.com>
 	
 	* MonoDevelop.ClassDesigner.Gui.Dialogs: Added new folder for dialogs.	
