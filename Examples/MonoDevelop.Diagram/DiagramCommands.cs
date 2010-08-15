@@ -32,7 +32,8 @@ namespace MonoDevelop.Diagram
 	{
 		BringToFront,
 		SendToBack,
-		Duplicate
+		Duplicate,
+		Layout
 	}
 }
 

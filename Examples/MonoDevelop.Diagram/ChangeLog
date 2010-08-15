@@ -1,3 +1,9 @@
+2010-08-15  Evan Briones  <erbriones@gmail.com>
+
+	* DiagramCommands.cs:
+	* MonoDevelop.Diagram.csproj:
+	* MonoDevelop.Diagram.addin.xml: 
+
 2010-07-13  Evan Briones  <erbriones@gmail.com>
 
 	* MonoDevelop.Diagram.Commands: Added several generic command handlers features.

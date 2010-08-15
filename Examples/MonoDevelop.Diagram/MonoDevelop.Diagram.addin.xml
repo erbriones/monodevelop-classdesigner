@@ -26,5 +26,7 @@
 			_label = "Send to back" />
 		<Command id = "MonoDevelop.Diagram.DiagramCommands.Duplicate"
 			_label = "Duplicate last command" />
+		<Command id = "MonoDevelop.Diagram.DiagramCommands.Layout"
+			_label = "Layout Diagram" />
 	</Extension>
 </Addin>

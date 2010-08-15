@@ -436,6 +436,9 @@ namespace MonoDevelop.ClassDesigner
 					else
 						startfig = CreateFigure (property.ReturnType.Type);					
 					
+					if (startfig == null)
+						continue;
+					
 					Add (new AssociationConnectionFigure (property, ConnectionType.Association, startfig, figure));
 				}
 			}
