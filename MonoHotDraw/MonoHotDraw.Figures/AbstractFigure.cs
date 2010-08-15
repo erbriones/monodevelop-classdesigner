@@ -239,6 +239,11 @@ namespace MonoHotDraw.Figures
 		{
 		}
 		
+		internal void InternalMoveBy (double x, double y)
+		{
+			BasicMoveBy (x, y);
+		}
+		
 		protected void Changed ()
 		{
 			Invalidate ();

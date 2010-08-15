@@ -102,10 +102,10 @@ namespace MonoDevelop.Diagram
 			var rowHeight = 0.0;
 			var x = 50.0;
 			var y = 50.0;
-			var length = View.Drawing.FigureCollection.Count;
+			var length = View.Drawing.Figures.Count ();
 			
-			foreach (IFigure figure in View.Drawing.FigureCollection) {
-				if (length != View.Drawing.FigureCollection.Count)
+			foreach (IFigure figure in View.Drawing.Figures) {
+				if (length != View.Drawing.Figures.Count ())
 					return;
 			
 				if (x > 1000) {
@@ -171,6 +171,7 @@ namespace MonoDevelop.Diagram
 		
 		public IDrawingView View { get; set; }
 		public UndoManager UndoManager { get; private set; }
+		public MonoHotDraw.Commands.CommandManager CommandManager { get; private set; }
 		#endregion
 		
 		#region IPrintable implementation

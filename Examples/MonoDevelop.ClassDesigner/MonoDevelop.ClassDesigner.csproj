@@ -126,13 +126,14 @@
     <Folder Include="MonoDevelop.ClassDesigner.Gui\MonoDevelop.ClassDesigner.Dialogs\" />
     <Folder Include="MonoDevelop.ClassDesigner.Commands\" />
     <Folder Include="MonoDevelop.ClassDesigner.Visitor\" />
+    <Folder Include="MonoDevelop.ClassDesigner.Gui\MonoDevelop.ClassDesigner.Dialogs\New Folder\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\MonoHotDraw\MonoHotDraw.csproj">
       <Project>{D5D2EB0A-662A-471D-94C0-FD51C96E9429}</Project>
       <Name>MonoHotDraw</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MonoDevelop.Diagram\MonoDevelop.Diagram.csproj">
+    <ProjectReference Include="..\MonoDevelop.Diagrams\MonoDevelop.Diagram.csproj">
       <Project>{C55FED98-1435-4066-89C3-CF0A7226335F}</Project>
       <Name>MonoDevelop.Diagram</Name>
     </ProjectReference>

@@ -80,7 +80,7 @@ namespace MonoHotDraw.Figures
 				double dx = point.X - figure.DisplayBox.X;
 				double dy = point.Y - figure.DisplayBox.Y;
 				
-				((AbstractFigure) figure).BasicMoveBy (dx, dy);
+				((AbstractFigure) figure).InternalMoveBy (dx, dy);
 				stackWidth += figure.DisplayBox.Width + Spacing;
 			}
 		}

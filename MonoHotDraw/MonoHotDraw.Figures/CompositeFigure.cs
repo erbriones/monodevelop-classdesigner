@@ -170,7 +170,7 @@ namespace MonoHotDraw.Figures
 				double dx = value.X - r.X;
 				double dy = value.Y - r.Y;
 				
-				FigureCollection.ForEach (f => ((AbstractFigure) f).BasicMoveBy (dx, dy));
+				FigureCollection.ForEach (f => ((AbstractFigure) f).InternalMoveBy (dx, dy));
 			}
 		}
 
