@@ -19,7 +19,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoDevelop.ClassDesigner",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoDevelop.ClassDesigner.Tester", "Examples\MonoDevelop.ClassDesigner.Tester\MonoDevelop.ClassDesigner.Tester.csproj", "{C9D17E96-DC3C-4AB6-8A89-3F7CC64489D2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoDevelop.Diagram", "Examples\MonoDevelop.Diagrams\MonoDevelop.Diagram.csproj", "{C55FED98-1435-4066-89C3-CF0A7226335F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoDevelop.Diagram", "Examples\MonoDevelop.Diagram\MonoDevelop.Diagram.csproj", "{C55FED98-1435-4066-89C3-CF0A7226335F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
