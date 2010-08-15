@@ -132,6 +132,10 @@
       <Project>{D5D2EB0A-662A-471D-94C0-FD51C96E9429}</Project>
       <Name>MonoHotDraw</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MonoDevelop.Diagram\MonoDevelop.Diagram.csproj">
+      <Project>{C55FED98-1435-4066-89C3-CF0A7226335F}</Project>
+      <Name>MonoDevelop.Diagram</Name>
+    </ProjectReference>
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
