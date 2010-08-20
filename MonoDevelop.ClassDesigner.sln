@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoHotDraw", "MonoHotDraw\MonoHotDraw.csproj", "{D5D2EB0A-662A-471D-94C0-FD51C96E9429}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoDevelop.Diagram", "MonoDevelop.Diagram\MonoDevelop.Diagram.csproj", "{C55FED98-1435-4066-89C3-CF0A7226335F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoDevelop.ClassDesigner", "MonoDevelop.ClassDesigner\MonoDevelop.ClassDesigner.csproj", "{73A8571A-9FA6-43A5-BC04-B7C1EE13D63B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoDevelop.ClassDesigner.Tester", "MonoDevelop.ClassDesigner.Tester\MonoDevelop.ClassDesigner.Tester.csproj", "{C9D17E96-DC3C-4AB6-8A89-3F7CC64489D2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{73A8571A-9FA6-43A5-BC04-B7C1EE13D63B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73A8571A-9FA6-43A5-BC04-B7C1EE13D63B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73A8571A-9FA6-43A5-BC04-B7C1EE13D63B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73A8571A-9FA6-43A5-BC04-B7C1EE13D63B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C55FED98-1435-4066-89C3-CF0A7226335F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C55FED98-1435-4066-89C3-CF0A7226335F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C55FED98-1435-4066-89C3-CF0A7226335F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C55FED98-1435-4066-89C3-CF0A7226335F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9D17E96-DC3C-4AB6-8A89-3F7CC64489D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9D17E96-DC3C-4AB6-8A89-3F7CC64489D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9D17E96-DC3C-4AB6-8A89-3F7CC64489D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9D17E96-DC3C-4AB6-8A89-3F7CC64489D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5D2EB0A-662A-471D-94C0-FD51C96E9429}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5D2EB0A-662A-471D-94C0-FD51C96E9429}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5D2EB0A-662A-471D-94C0-FD51C96E9429}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5D2EB0A-662A-471D-94C0-FD51C96E9429}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = MonoHotDraw\MonoHotDraw.csproj
+		Policies = $0
+		$0.ChangeLogPolicy = $1
+		$1.MessageStyle = $2
+		$2.LineAlign = 0
+		$1.inheritsSet = Mono
+	EndGlobalSection
+EndGlobal
