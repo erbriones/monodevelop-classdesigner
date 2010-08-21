@@ -1,22 +1,21 @@
-// MonoDevelop ClassDesigner
-//
-// Authors:
-//  Evan Briones <erbriones@gmail.com>
-//	Manuel Cerón <ceronman@gmail.com>
-//
-// Copyright (C) 2010 Evan Briones
-// Copyright (C) 2009 Manuel Cerón
-//
+// 
+// TypeFigureCommands.cs
+//  
+// Author:
+//       Evan Briones <erbriones@gmail.com>
+// 
+// Copyright (c) 2010 Evan Briones
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-//
+// 
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software.
-//
+// 
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -25,38 +24,35 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
-using MonoHotDraw;
+using System.Linq;
+using System.Collections.Generic;
+
+using MonoDevelop.ClassDesigner;
+using MonoDevelop.ClassDesigner.Figures;
+using MonoDevelop.Components.Commands;
+using MonoDevelop.Diagram.Components;
 using MonoHotDraw.Figures;
 
-namespace MonoDevelop.ClassDesigner.Figures
+namespace MonoDevelop.ClassDesigner.Commands
 {
-	internal sealed class InheritanceConnectionFigure : AbstractConnectionFigure
+	public class TypeFigureCommands : FigureCommandHandler
 	{
-		ConnectionType type;
-		
-		public InheritanceConnectionFigure ()
+		public override bool CanHandle (IEnumerable<IFigure> figures)
 		{
-			type = ConnectionType.Inheritance;
-			ConnectionLine = new InheritanceLine ();
-			Add (ConnectionLine);
+			if (figures == null && figures.Count () == 0)
+				return false;
+			
+			return figures.All (f => f is TypeFigure);
 		}
 		
-		public InheritanceConnectionFigure (IFigure subClass, IFigure superClass) : this ()
+		[CommandHandler (DesignerCommands.ShowAllMembers)]
+		protected void ShowAllMemberItems ()
 		{
-			if (!ConnectionLine.CanConnectEnd (subClass) && 
-			    !ConnectionLine.CanConnectEnd (superClass))
-				throw new InvalidOperationException ("Both figures must be class figures.");
-				
-			ConnectionLine.DisconnectEnd ();
-			ConnectionLine.DisconnectStart ();
-
-			ConnectionLine.ConnectStart (subClass.ConnectorAt (0.0, 0.0));
-			ConnectionLine.ConnectEnd (superClass.ConnectorAt (0.0, 0.0));
+			var figures = Designer.View.SelectionEnumerator.OfType<TypeFigure> ();
+			
+			foreach (TypeFigure type in figures)
+				type.ShowAll ();
 		}
-		
-		public ConnectionType Type {
-			get { return type; }
-		}		
 	}
 }
+

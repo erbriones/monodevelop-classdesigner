@@ -62,7 +62,7 @@
       <Project>{73A8571A-9FA6-43A5-BC04-B7C1EE13D63B}</Project>
       <Name>MonoDevelop.ClassDesigner</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\MonoHotDraw\MonoHotDraw.csproj">
+    <ProjectReference Include="..\MonoHotDraw\MonoHotDraw.csproj">
       <Project>{D5D2EB0A-662A-471D-94C0-FD51C96E9429}</Project>
       <Name>MonoHotDraw</Name>
     </ProjectReference>

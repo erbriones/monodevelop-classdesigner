@@ -160,6 +160,17 @@ namespace MonoDevelop.ClassDesigner.Figures
 			memberCompartments.Remove (compartment);
 		}
 		
+		public void ShowAll ()
+		{
+			foreach (IFigure figure in members.
+				
+				
+				Values) {
+				var member = (MemberFigure) figure;
+				member.Show ();
+			}
+		}
+		
 		protected HeaderFigure Header { get; set; }
 		
 		protected virtual ClassType ClassType {
@@ -211,11 +222,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 				var icon = ImageService.GetPixbuf (member.StockIcon, IconSize.Menu);
 				var figure = new MemberFigure (icon, member, false);
 				
-				string declaring = member.DeclaringType.DecoratedFullName;
-					
-				string key = String.Format ("{0}-{1}-{2}", declaring, member.FullName, member.GetHashCode ().ToString ());
-				Console.WriteLine ("key: {0}", key);
-				members.Add (key, figure);
+				members.Add (member.GetHashCode ().ToString (), figure);
 			}			
 		}
 		

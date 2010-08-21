@@ -46,7 +46,7 @@
     <Reference Include="Mono.Addins, Version=0.5.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\MonoHotDraw\MonoHotDraw.csproj">
+    <ProjectReference Include="..\MonoHotDraw\MonoHotDraw.csproj">
       <Project>{D5D2EB0A-662A-471D-94C0-FD51C96E9429}</Project>
       <Name>MonoHotDraw</Name>
     </ProjectReference>
