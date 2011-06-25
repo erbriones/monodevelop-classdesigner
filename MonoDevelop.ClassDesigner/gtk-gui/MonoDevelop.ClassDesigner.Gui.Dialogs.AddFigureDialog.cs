@@ -5,33 +5,19 @@ namespace MonoDevelop.ClassDesigner.Gui.Dialogs
 	public partial class AddFigureDialog
 	{
 		private global::Gtk.HBox container;
-
 		private global::Gtk.VBox vbox4;
-
 		private global::Gtk.Label typeLabel;
-
 		private global::Gtk.Label label5;
-
 		private global::Gtk.RadioButton createNew;
-
 		private global::Gtk.RadioButton existing;
-
 		private global::Gtk.VBox vbox5;
-
 		private global::Gtk.Entry typeName;
-
 		private global::Gtk.ComboBox accessModifier;
-
 		private global::Gtk.Entry newFileName;
-
 		private global::Gtk.HBox hbox3;
-
 		private global::Gtk.Entry existingFileName;
-
 		private global::Gtk.FileChooserButton fileChooser;
-
 		private global::Gtk.Button buttonCancel;
-
 		private global::Gtk.Button buttonOk;
 
 		protected virtual void Build ()
@@ -57,21 +43,21 @@ namespace MonoDevelop.ClassDesigner.Gui.Dialogs
 			// Container child vbox4.Gtk.Box+BoxChild
 			this.typeLabel = new global::Gtk.Label ();
 			this.typeLabel.Name = "typeLabel";
-			this.typeLabel.Xalign = 0f;
+			this.typeLabel.Xalign = 0F;
 			this.typeLabel.LabelProp = global::Mono.Unix.Catalog.GetString ("Name:");
 			this.typeLabel.Justify = ((global::Gtk.Justification)(1));
 			this.typeLabel.Selectable = true;
 			this.vbox4.Add (this.typeLabel);
-			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.vbox4[this.typeLabel]));
+			global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.vbox4 [this.typeLabel]));
 			w2.Position = 0;
 			w2.Padding = ((uint)(1));
 			// Container child vbox4.Gtk.Box+BoxChild
 			this.label5 = new global::Gtk.Label ();
 			this.label5.Name = "label5";
-			this.label5.Xalign = 0f;
+			this.label5.Xalign = 0F;
 			this.label5.LabelProp = global::Mono.Unix.Catalog.GetString ("Access:");
 			this.vbox4.Add (this.label5);
-			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vbox4[this.label5]));
+			global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vbox4 [this.label5]));
 			w3.Position = 1;
 			// Container child vbox4.Gtk.Box+BoxChild
 			this.createNew = new global::Gtk.RadioButton (global::Mono.Unix.Catalog.GetString ("_Create new file"));
@@ -82,7 +68,7 @@ namespace MonoDevelop.ClassDesigner.Gui.Dialogs
 			this.createNew.FocusOnClick = false;
 			this.createNew.Group = new global::GLib.SList (global::System.IntPtr.Zero);
 			this.vbox4.Add (this.createNew);
-			global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.vbox4[this.createNew]));
+			global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.vbox4 [this.createNew]));
 			w4.Position = 2;
 			// Container child vbox4.Gtk.Box+BoxChild
 			this.existing = new global::Gtk.RadioButton (global::Mono.Unix.Catalog.GetString ("_Add to an existing file"));
@@ -92,10 +78,10 @@ namespace MonoDevelop.ClassDesigner.Gui.Dialogs
 			this.existing.FocusOnClick = false;
 			this.existing.Group = this.createNew.Group;
 			this.vbox4.Add (this.existing);
-			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.vbox4[this.existing]));
+			global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.vbox4 [this.existing]));
 			w5.Position = 3;
 			this.container.Add (this.vbox4);
-			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.container[this.vbox4]));
+			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.container [this.vbox4]));
 			w6.Position = 0;
 			w6.Expand = false;
 			w6.Fill = false;
@@ -111,14 +97,14 @@ namespace MonoDevelop.ClassDesigner.Gui.Dialogs
 			this.typeName.IsEditable = true;
 			this.typeName.InvisibleChar = '●';
 			this.vbox5.Add (this.typeName);
-			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.vbox5[this.typeName]));
+			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.vbox5 [this.typeName]));
 			w7.Position = 0;
 			w7.Expand = false;
 			// Container child vbox5.Gtk.Box+BoxChild
 			this.accessModifier = global::Gtk.ComboBox.NewText ();
 			this.accessModifier.Name = "accessModifier";
 			this.vbox5.Add (this.accessModifier);
-			global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.vbox5[this.accessModifier]));
+			global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.vbox5 [this.accessModifier]));
 			w8.Position = 1;
 			w8.Expand = false;
 			// Container child vbox5.Gtk.Box+BoxChild
@@ -128,7 +114,7 @@ namespace MonoDevelop.ClassDesigner.Gui.Dialogs
 			this.newFileName.IsEditable = true;
 			this.newFileName.InvisibleChar = '●';
 			this.vbox5.Add (this.newFileName);
-			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.vbox5[this.newFileName]));
+			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.vbox5 [this.newFileName]));
 			w9.Position = 2;
 			w9.Expand = false;
 			// Container child vbox5.Gtk.Box+BoxChild
@@ -143,27 +129,27 @@ namespace MonoDevelop.ClassDesigner.Gui.Dialogs
 			this.existingFileName.IsEditable = true;
 			this.existingFileName.InvisibleChar = '●';
 			this.hbox3.Add (this.existingFileName);
-			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.hbox3[this.existingFileName]));
+			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.hbox3 [this.existingFileName]));
 			w10.Position = 0;
 			// Container child hbox3.Gtk.Box+BoxChild
 			this.fileChooser = new global::Gtk.FileChooserButton (global::Mono.Unix.Catalog.GetString ("Select A File"), ((global::Gtk.FileChooserAction)(0)));
 			this.fileChooser.Sensitive = false;
 			this.fileChooser.Name = "fileChooser";
 			this.hbox3.Add (this.fileChooser);
-			global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(this.hbox3[this.fileChooser]));
+			global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(this.hbox3 [this.fileChooser]));
 			w11.Position = 1;
 			w11.Expand = false;
 			this.vbox5.Add (this.hbox3);
-			global::Gtk.Box.BoxChild w12 = ((global::Gtk.Box.BoxChild)(this.vbox5[this.hbox3]));
+			global::Gtk.Box.BoxChild w12 = ((global::Gtk.Box.BoxChild)(this.vbox5 [this.hbox3]));
 			w12.Position = 3;
 			w12.Expand = false;
 			w12.Fill = false;
 			this.container.Add (this.vbox5);
-			global::Gtk.Box.BoxChild w13 = ((global::Gtk.Box.BoxChild)(this.container[this.vbox5]));
+			global::Gtk.Box.BoxChild w13 = ((global::Gtk.Box.BoxChild)(this.container [this.vbox5]));
 			w13.Position = 1;
 			w13.Padding = ((uint)(5));
 			w1.Add (this.container);
-			global::Gtk.Box.BoxChild w14 = ((global::Gtk.Box.BoxChild)(w1[this.container]));
+			global::Gtk.Box.BoxChild w14 = ((global::Gtk.Box.BoxChild)(w1 [this.container]));
 			w14.Position = 0;
 			w14.Expand = false;
 			w14.Fill = false;
@@ -182,7 +168,7 @@ namespace MonoDevelop.ClassDesigner.Gui.Dialogs
 			this.buttonCancel.UseUnderline = true;
 			this.buttonCancel.Label = "gtk-cancel";
 			this.AddActionWidget (this.buttonCancel, -6);
-			global::Gtk.ButtonBox.ButtonBoxChild w16 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w15[this.buttonCancel]));
+			global::Gtk.ButtonBox.ButtonBoxChild w16 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w15 [this.buttonCancel]));
 			w16.Expand = false;
 			w16.Fill = false;
 			// Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
@@ -194,7 +180,7 @@ namespace MonoDevelop.ClassDesigner.Gui.Dialogs
 			this.buttonOk.UseUnderline = true;
 			this.buttonOk.Label = "gtk-add";
 			this.AddActionWidget (this.buttonOk, 0);
-			global::Gtk.ButtonBox.ButtonBoxChild w17 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w15[this.buttonOk]));
+			global::Gtk.ButtonBox.ButtonBoxChild w17 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w15 [this.buttonOk]));
 			w17.Position = 1;
 			w17.Expand = false;
 			w17.Fill = false;

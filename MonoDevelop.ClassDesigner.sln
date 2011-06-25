@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual Studio 2005
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoHotDraw", "MonoHotDraw\MonoHotDraw.csproj", "{D5D2EB0A-662A-471D-94C0-FD51C96E9429}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoDevelop.Diagram", "MonoDevelop.Diagram\MonoDevelop.Diagram.csproj", "{C55FED98-1435-4066-89C3-CF0A7226335F}"
@@ -39,5 +39,8 @@ Global
 		$1.MessageStyle = $2
 		$2.LineAlign = 0
 		$1.inheritsSet = Mono
+		$0.DotNetNamingPolicy = $3
+		$3.DirectoryNamespaceAssociation = None
+		$3.ResourceNamePolicy = FileFormatDefault
 	EndGlobalSection
 EndGlobal

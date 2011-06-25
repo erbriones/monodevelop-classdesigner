@@ -24,8 +24,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
+using MonoDevelop.Core;
 using MonoDevelop.Ide;
 using MonoDevelop.Ide.Gui;
+using MonoDevelop.Projects;
 
 using System.IO;
 using System;
@@ -33,35 +35,9 @@ using System;
 namespace MonoDevelop.ClassDesigner
 {
 
-	public class ClassDiagramDisplayBinding : DisplayBinding
+	public class ClassDiagramDisplayBinding : IViewDisplayBinding
 	{
-		// Constructor
-		public ClassDiagramDisplayBinding ()
-		{
-		}
-		
-		// Properties
-		public override string Name {
-			get { return "Class Diagram"; }
-		}
- 		
-		// Methods
-		public override bool CanCreateContentForMimeType (string mimetype)
-		{
-			if (String.IsNullOrEmpty (mimetype)) {
-				return false;
-			}
-			
-			return mimetype == "class-diagram";
-		}
-
-		public override bool CanCreateContentForUri (string uri)
-		{
-			string mimetype = DesktopService.GetMimeTypeForUri (uri);
-			
-			return this.CanCreateContentForMimeType (mimetype);
-		}
-		
+		/*
 		public override IViewContent CreateContentForMimeType (string mimeType, Stream content)
 		{
 			FileStream fs = content as FileStream;
@@ -76,5 +52,29 @@ namespace MonoDevelop.ClassDesigner
 		{	
 			return new ClassDesigner (uri);			
 		}
+		*/
+
+		#region IViewDisplayBinding implementation
+		IViewContent IViewDisplayBinding.CreateContent (FilePath fileName, string mimeType, Project ownerProject)
+		{
+			return new ClassDesigner(fileName, ownerProject);
+		}
+
+		string IViewDisplayBinding.Name {
+			get { return "Class Diagram"; }
+		}
+		#endregion
+
+		#region IDisplayBinding implementation
+		bool IDisplayBinding.CanHandle (FilePath fileName, string mimeType, Project ownerProject)
+		{	
+			return ownerProject != null && ((fileName.IsNotNull && fileName.HasExtension (".cd"))
+					|| (mimeType != null && mimeType == "class-diagram"));
+		}
+
+		bool IDisplayBinding.CanUseAsDefault {
+			get { return true; }
+		}
+		#endregion
 	}
 }

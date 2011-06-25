@@ -4,21 +4,13 @@
 public partial class MainWindow
 {
 	private global::Gtk.UIManager UIManager;
-
 	private global::Gtk.Action FiguresAction;
-
 	private global::Gtk.Action AddClassFigureAction;
-
 	private global::Gtk.Action AddStackFigureAction;
-
 	private global::Gtk.Action AddMemberGroupAction;
-
 	private global::Gtk.Action AddSimpleTextFigureAction;
-
 	private global::Gtk.VBox vbox1;
-
 	private global::Gtk.MenuBar menubar1;
-
 	private global::MonoHotDraw.SteticComponent mhdcanvas;
 
 	protected virtual void Build ()
@@ -56,7 +48,7 @@ public partial class MainWindow
 		this.menubar1 = ((global::Gtk.MenuBar)(this.UIManager.GetWidget ("/menubar1")));
 		this.menubar1.Name = "menubar1";
 		this.vbox1.Add (this.menubar1);
-		global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.menubar1]));
+		global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.menubar1]));
 		w2.Position = 0;
 		w2.Expand = false;
 		w2.Fill = false;
@@ -65,7 +57,7 @@ public partial class MainWindow
 		this.mhdcanvas.Events = ((global::Gdk.EventMask)(256));
 		this.mhdcanvas.Name = "mhdcanvas";
 		this.vbox1.Add (this.mhdcanvas);
-		global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vbox1[this.mhdcanvas]));
+		global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.vbox1 [this.mhdcanvas]));
 		w3.Position = 1;
 		this.Add (this.vbox1);
 		if ((this.Child != null)) {

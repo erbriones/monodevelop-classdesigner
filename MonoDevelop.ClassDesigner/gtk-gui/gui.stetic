@@ -5,9 +5,7 @@
     <target-gtk-version>2.10</target-gtk-version>
   </configuration>
   <import>
-    <widget-library name="MonoDevelop.Ide, Version=2.4.0.0, Culture=neutral" />
-    <widget-library name="MonoDevelop.DesignerSupport, Version=2.4.0.0, Culture=neutral" />
-    <widget-library name="../../../MonoHotDraw/bin/Debug/MonoHotDraw.dll" />
+    <widget-library name="MonoDevelop.DesignerSupport, Version=2.6.0.0, Culture=neutral" />
     <widget-library name="../../MonoDevelop.Diagram/bin/Debug/MonoDevelop.Diagram.dll" />
     <widget-library name="../bin/Debug/MonoDevelop.ClassDesigner.dll" internal="true" />
   </import>

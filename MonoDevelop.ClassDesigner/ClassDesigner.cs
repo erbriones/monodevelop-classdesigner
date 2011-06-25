@@ -60,19 +60,19 @@ namespace MonoDevelop.ClassDesigner
 		static readonly string path = "/MonoDevelop/ClassDesigner/FigureCommandHandlers";
 		static FigureCommandHandlerCollection handlers = new FigureCommandHandlerCollection (path);
 		ToolboxList toolboxItems;
-		
+
 		public ClassDesigner (Project project) : this ()
 		{
 			this.UntitledName = "ClassDiagram.cd";
 			this.Project = project;
 		}
 		
-		public ClassDesigner (string fileName) : this ()
+		public ClassDesigner (FilePath fileName, Project ownerProject) : this ()
 		{
 			if (String.IsNullOrEmpty (fileName)) 
 				throw new ArgumentNullException ();
 			
-			this.ContentName = fileName;
+			this.ContentName = fileName.FileName;
 			this.Project = IdeApp.Workspace.GetProjectContainingFile (fileName);
 		}	
 		
