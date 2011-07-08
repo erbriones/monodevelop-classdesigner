@@ -84,9 +84,9 @@
     </MonoDevelop>
   </ProjectExtensions>
   <ItemGroup>
-    <None Include="MonoDevelop.Diagram.addin.xml" />
+    <Folder Include="MonoDevelop.Diagram.Components\" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="MonoDevelop.Diagram.Components\" />
+    <EmbeddedResource Include="MonoDevelop.Diagram.addin.xml" />
   </ItemGroup>
 </Project>
