@@ -38,7 +38,6 @@ using MonoDevelop.Projects;
 using MonoDevelop.Projects.Dom;
 using MonoDevelop.Projects.Dom.Parser;
 
-using MonoDevelop.ClassDesigner.ClassDiagramModifiers;
 using MonoDevelop.ClassDesigner.Figures;
 using MonoDevelop.ClassDesigner.Visitor;
 
@@ -64,7 +63,6 @@ namespace MonoDevelop.ClassDesigner
 			minorVersion = 1;
 			groupSetting = grouping;
 			membersFormat = format;
-			workQueue = new Queue<IModifier> ();
 			CreatedFigure += OnCreatedHandler;
 		}
 		
@@ -111,6 +109,61 @@ namespace MonoDevelop.ClassDesigner
 				}
 			}
 		}
+		
+		#region TypeFigure Add/Remove/Update
+		public void Add (IType type)
+		{
+			Console.WriteLine ("Checking {0}", type.FullName);
+			
+			if (!HasTypeFigure (type.FullName)) {
+				Console.WriteLine ("Adding {0}", type.FullName);
+				CreateFigure(type);
+			}
+		}
+		
+		public void AddRange (IEnumerable<IType> types)
+		{
+			foreach (var type in types) {
+				Add (type);
+			}
+		}
+		
+		public void Remove (IType type)
+		{
+			Console.WriteLine ("Checking {0}", type.FullName);
+			
+			var fig = GetFigure(type.FullName);
+			if (fig != null) {
+				Console.WriteLine ("Removing {0}", type.FullName);
+				Remove(fig);
+			}
+		}
+		
+		public void RemoveRange (IEnumerable<IType> types)
+		{
+			foreach (var type in types) {
+				Remove (type);
+			}
+		}
+		
+		public void Update (IType type)
+		{
+			Console.WriteLine ("Checking {0}", type.FullName);
+			
+			var fig = GetFigure(type.FullName);
+			if (fig != null) {
+				Console.WriteLine ("Updating {0}", type.FullName);
+				// Do something to update it here...
+			}
+		}
+		
+		public void UpdateRange (IEnumerable<IType> types)
+		{
+			foreach (var type in types) {
+				Update (type);
+			}
+		}
+		#endregion
 		
 		public bool HasTypeFigure (string fullName)
 		{
@@ -763,68 +816,11 @@ namespace MonoDevelop.ClassDesigner
 		public event FigureEventHandler CreatedFigure;
 		
 		#region Private Member
-		
-		public void AddToBuilder (IModifier modifier) {
-			lock (workQueue) {
-				workQueue.Enqueue (modifier);
-			}
-			
-			StartCheck ();
-		}
-
-		public void AddToBuilder (IEnumerable<IModifier> modifiers)
-		{
-			lock (workQueue) {
-				foreach (var modifier in modifiers) {
-					workQueue.Enqueue (modifier);
-				}
-			}
-			
-			StartCheck ();
-		}
-		
-		private void CheckTypes ()
-		{
-			IModifier[] modifiers;
-			
-			lock (workQueue) {
-				modifiers = workQueue.ToArray ();
-				workQueue.Clear ();
-			}
-			
-			foreach (var modifier in modifiers) {
-				// get a local temporary reference to the IModifier, otherwise the loop will change it before the
-				// delegate below executes.
-				var temp = modifier;
-				Gtk.Application.Invoke ((sender, e) => temp.Modify (this));
-			}
-			
-			diagramThread = null;
-		}
-		
-		void StartCheck ()
-		{
-			if (diagramThread != null)
-				return;
-			
-			var builder = new ThreadStart (CheckTypes);
-			diagramThread = new Thread (builder) {
-				Name = "Class Designer Figure Builder",
-				IsBackground = true,
-				Priority = ThreadPriority.Lowest,
-			};
-			
-			diagramThread.Start ();
-		}
-		
 		readonly int majorVersion;
 		readonly int minorVersion;
 
 		GroupingSetting groupSetting;		
 		MembersFormat membersFormat;
-
-		readonly Queue<IModifier> workQueue;
-		Thread diagramThread;
 		#endregion
 	}
 }

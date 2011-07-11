@@ -34,7 +34,6 @@ using System.Linq;
 using MonoDevelop.DesignerSupport.Toolbox;
 using MonoDevelop.Diagram;
 using MonoDevelop.Diagram.Components;
-using MonoDevelop.ClassDesigner.ClassDiagramModifiers;
 using MonoDevelop.ClassDesigner.Gui.Dialogs;
 using MonoDevelop.ClassDesigner.Gui.Toolbox;
 using MonoDevelop.ClassDesigner.Figures;
@@ -98,30 +97,10 @@ namespace MonoDevelop.ClassDesigner
 			View.Remove (figure);
 		}
 		
-		// FIXME: Add new Key to cache and make cache accessible
 		void OnTypesUpdated (object sender, TypeUpdateInformationEventArgs e)
 		{
-			//if (e.Project != this.Project)
-			//	return;
-			
-			var visitor = new TypeUpdateFigureVisitor (View.Drawing, Dom, e.TypeUpdateInformation);
-			IFigure figure;
-			
-			Diagram.AddToBuilder(e.TypeUpdateInformation.Removed.Select<IType, IModifier> (type => new FigureRemover(type)));
-			
-//			foreach (IType type in e.TypeUpdateInformation.Removed) {
-//				if (!Diagram.typeCache.TryGetValue (type.FullName, out figure))
-//					continue;
-//					
-//				Gtk.Application.Invoke ((tf, j) => Remove (figure));
-//			}
-//			
-//			foreach (IType type in e.TypeUpdateInformation.Modified) {				
-//				if (!Diagram.typeCache.TryGetValue (type.FullName, out figure))
-//					continue;
-//				
-//				Gtk.Application.Invoke ((k, j) => visitor.VisitFigure (figure));
-//			}
+			Gtk.Application.Invoke (delegate { Diagram.UpdateRange (e.TypeUpdateInformation.Modified); });
+			Gtk.Application.Invoke (delegate { Diagram.RemoveRange (e.TypeUpdateInformation.Removed); });
 		}
 
 		
@@ -178,7 +157,7 @@ namespace MonoDevelop.ClassDesigner
 			if (compilationUnit == null)
 				return;
 			
-			Diagram.AddToBuilder (compilationUnit.Types.Select<IType, IModifier> (type => new FigureAdder (type)));
+			Gtk.Application.Invoke (delegate { Diagram.AddRange (compilationUnit.Types); });
 		}
 		
 		public void AddFromNamespace (string ns)
@@ -203,12 +182,12 @@ namespace MonoDevelop.ClassDesigner
 		public override void AddFromProject (Project project)
 		{
 			Project = project;
-			Diagram.AddToBuilder (Dom.Types.Select<IType, IModifier> (type => new FigureAdder (type)));
+			Gtk.Application.Invoke (delegate { Diagram.AddRange (Dom.Types); });
 		}
  
 		public void AddFromType (IType type)
 		{
-			Diagram.AddToBuilder (new FigureAdder (type));
+			Gtk.Application.Invoke (delegate { Diagram.Add (type); });
 		}
 		#endregion
 		
