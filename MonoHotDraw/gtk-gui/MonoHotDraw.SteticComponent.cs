@@ -5,7 +5,7 @@ namespace MonoHotDraw
 	public partial class SteticComponent
 	{
 		private global::Gtk.ScrolledWindow scrolledwindow;
-
+		
 		protected virtual void Build ()
 		{
 			global::Stetic.Gui.Initialize (this);

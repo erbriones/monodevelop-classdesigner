@@ -118,6 +118,10 @@
     <Compile Include="MonoDevelop.ClassDesigner.Figures\CompartmentFigure.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Figures\MemberTypeKey.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Commands\TypeFigureCommands.cs" />
+    <Compile Include="MonoDevelop.ClassDesigner.ClassDiagramModifiers\IModifier.cs" />
+    <Compile Include="MonoDevelop.ClassDesigner.ClassDiagramModifiers\FigureAdder.cs" />
+    <Compile Include="MonoDevelop.ClassDesigner.ClassDiagramModifiers\FigureUpdater.cs" />
+    <Compile Include="MonoDevelop.ClassDesigner.ClassDiagramModifiers\FigureRemover.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -135,6 +139,7 @@
     <Folder Include="MonoDevelop.ClassDesigner.Gui\MonoDevelop.ClassDesigner.Gui.Dialogs\" />
     <Folder Include="MonoDevelop.ClassDesigner.Commands\" />
     <Folder Include="MonoDevelop.ClassDesigner.Visitor\" />
+    <Folder Include="MonoDevelop.ClassDesigner.ClassDiagramModifiers\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MonoDevelop.Diagram\MonoDevelop.Diagram.csproj">

@@ -33,13 +33,14 @@ using System.Xml.Linq;
 
 using Gdk;
 using MonoDevelop.Core;
-using MonoDevelop.ClassDesigner.Figures;
-using MonoDevelop.ClassDesigner.Visitor;
-
+using MonoDevelop.Ide;
 using MonoDevelop.Projects;
 using MonoDevelop.Projects.Dom;
 using MonoDevelop.Projects.Dom.Parser;
-using MonoDevelop.Ide;
+
+using MonoDevelop.ClassDesigner.ClassDiagramModifiers;
+using MonoDevelop.ClassDesigner.Figures;
+using MonoDevelop.ClassDesigner.Visitor;
 
 using MonoHotDraw;
 using MonoHotDraw.Figures;
@@ -63,9 +64,7 @@ namespace MonoDevelop.ClassDesigner
 			minorVersion = 1;
 			groupSetting = grouping;
 			membersFormat = format;
-			typeCache = new Dictionary<string, IFigure> ();
-			builderList = new LinkedList<IType> ();
-			checkList = new List<IType> ();
+			workQueue = new Queue<IModifier> ();
 			CreatedFigure += OnCreatedHandler;
 		}
 		
@@ -113,8 +112,8 @@ namespace MonoDevelop.ClassDesigner
 			}
 		}
 		
-		bool HasTypeFigure (string fullName)
-		{		
+		public bool HasTypeFigure (string fullName)
+		{
 			return Figures.Where (f => f is TypeFigure)
 				.Any (tf => ((TypeFigure) tf).Name.FullName == fullName);
 		}
@@ -185,6 +184,11 @@ namespace MonoDevelop.ClassDesigner
 //			figure.Build ();
 //			figure.Update (TypeFigure.UpdateStatus.ALL);
 			Add (figure);
+			
+			foreach (var fig in figure.Compartments)
+				fig.AcceptVisitor (new GroupFormatVisitor (this, figure));
+			
+			OnCreated (new FigureEventArgs (figure, RectangleD.Empty));
 			
 			return figure;
 		}
@@ -751,7 +755,7 @@ namespace MonoDevelop.ClassDesigner
 		{
 			var handler = CreatedFigure;
 			if (handler != null)
-				handler (e.Figure, e);			
+				handler (e.Figure, e);
 		}
 
 		public event EventHandler<DiagramEventArgs> MembersFormatChanged;
@@ -759,11 +763,21 @@ namespace MonoDevelop.ClassDesigner
 		public event FigureEventHandler CreatedFigure;
 		
 		#region Private Member
+		
+		public void AddToBuilder (IModifier modifier) {
+			lock (workQueue) {
+				workQueue.Enqueue (modifier);
+			}
+			
+			StartCheck ();
+		}
 
-		public void AddToBuilder (IEnumerable<IType> types)
+		public void AddToBuilder (IEnumerable<IModifier> modifiers)
 		{
-			lock (checkList) {
-				checkList.AddRange (types);
+			lock (workQueue) {
+				foreach (var modifier in modifiers) {
+					workQueue.Enqueue (modifier);
+				}
 			}
 			
 			StartCheck ();
@@ -771,59 +785,21 @@ namespace MonoDevelop.ClassDesigner
 		
 		private void CheckTypes ()
 		{
-			IType[] typeList;
-			int i = 0;
+			IModifier[] modifiers;
 			
-			lock (checkList) {
-				typeList = checkList.ToArray ();
-				checkList.Clear ();
+			lock (workQueue) {
+				modifiers = workQueue.ToArray ();
+				workQueue.Clear ();
 			}
 			
-			
-			foreach (IType type in typeList) {
-				Console.WriteLine ("Checking {0}", type.FullName);
-				if (HasTypeFigure (type.FullName))
-					continue;
-			
-				lock (builderList)
-					builderList.AddLast (new LinkedListNode<IType> (type));
-				
-				GLib.Idle.Add (FigureBuilder);				
+			foreach (var modifier in modifiers) {
+				// get a local temporary reference to the IModifier, otherwise the loop will change it before the
+				// delegate below executes.
+				var temp = modifier;
+				Gtk.Application.Invoke ((sender, e) => temp.Modify (this));
 			}
 			
 			diagramThread = null;
-		}
-		
-		private bool FigureBuilder ()
-		{	
-			lock (builderList) {
-				int max = Math.Min (builderList.Count, 10);
-				
-				for (int i = 0; i < max; builderList.RemoveFirst (), i++) {
-					var type = builderList.First ();
-					var figure = CreateFigure (type);
-					
-					if (figure == null)
-						continue;
-					
-					Console.WriteLine ("Building {0}", type.FullName);
-					
-					OnCreated (new FigureEventArgs (figure, RectangleD.Empty));		
-					
-					var tf = figure as TypeFigure;
-					if (tf == null)
-						continue;
-					
-					foreach (IFigure fig in tf.Compartments)
-						fig.AcceptVisitor (new GroupFormatVisitor (this, tf));
-					
-				}
-				
-				if (builderList.Count > 0)
-					return true;
-				
-				return false;
-			}
 		}
 		
 		void StartCheck ()
@@ -846,12 +822,9 @@ namespace MonoDevelop.ClassDesigner
 
 		GroupingSetting groupSetting;		
 		MembersFormat membersFormat;
-		
-		Dictionary <string,IFigure> typeCache;
-		List<IType> checkList;
-		LinkedList<IType> builderList;
+
+		readonly Queue<IModifier> workQueue;
 		Thread diagramThread;
 		#endregion
-
 	}
 }

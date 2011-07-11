@@ -34,6 +34,7 @@ using System.Linq;
 using MonoDevelop.DesignerSupport.Toolbox;
 using MonoDevelop.Diagram;
 using MonoDevelop.Diagram.Components;
+using MonoDevelop.ClassDesigner.ClassDiagramModifiers;
 using MonoDevelop.ClassDesigner.Gui.Dialogs;
 using MonoDevelop.ClassDesigner.Gui.Toolbox;
 using MonoDevelop.ClassDesigner.Figures;
@@ -106,19 +107,21 @@ namespace MonoDevelop.ClassDesigner
 			var visitor = new TypeUpdateFigureVisitor (View.Drawing, Dom, e.TypeUpdateInformation);
 			IFigure figure;
 			
-			foreach (IType type in e.TypeUpdateInformation.Removed) {
-			//	if (!Diagram.Cache.TryGetValue (type.FullName, out figure))
-					continue;
-					
-			//	Gtk.Application.Invoke ((tf, j) => Remove (tf));
-			}
+			Diagram.AddToBuilder(e.TypeUpdateInformation.Removed.Select<IType, IModifier> (type => new FigureRemover(type)));
 			
-			foreach (IType type in e.TypeUpdateInformation.Modified) {				
-			//	if (!typeCache.TryGetValue (type.FullName, out figure))
-					continue;
-				
-			//	Gtk.Application.Invoke ((k, j) => visitor.VisitFigure (tf));
-			}	
+//			foreach (IType type in e.TypeUpdateInformation.Removed) {
+//				if (!Diagram.typeCache.TryGetValue (type.FullName, out figure))
+//					continue;
+//					
+//				Gtk.Application.Invoke ((tf, j) => Remove (figure));
+//			}
+//			
+//			foreach (IType type in e.TypeUpdateInformation.Modified) {				
+//				if (!Diagram.typeCache.TryGetValue (type.FullName, out figure))
+//					continue;
+//				
+//				Gtk.Application.Invoke ((k, j) => visitor.VisitFigure (figure));
+//			}
 		}
 
 		
@@ -175,7 +178,7 @@ namespace MonoDevelop.ClassDesigner
 			if (compilationUnit == null)
 				return;
 			
-			Diagram.AddToBuilder (compilationUnit.Types);
+			Diagram.AddToBuilder (compilationUnit.Types.Select<IType, IModifier> (type => new FigureAdder (type)));
 		}
 		
 		public void AddFromNamespace (string ns)
@@ -190,23 +193,22 @@ namespace MonoDevelop.ClassDesigner
 			foreach (IMember item in members) {
 				if (item.MemberType == MemberType.Namespace) {
 					AddFromNamespace (item.FullName);
-					continue;
-				} else if (item.MemberType != MemberType.Type)
-					continue; 
-				
-				AddFromType (Dom.GetType (item.FullName));
-			}			
+				}
+				else if (item.MemberType == MemberType.Type) {
+					AddFromType (Dom.GetType (item.FullName));
+				}
+			}
 		}
 		
 		public override void AddFromProject (Project project)
 		{
 			Project = project;
-			Diagram.AddToBuilder (Dom.Types);
+			Diagram.AddToBuilder (Dom.Types.Select<IType, IModifier> (type => new FigureAdder (type)));
 		}
  
 		public void AddFromType (IType type)
 		{
-			Diagram.AddToBuilder (new IType [] { type });
+			Diagram.AddToBuilder (new FigureAdder (type));
 		}
 		#endregion
 		

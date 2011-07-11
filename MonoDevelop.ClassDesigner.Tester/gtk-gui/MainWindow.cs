@@ -3,16 +3,16 @@
 
 public partial class MainWindow
 {
-	private global::Gtk.UIManager UIManager;
-	private global::Gtk.Action FiguresAction;
-	private global::Gtk.Action AddClassFigureAction;
-	private global::Gtk.Action AddStackFigureAction;
-	private global::Gtk.Action AddMemberGroupAction;
-	private global::Gtk.Action AddSimpleTextFigureAction;
-	private global::Gtk.VBox vbox1;
-	private global::Gtk.MenuBar menubar1;
-	private global::MonoHotDraw.SteticComponent mhdcanvas;
-
+	private readonly global::Gtk.UIManager UIManager;
+	private readonly global::Gtk.Action FiguresAction;
+	private readonly global::Gtk.Action AddClassFigureAction;
+	private readonly global::Gtk.Action AddStackFigureAction;
+	private readonly global::Gtk.Action AddMemberGroupAction;
+	private readonly global::Gtk.Action AddSimpleTextFigureAction;
+	private readonly global::Gtk.VBox vbox1;
+	private readonly global::Gtk.MenuBar menubar1;
+	private readonly global::MonoHotDraw.SteticComponent mhdcanvas;
+	
 	protected virtual void Build ()
 	{
 		global::Stetic.Gui.Initialize (this);
