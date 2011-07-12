@@ -112,7 +112,6 @@
     <Compile Include="MonoDevelop.ClassDesigner.Commands\CollapsableCommands.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Visitor\MemberFormatVisitor.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Visitor\GroupFormatVisitor.cs" />
-    <Compile Include="MonoDevelop.ClassDesigner.Visitor\TypeUpdateFigureVisitor.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Figures\HeaderFigure.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Figures\MemberFigure.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Figures\CompartmentFigure.cs" />

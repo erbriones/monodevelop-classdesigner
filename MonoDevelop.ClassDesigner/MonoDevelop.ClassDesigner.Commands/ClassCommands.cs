@@ -56,7 +56,7 @@ namespace MonoDevelop.ClassDesigner.Commands
 			var designer = (ClassDesigner) Designer;
 			
 			foreach (ClassFigure superFigure in designer.View.SelectionEnumerator.OfType<ClassFigure> ()) {
-				IType superType = designer.Dom.GetType (superFigure.Name.FullName);
+				IType superType = designer.Dom.GetType (superFigure.DomType.FullName);
 	
 				if (superType.BaseType == null) 
 					continue;
@@ -80,7 +80,7 @@ namespace MonoDevelop.ClassDesigner.Commands
 			
 			IEnumerable<IType> baseTypes = designer.View.SelectionEnumerator
 				.OfType<ClassFigure> ()
-				.Select (figure => designer.Dom.GetType (figure.Name.FullName));
+				.Select (figure => designer.Dom.GetType (figure.DomType.FullName));
 			
 			foreach (IType type in designer.Dom.Types) {
 				if (type.BaseType == null || type.ClassType != ClassType.Class)

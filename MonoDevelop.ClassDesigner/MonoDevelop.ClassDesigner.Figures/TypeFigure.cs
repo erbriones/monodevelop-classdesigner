@@ -49,11 +49,41 @@ namespace MonoDevelop.ClassDesigner.Figures
 		Dictionary<string, IFigure> members;
 
 		ToggleButtonHandle expandHandle;
-		IType _domtype;
+		IType domType;
+		
+		public static TypeFigure FromType(IType type)
+		{
+			TypeFigure figure;
+			
+			if (type == null)
+				return null;
+			
+			if (type.ClassType == ClassType.Class) {
+				Console.WriteLine ("Adding Class");
+				figure = new ClassFigure (type);
+			} else if (type.ClassType == ClassType.Enum) {
+				Console.WriteLine ("Adding Enum");
+				figure = new EnumFigure (type);
+			} else if (type.ClassType == ClassType.Interface) {
+				Console.WriteLine ("Adding Interface");
+				figure = new InterfaceFigure (type);
+			} else if (type.ClassType == ClassType.Struct) {
+				Console.WriteLine ("Adding Struct");
+				figure = new StructFigure (type);
+			} else if (type.ClassType == ClassType.Delegate) {
+				Console.WriteLine ("Adding Delegate");
+				figure = new DelegateFigure (type);
+			} else {
+				return null;
+			}
+			
+			return figure;
+		}
 
 		public TypeFigure () : base ()
 		{
 			Spacing = 1.5;
+			compartments  = new ArrayList (12);
 			members = new Dictionary<string, IFigure> ();
 			Header = new HeaderFigure ();
 			memberCompartments = new VStackFigure ();
@@ -64,19 +94,9 @@ namespace MonoDevelop.ClassDesigner.Figures
 			Expand ();
 		}
 		
-		public TypeFigure (IType domtype) : this ()
+		public TypeFigure (IType domType) : this ()
 		{
-			if (domtype == null || domtype.ClassType != this.ClassType)
-				throw new ArgumentException ();
-			
-			_domtype = domtype;
-			
-			Header.Name = _domtype.Name;
-			Header.Namespace = _domtype.Namespace;
-			Header.Type = _domtype.ClassType.ToString ();
-			
-			CreateCompartments ();
-			BuildMembers ();
+			DomType = domType;
 		}
 
 		public IEnumerable<IFigure> Compartments {
@@ -116,10 +136,24 @@ namespace MonoDevelop.ClassDesigner.Figures
 			get { return members; }
 		}
 
-		public IType Name {
-			get { return _domtype; }
+		public IType DomType {
+			get { return domType; }
+			set {	
+				if (value == null || value.ClassType != this.ClassType)
+					throw new ArgumentException ();
+				
+				domType = value;
+				
+				Clear ();
+				
+				Header.Name = domType.Name;
+				Header.Namespace = domType.Namespace;
+				Header.Type = domType.ClassType.ToString ();
+				
+				CreateCompartments ();
+				BuildMembers ();
+			}
 		}
-		
 		
 		#region Figure Drawing
 
@@ -218,17 +252,18 @@ namespace MonoDevelop.ClassDesigner.Figures
 		
 		private void BuildMembers ()
 		{
-			foreach (IMember member in _domtype.Members) {
+			members.Clear ();
+			foreach (IMember member in DomType.Members) {
 				var icon = ImageService.GetPixbuf (member.StockIcon, IconSize.Menu);
 				var figure = new MemberFigure (icon, member, false);
 				
 				members.Add (member.GetHashCode ().ToString (), figure);
-			}			
+			}
 		}
 		
 		private void CreateCompartments ()
 		{
-			compartments = new ArrayList (12);
+			compartments.Clear ();
 			
 			// Default Group
 			var parameters = new CompartmentFigure (GettextCatalog.GetString ("Parameters"));

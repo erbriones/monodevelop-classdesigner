@@ -150,10 +150,14 @@ namespace MonoDevelop.ClassDesigner
 		{
 			Console.WriteLine ("Checking {0}", type.FullName);
 			
-			var fig = GetFigure(type.FullName);
-			if (fig != null) {
+			var figure = GetFigure(type.FullName) as TypeFigure;
+			if (figure != null) {
 				Console.WriteLine ("Updating {0}", type.FullName);
-				// Do something to update it here...
+				figure.DomType = type;
+				
+				foreach (var compartment in figure.Compartments) {
+					compartment.AcceptVisitor (new GroupFormatVisitor (this, figure));
+				}
 			}
 		}
 		
@@ -168,7 +172,7 @@ namespace MonoDevelop.ClassDesigner
 		public bool HasTypeFigure (string fullName)
 		{
 			return Figures.Where (f => f is TypeFigure)
-				.Any (tf => ((TypeFigure) tf).Name.FullName == fullName);
+				.Any (tf => ((TypeFigure) tf).DomType.FullName == fullName);
 		}
 		
 		public void BaseInheritanceLineFromDiagram (IType superClass)
@@ -196,7 +200,7 @@ namespace MonoDevelop.ClassDesigner
 				if (tf == null)
 					continue;
 				
-				if (tf.Name.BaseType.FullName != subClass.FullName)
+				if (tf.DomType.BaseType.FullName != subClass.FullName)
 					continue;
 				
 				var line = new InheritanceConnectionFigure (subFigure, tf);
@@ -204,42 +208,19 @@ namespace MonoDevelop.ClassDesigner
 			}
 		}
 		
+		// TODO: Kill this method off entirely.
 		public IFigure CreateFigure (IType type)
 		{
-			TypeFigure figure;
-			
-			if (type == null)
-				return null;
-			
-			if (HasTypeFigure (type.FullName))
-				return null;
-			
-			if (type.ClassType == ClassType.Class) {
-				Console.WriteLine ("Adding Class");
-				figure = new ClassFigure (type);
-			} else if (type.ClassType == ClassType.Enum) {
-				Console.WriteLine ("Adding Enum");
-				figure = new EnumFigure (type);
-			} else if (type.ClassType == ClassType.Interface) {
-				Console.WriteLine ("Adding Interface");
-				figure = new InterfaceFigure (type);
-			} else if (type.ClassType == ClassType.Struct) {
-				Console.WriteLine ("Adding Struct");
-				figure = new StructFigure (type);
-			} else if (type.ClassType == ClassType.Delegate) {
-				Console.WriteLine ("Adding Delegate");
-				figure = new DelegateFigure (type);
-			} else {
+			if (type == null || HasTypeFigure (type.FullName)) {
 				return null;
 			}
-	
 			
-//			figure.Build ();
-//			figure.Update (TypeFigure.UpdateStatus.ALL);
+			var figure = TypeFigure.FromType (type);
 			Add (figure);
 			
-			foreach (var fig in figure.Compartments)
+			foreach (var fig in figure.Compartments) {
 				fig.AcceptVisitor (new GroupFormatVisitor (this, figure));
+			}
 			
 			OnCreated (new FigureEventArgs (figure, RectangleD.Empty));
 			
@@ -253,7 +234,7 @@ namespace MonoDevelop.ClassDesigner
 			
 			var figure = Figures
 				.Where (f => f is TypeFigure)
-				.Where (tf => ((TypeFigure) tf).Name.FullName == fullName)
+				.Where (tf => ((TypeFigure) tf).DomType.FullName == fullName)
 				.SingleOrDefault ();
 			
 			return (TypeFigure) figure;
@@ -680,7 +661,7 @@ namespace MonoDevelop.ClassDesigner
 					continue;
 				
 				if (tf != null) {
-					element.Add (new XAttribute ("Name", ((TypeFigure) figure).Name.FullName));
+					element.Add (new XAttribute ("Name", ((TypeFigure) figure).DomType.FullName));
 						
 					if (tf.IsCollapsed)
 						element.Add (new XAttribute ("Collapsed", "true"));
@@ -735,7 +716,7 @@ namespace MonoDevelop.ClassDesigner
 						
 						if (parseDoc.CompilationUnit != null) {
 							var exists = parseDoc.CompilationUnit.Types
-								.Any (t => t.FullName == tf.Name.FullName);
+								.Any (t => t.FullName == tf.DomType.FullName);
 							
 							if (exists)
 								name = pf.FilePath.FileName;
