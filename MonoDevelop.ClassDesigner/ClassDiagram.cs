@@ -695,28 +695,9 @@ namespace MonoDevelop.ClassDesigner
 						element.Add (compartments);
 					}
 					
-					string name = null;
-					var project = IdeApp.Workspace.GetProjectContainingFile (fileName);
-					var dom = ProjectDomService.GetProjectDom (project);
-					
-					foreach (var pf in project.Files) {
-						var parseDoc = ProjectDomService.GetParsedDocument (dom, pf.Name);
-						
-						if (!String.IsNullOrEmpty (name))
-							break;
-						
-						if (parseDoc.CompilationUnit != null) {
-							var exists = parseDoc.CompilationUnit.Types
-								.Any (t => t.FullName == tf.DomType.FullName);
-							
-							if (exists)
-								name = pf.FilePath.FileName;
-						}
-					}
-					
 					var identifier = new XElement ("TypeIdentifier",
 						new XElement ("HashCode", String.Format ("{0:X}", tf.GetHashCode ())),
-					    new XElement ("FileName", name)
+					    new XElement ("FileName", tf.DomType.CompilationUnit.FileName.FileName)
 					);
 					element.Add (identifier);
 				}
