@@ -113,10 +113,7 @@ namespace MonoDevelop.ClassDesigner
 		#region TypeFigure Add/Remove/Update
 		public void Add (IType type)
 		{
-			Console.WriteLine ("Checking {0}", type.FullName);
-			
 			if (!HasTypeFigure (type.FullName)) {
-				Console.WriteLine ("Adding {0}", type.FullName);
 				CreateFigure(type);
 			}
 		}
@@ -130,11 +127,8 @@ namespace MonoDevelop.ClassDesigner
 		
 		public void Remove (IType type)
 		{
-			Console.WriteLine ("Checking {0}", type.FullName);
-			
 			var fig = GetFigure(type.FullName);
 			if (fig != null) {
-				Console.WriteLine ("Removing {0}", type.FullName);
 				Remove(fig);
 			}
 		}
@@ -148,11 +142,8 @@ namespace MonoDevelop.ClassDesigner
 		
 		public void Update (IType type)
 		{
-			Console.WriteLine ("Checking {0}", type.FullName);
-			
 			var figure = GetFigure(type.FullName) as TypeFigure;
 			if (figure != null) {
-				Console.WriteLine ("Updating {0}", type.FullName);
 				figure.DomType = type;
 				
 				foreach (var compartment in figure.Compartments) {

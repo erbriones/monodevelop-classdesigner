@@ -58,26 +58,14 @@ namespace MonoDevelop.ClassDesigner.Figures
 			if (type == null)
 				return null;
 			
-			if (type.ClassType == ClassType.Class) {
-				Console.WriteLine ("Adding Class");
-				figure = new ClassFigure (type);
-			} else if (type.ClassType == ClassType.Enum) {
-				Console.WriteLine ("Adding Enum");
-				figure = new EnumFigure (type);
-			} else if (type.ClassType == ClassType.Interface) {
-				Console.WriteLine ("Adding Interface");
-				figure = new InterfaceFigure (type);
-			} else if (type.ClassType == ClassType.Struct) {
-				Console.WriteLine ("Adding Struct");
-				figure = new StructFigure (type);
-			} else if (type.ClassType == ClassType.Delegate) {
-				Console.WriteLine ("Adding Delegate");
-				figure = new DelegateFigure (type);
-			} else {
-				return null;
+			switch (type.ClassType) {
+				case ClassType.Class:     return new ClassFigure (type);
+				case ClassType.Delegate:  return new DelegateFigure (type);
+				case ClassType.Enum:      return new EnumFigure (type);
+				case ClassType.Interface: return new InterfaceFigure (type);
+				case ClassType.Struct:    return new StructFigure (type);
+				default: return null;
 			}
-			
-			return figure;
 		}
 
 		public TypeFigure () : base ()
