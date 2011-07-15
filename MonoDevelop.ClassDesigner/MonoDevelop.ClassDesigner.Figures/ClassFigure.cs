@@ -28,13 +28,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Linq;
 using MonoHotDraw.Commands;
 using MonoHotDraw.Figures;
 using MonoDevelop.Core;
 using MonoDevelop.Projects.Dom;
 
 namespace MonoDevelop.ClassDesigner.Figures
-{	
+{		
 	public sealed class ClassFigure: TypeFigure, IAssociation, INestedTypeSupport
 	{
 		List<IFigure> nestedFigures;
@@ -50,6 +51,20 @@ namespace MonoDevelop.ClassDesigner.Figures
 			nestedFigures = new List<IFigure> ();
 			FillColor = new Cairo.Color (0.1, 0.1, 0.9, 0.4);
 		}
+		
+		#region ISerializableFigure implementation
+		public override XElement Serialize ()
+		{
+			var xml = base.Serialize ();
+			xml.Name = "Class";
+			
+			if (HideInheritance) {
+				xml.Add (new XAttribute ("HideInheritance", "true"));
+			}
+			
+			return xml;
+		}
+		#endregion
 		
 		public bool HideInheritance {
 			get { return hideInheritance; }

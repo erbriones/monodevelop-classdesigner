@@ -28,6 +28,8 @@ using Gtk;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Linq;
+
 using MonoDevelop.Ide;
 using MonoDevelop.Projects.Dom;
 using MonoHotDraw.Figures;
@@ -46,6 +48,15 @@ namespace MonoDevelop.ClassDesigner.Figures
 			hideAssociations = false;
 			FillColor = new Cairo.Color (0.8, 0.8, 0.8, 0.4);
 		}
+
+		#region ISerializableFigure implementation
+		public override XElement Serialize ()
+		{
+			var xml = base.Serialize ();
+			xml.Name = "Interface";
+			return xml;
+		}
+		#endregion
 
 		protected override ClassType ClassType {
 			get { return ClassType.Interface; }

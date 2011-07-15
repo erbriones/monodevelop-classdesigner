@@ -47,7 +47,7 @@ using MonoHotDraw.Util;
 
 namespace MonoDevelop.ClassDesigner
 {
-	public sealed class ClassDiagram : StandardDrawing
+	public sealed class ClassDiagram : StandardDrawing, ISerializableFigure
 	{	
 		public ClassDiagram () : this (GroupingSetting.Member, MembersFormat.FullSignature)
 		{
@@ -70,6 +70,30 @@ namespace MonoDevelop.ClassDesigner
 		{
 			CreatedFigure -= OnCreatedHandler;
 		}
+
+		#region ISerializableFigure implementation
+		public XElement Serialize ()
+		{
+			var xml = new XElement ("ClassDiagram",
+				new XAttribute ("MajorVersion", majorVersion),
+			    new XAttribute ("MinorVersion", minorVersion),
+			   	new XAttribute ("MembersFormat", membersFormat.ToString ()),
+			    new XElement ("Font",
+			    	new XAttribute ("Name", AttributeFigure.GetDefaultAttribute(FigureAttribute.FontFamily)),
+			        new XAttribute ("Size", AttributeFigure.GetDefaultAttribute(FigureAttribute.FontSize))
+			    )
+			);
+			
+			xml.Add (Figures.OfType<ISerializableFigure> ().Select (f => f.Serialize ()));
+			
+			return xml;
+		}
+
+		public void Deserialize ()
+		{
+			throw new NotImplementedException ();
+		}
+		#endregion
 
 		public MembersFormat Format {
 			get { return membersFormat; }
@@ -616,98 +640,7 @@ namespace MonoDevelop.ClassDesigner
 			}
 		}
 		
-		public void Write (string fileName)
-		{
-			var root = new XElement ("ClassDiagram",
-				new XAttribute ("MajorVersion", majorVersion),
-			    new XAttribute ("MinorVersion", minorVersion),
-			   	new XAttribute ("MembersFormat", membersFormat.ToString ()),
-			    new XElement ("Font",
-			    	new XAttribute ("Name", AttributeFigure.GetDefaultAttribute(FigureAttribute.FontFamily)),
-			        new XAttribute ("Size", AttributeFigure.GetDefaultAttribute(FigureAttribute.FontSize))
-			    )
-			);
-
-			foreach (IFigure figure in Figures) {
-				XElement element;
-				var tf = figure as TypeFigure;
-				
-				if (figure is ClassFigure)
-					element = new XElement ("Class");
-				else if (figure is StructFigure)
-					element = new XElement ("Struct");
-				else if (figure is EnumFigure)
-					element = new XElement ("Enum");
-				else if (figure is InterfaceFigure)
-					element = new XElement ("Interface");
-				else if (figure is DelegateFigure)
-					element = new XElement ("Class");
-				else if (figure is CommentFigure) {
-					var comment = (CommentFigure) figure;
-					
-					element = new XElement ("Comment",
-						new XAttribute ("CommentText", comment.Text)
-					);
-				} else 
-					continue;
-				
-				if (tf != null) {
-					element.Add (new XAttribute ("Name", ((TypeFigure) figure).DomType.FullName));
-						
-					if (tf.IsCollapsed)
-						element.Add (new XAttribute ("Collapsed", "true"));
-				}
-				
-				if (figure is ClassFigure) {
-					var cls = figure as ClassFigure;
-					
-					if (cls.HideInheritance)
-						element.Add (new XAttribute ("HideInheritanceLine", "true"));
-				}
-				
-				var position = new XElement ("Position",
-						new XAttribute ("X", PixelsToInches (figure.DisplayBox.X)),
-					    new XAttribute ("Y", PixelsToInches (figure.DisplayBox.Y)),
-					    new XAttribute ("Width", PixelsToInches (figure.DisplayBox.Width))
-				);
-				
-				if (figure is CommentFigure)
-					position.Add (new XAttribute ("Height", PixelsToInches (figure.DisplayBox.Height)));
-				
-				element.Add (position);
-				
-				if (tf != null) {
-					var clist = tf.Figures.OfType<CompartmentFigure>().Where (c => c.IsCollapsed);
-										
-					if (clist.Count () > 0) {
-						foreach (var c in clist)
-							Console.WriteLine (c.Name);
-							
-						var compartments = new XElement ("Compartments",
-							from c in clist
-						    select
-							new XElement ("Compartment",
-								new XAttribute ("Name", c.Name),
-								new XAttribute ("Collapsed", "true") 
-							)
-						);		
-						
-						element.Add (compartments);
-					}
-					
-					var identifier = new XElement ("TypeIdentifier",
-						new XElement ("HashCode", String.Format ("{0:X}", tf.GetHashCode ())),
-					    new XElement ("FileName", tf.DomType.CompilationUnit.FileName.FileName)
-					);
-					element.Add (identifier);
-				}
-				
-				root.FirstNode.AddBeforeSelf (element);
-			}
-
-			root.Save (fileName);
-		}
-				
+		// TODO: Move these method somewhere far more sensible
 		public static double InchesToPixels (double inches)
 		{
 			if (Screen.Default.Resolution == -1)
@@ -715,13 +648,22 @@ namespace MonoDevelop.ClassDesigner
 			
 			return inches * Gdk.Screen.Default.Resolution;
 		}
-
+		
 		public static double PixelsToInches (double pixels)
 		{
 			if (Screen.Default.Resolution == -1)
 				return pixels / 60.0;
 			
 			return pixels / Gdk.Screen.Default.Resolution;
+		}
+		
+		public static XElement GetPositionData (IFigure figure)
+		{
+			return new XElement ("Position",
+				new XAttribute ("X", PixelsToInches (figure.DisplayBox.X)),
+			    new XAttribute ("Y", PixelsToInches (figure.DisplayBox.Y)),
+			    new XAttribute ("Width", PixelsToInches (figure.DisplayBox.Width))
+			);
 		}
 				
 		protected void OnMembersFormatChanged (DiagramEventArgs e)

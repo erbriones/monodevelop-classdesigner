@@ -25,19 +25,42 @@
 // THE SOFTWARE.
 
 using System;
+using System.Xml.Linq;
 using Gdk;
 using MonoHotDraw.Figures;
 using MonoHotDraw.Util;
 
+using MonoDevelop.ClassDesigner;
+
 namespace MonoDevelop.ClassDesigner.Figures
 {
-	public sealed class CommentFigure : MultiLineTextFigure
+	public sealed class CommentFigure : MultiLineTextFigure, ISerializableFigure
 	{		
 		public CommentFigure (string comment) : base (comment)
 		{
 			if (String.IsNullOrEmpty (comment))
 				Text = "Add your comment here.";
 		}
+
+		#region ICustomDataItem implementation
+		public XElement Serialize ()
+		{
+			var xml = new XElement ("Comment",
+				new XAttribute ("CommentText", Text)
+			);
+			
+			var position = ClassDiagram.GetPositionData (this);
+			position.Add (new XAttribute ("Height", ClassDiagram.PixelsToInches (DisplayBox.Height).ToString ()));
+			xml.Add (position);
+			
+			return xml;
+		}
+
+		public void Deserialize ()
+		{
+			throw new NotImplementedException ();
+		}
+		#endregion
 
 		protected override void BasicDraw (Cairo.Context context)
 		{

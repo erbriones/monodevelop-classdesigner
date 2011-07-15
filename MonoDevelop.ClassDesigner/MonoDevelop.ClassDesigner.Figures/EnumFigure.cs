@@ -29,6 +29,7 @@ using Gtk;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Linq;
 using MonoHotDraw.Figures;
 using MonoDevelop.Core;
 using MonoDevelop.Ide;
@@ -38,11 +39,19 @@ namespace MonoDevelop.ClassDesigner.Figures
 {	
 	public sealed class EnumFigure: TypeFigure
 	{
-		
 		public EnumFigure (IType domtype): base (domtype)
 		{
 			FillColor = new Cairo.Color (0.1, 0.9, 0.2, 0.4);
 		}
+
+		#region ISerializableFigure implementation
+		public override XElement Serialize ()
+		{
+			var xml = base.Serialize ();
+			xml.Name = "Enum";
+			return xml;
+		}
+		#endregion
 		
 		protected override ClassType ClassType {
 			get { return ClassType.Enum; }

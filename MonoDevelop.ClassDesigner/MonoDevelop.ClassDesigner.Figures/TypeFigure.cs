@@ -27,6 +27,7 @@ using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml.Linq;
 using Gtk;
 using Gdk;
 using Cairo;
@@ -42,7 +43,7 @@ using MonoDevelop.Projects.Dom;
 
 namespace MonoDevelop.ClassDesigner.Figures
 {
-	public abstract class TypeFigure : VStackFigure, ICollapsable
+	public abstract class TypeFigure : VStackFigure, ICollapsable, ISerializableFigure
 	{
 		VStackFigure memberCompartments;
 		ArrayList compartments;
@@ -87,6 +88,42 @@ namespace MonoDevelop.ClassDesigner.Figures
 			DomType = domType;
 		}
 
+		#region ISerializableFigure implementation
+		public virtual XElement Serialize ()
+		{
+			var xml = new XElement ("Type",
+				new XAttribute ("Name", DomType.FullName),
+				ClassDiagram.GetPositionData(this),
+				new XElement ("TypeIdentifier",
+					new XElement ("HashCode", String.Format ("{0:X}", GetHashCode ())),
+				    new XElement ("FileName", DomType.CompilationUnit.FileName.FileName)
+				)
+			);
+			
+			if (IsCollapsed) {
+				xml.Add (new XAttribute ("Collapsed", "true"));
+			}
+			
+			// Get collapsed compartment info
+			var clist = Figures.OfType<CompartmentFigure> ().Where (c => c.IsCollapsed );
+			if (clist.Count() > 0) {
+				xml.Add (new XElement ("Compartments",
+					clist.Select(c => new XElement ("Compartment",
+						new XAttribute ("Name", c.Name),
+						new XAttribute ("Collapsed", "true")
+					))
+				));
+			}
+			
+			return xml;
+		}
+
+		public virtual void Deserialize ()
+		{
+			throw new NotImplementedException ();
+		}
+		#endregion
+		
 		public IEnumerable<IFigure> Compartments {
 			get {
 				foreach (object c in compartments)
@@ -115,7 +152,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 				yield return expandHandle;
 			}
 		}
-
+		
 		public bool IsCollapsed {
 			get { return !expandHandle.Active; }
 		}

@@ -30,6 +30,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Linq;
 
 using MonoDevelop.DesignerSupport.Toolbox;
 using MonoDevelop.Diagram;
@@ -73,6 +74,7 @@ namespace MonoDevelop.ClassDesigner
 				throw new ArgumentNullException ();
 			
 			this.ContentName = fileName.FileName;
+			this.IsDirty = false;
 			this.Project = IdeApp.Workspace.GetProjectContainingFile (fileName);
 		}	
 		
@@ -83,7 +85,7 @@ namespace MonoDevelop.ClassDesigner
 			this.UntitledName = "ClassDiagram.cd";
 			this.IsViewOnly = false;
 			//this.View.VisibleAreaChanged
-			
+			IsDirty = true;
 			SetupTools ();
 		}
 		
@@ -365,16 +367,18 @@ namespace MonoDevelop.ClassDesigner
 		
 		public override void Save ()
 		{
-			Save (ContentName);
+			XElement xml;
+			lock (Diagram) {
+				xml = Diagram.Serialize ();
+			}
+			
+			IsDirty = false;
 		}
 		
 		public override void Save (string fileName)
-		{	
-			lock (Diagram)
-				Diagram.Write (fileName);
-			
+		{
 			ContentName = fileName;
-			IsDirty = false;
+			Save ();
 		}
 
 		public override bool IsFile {

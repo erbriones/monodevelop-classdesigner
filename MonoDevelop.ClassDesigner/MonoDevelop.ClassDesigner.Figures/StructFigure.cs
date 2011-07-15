@@ -26,13 +26,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Xml.Linq;
 using MonoHotDraw.Figures;
 using MonoDevelop.Core;
 using MonoDevelop.Projects.Dom;
 
 namespace MonoDevelop.ClassDesigner.Figures
 {
-
 	public sealed class StructFigure : TypeFigure, IAssociation, INestedTypeSupport
 	{
 		bool hideAssociations;
@@ -44,6 +44,15 @@ namespace MonoDevelop.ClassDesigner.Figures
 			nestedFigures = new List<IFigure> ();
 			HideAssociations = false;
 		}
+
+		#region ISerializableFigure implementation
+		public override XElement Serialize ()
+		{
+			var xml = base.Serialize ();
+			xml.Name = "Struct";
+			return xml;
+		}
+		#endregion
 		
 		protected override ClassType ClassType {
 			get { return ClassType.Struct; }
