@@ -118,7 +118,7 @@ namespace MonoDevelop.ClassDesigner
 			
 			foreach (IType type in Dom.Types) {				
 				if (type.ClassType == ClassType.Class) {		
-					subclass = Diagram.GetFigure (type.Name) as ClassFigure;
+					subclass = Diagram.GetTypeFigure (type.Name) as ClassFigure;
 					
 					if (subclass.HideInheritance)
 						continue;
@@ -126,7 +126,7 @@ namespace MonoDevelop.ClassDesigner
 					if (type.BaseType == null)
 						superclass = null;
 					else
-						superclass = Diagram.GetFigure (type.BaseType.Name) as ClassFigure;
+						superclass = Diagram.GetTypeFigure (type.BaseType.Name) as ClassFigure;
 					
 					if (subclass != null && superclass != null) {
 						var connection = new InheritanceConnectionFigure (subclass, superclass);
@@ -371,7 +371,7 @@ namespace MonoDevelop.ClassDesigner
 			lock (Diagram) {
 				xml = Diagram.Serialize ();
 			}
-			
+			xml.Save (ContentName);
 			IsDirty = false;
 		}
 		
