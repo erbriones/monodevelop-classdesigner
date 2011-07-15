@@ -151,7 +151,7 @@ namespace MonoDevelop.ClassDesigner
 		
 		public void Remove (IType type)
 		{
-			var fig = GetFigure(type.FullName);
+			var fig = GetTypeFigure(type.FullName);
 			if (fig != null) {
 				Remove(fig);
 			}
@@ -166,7 +166,7 @@ namespace MonoDevelop.ClassDesigner
 		
 		public void Update (IType type)
 		{
-			var figure = GetFigure(type.FullName) as TypeFigure;
+			var figure = GetTypeFigure(type.FullName) as TypeFigure;
 			if (figure != null) {
 				figure.DomType = type;
 				
@@ -192,8 +192,8 @@ namespace MonoDevelop.ClassDesigner
 		
 		public void BaseInheritanceLineFromDiagram (IType superClass)
 		{
-			var superFigure = GetFigure (superClass.FullName) as ClassFigure;
-			var subFigure = GetFigure (superClass.BaseType.FullName) as ClassFigure;
+			var superFigure = GetTypeFigure (superClass.FullName) as ClassFigure;
+			var subFigure = GetTypeFigure (superClass.BaseType.FullName) as ClassFigure;
 			
 			if(superFigure == null || subFigure == null)
 				return;
@@ -204,7 +204,7 @@ namespace MonoDevelop.ClassDesigner
 		public void DerivedInheritanceLinesFromDiagram (IType subClass)
 		{
 			var tmp = new List<IFigure> ();
-			var subFigure = GetFigure (subClass.FullName) as ClassFigure;
+			var subFigure = GetTypeFigure (subClass.FullName) as ClassFigure;
 			
 			if (subFigure == null)
 				return;
@@ -242,17 +242,15 @@ namespace MonoDevelop.ClassDesigner
 			return figure;
 		}
 
-		public TypeFigure GetFigure (string fullName)
+		public TypeFigure GetTypeFigure (string fullName)
 		{			
 			if (fullName == null)
 				return null;
 			
-			var figure = Figures
-				.Where (f => f is TypeFigure)
-				.Where (tf => ((TypeFigure) tf).DomType.FullName == fullName)
+			return Figures
+				.OfType<TypeFigure> ()
+				.Where (f => f.DomType.FullName == fullName)
 				.SingleOrDefault ();
-			
-			return (TypeFigure) figure;
 		}
 		
 		public void Load (string fileName, ProjectDom dom)
@@ -485,7 +483,7 @@ namespace MonoDevelop.ClassDesigner
 					IFigure startfig;
 										
 					if (HasTypeFigure (property.ReturnType.FullName))
-						startfig = GetFigure (property.ReturnType.FullName);
+						startfig = GetTypeFigure (property.ReturnType.FullName);
 					else
 						startfig = CreateFigure (property.ReturnType.Type);					
 					
@@ -521,7 +519,7 @@ namespace MonoDevelop.ClassDesigner
 					IFigure startfig;
 										
 					if (HasTypeFigure (property.ReturnType.FullName))
-						startfig = GetFigure (property.ReturnType.FullName);
+						startfig = GetTypeFigure (property.ReturnType.FullName);
 					else
 						startfig = CreateFigure (property.ReturnType.Type);
 					

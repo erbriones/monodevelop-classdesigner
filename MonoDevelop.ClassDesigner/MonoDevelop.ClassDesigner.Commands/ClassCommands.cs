@@ -62,7 +62,7 @@ namespace MonoDevelop.ClassDesigner.Commands
 					continue;
 				
 				string baseTypeName = superType.BaseType.FullName;
-				ClassFigure baseFigure = (ClassFigure) designer.Diagram.GetFigure (baseTypeName);
+				ClassFigure baseFigure = (ClassFigure) designer.Diagram.GetTypeFigure (baseTypeName);
 				
 				if (baseFigure == null) {
 					IType baseType = designer.Dom.GetType (baseTypeName);
@@ -93,8 +93,8 @@ namespace MonoDevelop.ClassDesigner.Commands
 				if (baseType == null)
 					continue;
 				
-				var baseFigure = (ClassFigure) designer.Diagram.GetFigure (baseType.FullName);
-				var superFigure = (ClassFigure) designer.Diagram.GetFigure (type.FullName);
+				var baseFigure = (ClassFigure) designer.Diagram.GetTypeFigure (baseType.FullName);
+				var superFigure = (ClassFigure) designer.Diagram.GetTypeFigure (type.FullName);
 				
 				if (baseFigure == null)
 					baseFigure = (ClassFigure) designer.Diagram.CreateFigure (baseType);
