@@ -39,40 +39,12 @@ namespace MonoDevelop.ClassDesigner.Extensions
 {
 	internal class GenericNodeCommandHandler : NodeCommandHandler
 	{
-		[CommandUpdateHandler (DesignerCommands.ShowDesigner)]
-		[AllowMultiSelection]
-		public void UpdateHandler (CommandInfo item)
-		{
-			var project = GetProject (CurrentNode);
-			
-			if (IdeApp.Workbench.ActiveDocument == null)
-				return;
-			
-			var designer = IdeApp.Workbench.ActiveDocument.GetContent<ClassDesigner> ()
-				?? IdeApp.Workbench.Documents.Select (d => d.GetContent<ClassDesigner> ()).FirstOrDefault (v => v != null);
-			
-			if (designer != null)
-				project = designer.Project;
-					
-			item.Enabled = CurrentNodes.Any (i => (GetProject (i) == project));
-		}
-
 		[CommandHandler (DesignerCommands.ShowDesigner)]
 		[AllowMultiSelection]
 		public void Handler ()
 		{
-			ClassDesigner designer = null;
-			
-			if (IdeApp.Workbench.ActiveDocument != null)
-				designer = IdeApp.Workbench.ActiveDocument.GetContent<ClassDesigner> ()
-					?? IdeApp.Workbench.Documents
-						.Select (d => d.GetContent<ClassDesigner> ())
-						.FirstOrDefault (v => v != null);
-					
-			if (designer == null) {
-				designer = new ClassDesigner (GetProject (CurrentNode));
-				IdeApp.Workbench.OpenDocument (designer, true);
-			}
+			var project = GetProject (CurrentNode);
+			var designer = new ClassDesigner (project);
 			
 			foreach (var node in CurrentNodes) {				
 				if (node.DataItem is Project) {
@@ -92,6 +64,9 @@ namespace MonoDevelop.ClassDesigner.Extensions
 				}
 			}
 			
+			designer.Save ();
+			project.AddFile (designer.ContentName);
+			IdeApp.Workbench.OpenDocument (designer, true);
 			designer.Control.GrabFocus ();
 		}
 		

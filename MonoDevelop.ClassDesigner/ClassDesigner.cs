@@ -29,6 +29,7 @@ using Gdk;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 
@@ -367,6 +368,18 @@ namespace MonoDevelop.ClassDesigner
 		
 		public override void Save ()
 		{
+			if (String.IsNullOrEmpty (ContentName)) {
+				string baseName = Path.GetFileNameWithoutExtension(UntitledName);
+				string extension = Path.GetExtension(UntitledName);
+				string current = Path.Combine(Project.ItemDirectory, UntitledName);
+				
+				for (int i = 1; Project.Files.Any (f => f.Name == current); i++) {
+					current = Path.Combine (Project.ItemDirectory, baseName + i + extension);
+				}
+				
+				ContentName = current;
+			}
+			
 			XElement xml;
 			lock (Diagram) {
 				xml = Diagram.Serialize ();
