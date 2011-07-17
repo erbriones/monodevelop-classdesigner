@@ -37,23 +37,6 @@ namespace MonoDevelop.ClassDesigner
 
 	public class ClassDiagramDisplayBinding : IViewDisplayBinding
 	{
-		/*
-		public override IViewContent CreateContentForMimeType (string mimeType, Stream content)
-		{
-			FileStream fs = content as FileStream;
-			
-			if (fs == null)
-				return null;
-			
-			return new ClassDesigner (fs.Name);		
- 		}
-
-		public override IViewContent CreateContentForUri (string uri)
-		{	
-			return new ClassDesigner (uri);			
-		}
-		*/
-
 		#region IViewDisplayBinding implementation
 		IViewContent IViewDisplayBinding.CreateContent (FilePath fileName, string mimeType, Project ownerProject)
 		{
