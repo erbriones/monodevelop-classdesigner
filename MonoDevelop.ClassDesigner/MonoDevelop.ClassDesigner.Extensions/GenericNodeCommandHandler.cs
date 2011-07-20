@@ -64,6 +64,7 @@ namespace MonoDevelop.ClassDesigner.Extensions
 				}
 			}
 			
+			designer.AutoName ();
 			designer.Save ();
 			project.AddFile (designer.ContentName);
 			IdeApp.Workbench.OpenDocument (designer, true);

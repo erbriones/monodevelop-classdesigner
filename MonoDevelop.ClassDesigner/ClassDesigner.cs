@@ -160,7 +160,7 @@ namespace MonoDevelop.ClassDesigner
 			if (compilationUnit == null)
 				return;
 			
-			Gtk.Application.Invoke (delegate { Diagram.AddRange (compilationUnit.Types); });
+			Diagram.AddRange (compilationUnit.Types);
 		}
 		
 		public void AddFromNamespace (string ns)
@@ -185,12 +185,28 @@ namespace MonoDevelop.ClassDesigner
 		public override void AddFromProject (Project project)
 		{
 			Project = project;
-			Gtk.Application.Invoke (delegate { Diagram.AddRange (Dom.Types); });
+			Diagram.AddRange (Dom.Types);
 		}
  
 		public void AddFromType (IType type)
 		{
-			Gtk.Application.Invoke (delegate { Diagram.Add (type); });
+			Diagram.Add (type);
+		}
+		
+		public void AutoName ()
+		{
+			if (String.IsNullOrEmpty (ContentName)) {
+				string baseName = Path.GetFileNameWithoutExtension(UntitledName);
+				string extension = Path.GetExtension(UntitledName);
+				string current = UntitledName;
+				
+				for (int i = 1; Project.Files.GetFileWithVirtualPath (current) != null
+						|| File.Exists (Project.BaseDirectory.Combine (current)); i++) {
+					current = baseName + i + extension;
+				}
+				
+				ContentName = Project.BaseDirectory.Combine (current);
+			}
 		}
 		#endregion
 		
@@ -368,18 +384,6 @@ namespace MonoDevelop.ClassDesigner
 		
 		public override void Save ()
 		{
-			if (String.IsNullOrEmpty (ContentName)) {
-				string baseName = Path.GetFileNameWithoutExtension(UntitledName);
-				string extension = Path.GetExtension(UntitledName);
-				string current = Path.Combine(Project.ItemDirectory, UntitledName);
-				
-				for (int i = 1; Project.Files.Any (f => f.Name == current); i++) {
-					current = Path.Combine (Project.ItemDirectory, baseName + i + extension);
-				}
-				
-				ContentName = current;
-			}
-			
 			XElement xml;
 			lock (Diagram) {
 				xml = Diagram.Serialize ();
