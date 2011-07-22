@@ -50,7 +50,6 @@ namespace MonoDevelop.ClassDesigner.Figures
 		Dictionary<string, IFigure> members;
 
 		ToggleButtonHandle expandHandle;
-		IType domType;
 		
 		public static TypeFigure FromType(IType type)
 		{
@@ -85,18 +84,18 @@ namespace MonoDevelop.ClassDesigner.Figures
 		
 		public TypeFigure (IType domType) : this ()
 		{
-			DomType = domType;
+			Rebuild(domType);
 		}
 
 		#region ISerializableFigure implementation
 		public virtual XElement Serialize ()
 		{
 			var xml = new XElement ("Type",
-				new XAttribute ("Name", DomType.FullName),
+				new XAttribute ("Name", TypeFullName),
 				ClassDiagram.GetPositionData(this),
 				new XElement ("TypeIdentifier",
 					new XElement ("HashCode", String.Format ("{0:X}", GetHashCode ())),
-				    new XElement ("FileName", DomType.CompilationUnit.FileName.FileName)
+				    new XElement ("FileName", TypeFileName.FileName)
 				)
 			);
 			
@@ -160,25 +159,30 @@ namespace MonoDevelop.ClassDesigner.Figures
 		public IDictionary<string, IFigure> Members {
 			get { return members; }
 		}
-
-		public IType DomType {
-			get { return domType; }
-			set {	
-				if (value == null || value.ClassType != this.ClassType)
-					throw new ArgumentException ();
-				
-				domType = value;
-				
-				Clear ();
-				
-				Header.Name = domType.Name;
-				Header.Namespace = domType.Namespace;
-				Header.Type = domType.ClassType.ToString ();
-				
-				CreateCompartments ();
-				BuildMembers ();
-			}
+		
+		#region Type Information
+		public virtual ClassType ClassType {
+			get { return ClassType.Unknown; }
 		}
+		
+		public FilePath TypeFileName {
+			get;
+			private set;
+		}
+		
+		public string TypeFullName {
+			get;
+			private set;
+		}
+		
+		public string TypeName {
+			get { return Header.Name; }
+		}
+		
+		public string TypeNamespace {
+			get { return Header.Namespace; }
+		}
+		#endregion
 		
 		#region Figure Drawing
 
@@ -219,6 +223,24 @@ namespace MonoDevelop.ClassDesigner.Figures
 			memberCompartments.Remove (compartment);
 		}
 		
+		public virtual void Rebuild (IType domType)
+		{
+			if (domType == null || domType.ClassType != this.ClassType)
+				throw new ArgumentException ();
+			
+			Clear ();
+			
+			TypeFileName = domType.CompilationUnit.FileName;
+			TypeFullName = domType.FullName;
+			
+			Header.Name = domType.Name;
+			Header.Namespace = domType.Namespace;
+			Header.Type = domType.ClassType.ToString ();
+			
+			CreateCompartments ();
+			BuildMembers (domType);
+		}
+		
 		public void ShowAll ()
 		{
 			foreach (IFigure figure in members.
@@ -231,11 +253,6 @@ namespace MonoDevelop.ClassDesigner.Figures
 		}
 		
 		protected HeaderFigure Header { get; set; }
-		
-		protected virtual ClassType ClassType {
-			get { return ClassType.Unknown; }
-		}
-
 
 		protected override void BasicDraw (Cairo.Context context)
 		{
@@ -275,10 +292,10 @@ namespace MonoDevelop.ClassDesigner.Figures
 				Remove (memberCompartments);
 		}
 		
-		private void BuildMembers ()
+		private void BuildMembers (IType domType)
 		{
 			members.Clear ();
-			foreach (IMember member in DomType.Members) {
+			foreach (IMember member in domType.Members) {
 				var icon = ImageService.GetPixbuf (member.StockIcon, IconSize.Menu);
 				var figure = new MemberFigure (icon, member, false);
 				

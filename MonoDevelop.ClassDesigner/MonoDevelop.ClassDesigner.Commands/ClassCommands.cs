@@ -54,22 +54,16 @@ namespace MonoDevelop.ClassDesigner.Commands
 		protected void ShowBase ()
 		{
 			var designer = (ClassDesigner) Designer;
-			
-			foreach (ClassFigure superFigure in designer.View.SelectionEnumerator.OfType<ClassFigure> ()) {
-				IType superType = designer.Dom.GetType (superFigure.DomType.FullName);
-	
-				if (superType.BaseType == null) 
-					continue;
-				
-				string baseTypeName = superType.BaseType.FullName;
-				ClassFigure baseFigure = (ClassFigure) designer.Diagram.GetTypeFigure (baseTypeName);
-				
-				if (baseFigure == null) {
-					IType baseType = designer.Dom.GetType (baseTypeName);
-					baseFigure = (ClassFigure) designer.Diagram.CreateFigure (baseType);
+			foreach (var derivedFigure in Designer.View.SelectionEnumerator.OfType<ClassFigure> ()) {
+				var derivedType = designer.Dom.GetType (derivedFigure.TypeFullName);
+				if (derivedType.BaseType != null) {
+					var baseType = designer.Dom.GetType(derivedType.BaseType.FullName);
+					
+					var baseFigure = designer.Diagram.GetTypeFigure (baseType.FullName)
+							?? designer.Diagram.CreateTypeFigure (baseType);
+					
+					designer.View.Add (new InheritanceConnectionFigure (baseFigure, derivedFigure));
 				}
-				
-				designer.View.Add (new InheritanceConnectionFigure (baseFigure, superFigure));
 			}
 		}
 		
@@ -80,7 +74,7 @@ namespace MonoDevelop.ClassDesigner.Commands
 			
 			IEnumerable<IType> baseTypes = designer.View.SelectionEnumerator
 				.OfType<ClassFigure> ()
-				.Select (figure => designer.Dom.GetType (figure.DomType.FullName));
+				.Select (figure => designer.Dom.GetType (figure.TypeFullName));
 			
 			foreach (IType type in designer.Dom.Types) {
 				if (type.BaseType == null || type.ClassType != ClassType.Class)
@@ -97,10 +91,10 @@ namespace MonoDevelop.ClassDesigner.Commands
 				var superFigure = (ClassFigure) designer.Diagram.GetTypeFigure (type.FullName);
 				
 				if (baseFigure == null)
-					baseFigure = (ClassFigure) designer.Diagram.CreateFigure (baseType);
+					baseFigure = (ClassFigure) designer.Diagram.CreateTypeFigure (baseType);
 				
 				if (superFigure == null)
-					superFigure = (ClassFigure) designer.Diagram.CreateFigure (type);
+					superFigure = (ClassFigure) designer.Diagram.CreateTypeFigure (type);
 				
 				designer.Diagram.Add (new InheritanceConnectionFigure (baseFigure, superFigure));
 			}

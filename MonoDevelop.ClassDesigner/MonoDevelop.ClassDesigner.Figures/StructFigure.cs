@@ -54,7 +54,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 		}
 		#endregion
 		
-		protected override ClassType ClassType {
+		public override ClassType ClassType {
 			get { return ClassType.Struct; }
 		}
 	

@@ -138,7 +138,7 @@ namespace MonoDevelop.ClassDesigner
 		public void Add (IType type)
 		{
 			if (!HasTypeFigure (type.FullName)) {
-				CreateFigure(type);
+				CreateTypeFigure(type);
 			}
 		}
 		
@@ -168,7 +168,7 @@ namespace MonoDevelop.ClassDesigner
 		{
 			var figure = GetTypeFigure(type.FullName) as TypeFigure;
 			if (figure != null) {
-				figure.DomType = type;
+				figure.Rebuild(type);
 				
 				foreach (var compartment in figure.Compartments) {
 					compartment.AcceptVisitor (new GroupFormatVisitor (this, figure));
@@ -186,8 +186,9 @@ namespace MonoDevelop.ClassDesigner
 		
 		public bool HasTypeFigure (string fullName)
 		{
-			return Figures.Where (f => f is TypeFigure)
-				.Any (tf => ((TypeFigure) tf).DomType.FullName == fullName);
+			return (String.IsNullOrEmpty (fullName)) ? false : Figures
+				.OfType<TypeFigure> ()
+				.Any (tf => tf.TypeFullName == fullName);
 		}
 		
 		public void BaseInheritanceLineFromDiagram (IType superClass)
@@ -203,28 +204,22 @@ namespace MonoDevelop.ClassDesigner
 		
 		public void DerivedInheritanceLinesFromDiagram (IType subClass)
 		{
-			var tmp = new List<IFigure> ();
 			var subFigure = GetTypeFigure (subClass.FullName) as ClassFigure;
 			
 			if (subFigure == null)
 				return;
 			
-			foreach (IFigure f in Figures) {
-				var tf = f as ClassFigure;
-				
-				if (tf == null)
+			foreach (ClassFigure f in Figures.OfType<ClassFigure> ()) {
+				if (f.BaseTypeFullName != subClass.FullName)
 					continue;
 				
-				if (tf.DomType.BaseType.FullName != subClass.FullName)
-					continue;
-				
-				var line = new InheritanceConnectionFigure (subFigure, tf);
+				var line = new InheritanceConnectionFigure (subFigure, f);
 				Add (line);
 			}
 		}
 		
 		// TODO: Kill this method off entirely.
-		public IFigure CreateFigure (IType type)
+		public TypeFigure CreateTypeFigure (IType type)
 		{
 			if (type == null || HasTypeFigure (type.FullName)) {
 				return null;
@@ -243,14 +238,10 @@ namespace MonoDevelop.ClassDesigner
 		}
 
 		public TypeFigure GetTypeFigure (string fullName)
-		{			
-			if (fullName == null)
-				return null;
-			
-			return Figures
+		{
+			return (String.IsNullOrEmpty (fullName)) ? null : Figures
 				.OfType<TypeFigure> ()
-				.Where (f => f.DomType.FullName == fullName)
-				.SingleOrDefault ();
+				.SingleOrDefault (f => f.TypeFullName == fullName);
 		}
 		
 		public void Load (string fileName, ProjectDom dom)
@@ -321,7 +312,7 @@ namespace MonoDevelop.ClassDesigner
 					default:
 						break;
 				}
-			}			
+			}
 		}
 		
 		
@@ -368,7 +359,7 @@ namespace MonoDevelop.ClassDesigner
 				.SingleOrDefault ();
 			
 			var type = dom.GetType(typeName.Value);
-			figure = (TypeFigure) CreateFigure (type);
+			figure = (TypeFigure) CreateTypeFigure (type);
 			
 			if (figure == null)
 				return;
@@ -485,7 +476,7 @@ namespace MonoDevelop.ClassDesigner
 					if (HasTypeFigure (property.ReturnType.FullName))
 						startfig = GetTypeFigure (property.ReturnType.FullName);
 					else
-						startfig = CreateFigure (property.ReturnType.Type);					
+						startfig = CreateTypeFigure (property.ReturnType.Type);					
 					
 					if (startfig == null)
 						continue;
@@ -521,7 +512,7 @@ namespace MonoDevelop.ClassDesigner
 					if (HasTypeFigure (property.ReturnType.FullName))
 						startfig = GetTypeFigure (property.ReturnType.FullName);
 					else
-						startfig = CreateFigure (property.ReturnType.Type);
+						startfig = CreateTypeFigure (property.ReturnType.Type);
 					
 					if (startfig is System.Collections.ICollection)
 						Add (new AssociationConnectionFigure (property, ConnectionType.CollectionAssociation,
@@ -585,7 +576,7 @@ namespace MonoDevelop.ClassDesigner
 					if (name == null)
 						continue;
 					
-					var nestedFigure = CreateFigure (dom.GetType(name.Value));
+					var nestedFigure = CreateTypeFigure (dom.GetType(name.Value));
 					
 					if (nestedFigure == null)
 						continue;

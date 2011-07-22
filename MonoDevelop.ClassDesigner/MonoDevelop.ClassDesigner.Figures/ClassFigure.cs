@@ -158,10 +158,20 @@ namespace MonoDevelop.ClassDesigner.Figures
 		}
 		#endregion
 		
-		protected override ClassType ClassType {
+		public string BaseTypeFullName {
+			get;
+			private set;
+		}
+		
+		public override ClassType ClassType {
 			get {
 				return ClassType.Class;
 			}
-		}	
+		}
+		
+		public override void Rebuild (IType domType) {
+			base.Rebuild (domType);
+			BaseTypeFullName = (domType.BaseType == null) ? null : domType.BaseType.FullName;
+		}
 	}
 }

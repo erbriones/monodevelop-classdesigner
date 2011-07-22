@@ -97,9 +97,9 @@ namespace MonoDevelop.ClassDesigner.Visitor
 			IEnumerable<MemberFigure> members = TypeFigure.Members.Values.OfType<MemberFigure> ();
 			
 			if (figure.Name == "Public" &&
- 				(TypeFigure.DomType.ClassType == ClassType.Delegate || 
-				TypeFigure.DomType.ClassType == ClassType.Interface ||
-				TypeFigure.DomType.ClassType == ClassType.Enum)) {
+ 				(TypeFigure.ClassType == ClassType.Delegate || 
+				TypeFigure.ClassType == ClassType.Interface ||
+				TypeFigure.ClassType == ClassType.Enum)) {
 				
 				Rebuild (figure, members.OfType<IFigure> ());
 				return;

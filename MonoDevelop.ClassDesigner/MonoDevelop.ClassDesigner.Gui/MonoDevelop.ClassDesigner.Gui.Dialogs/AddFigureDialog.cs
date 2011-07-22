@@ -112,7 +112,7 @@ namespace MonoDevelop.ClassDesigner.Gui.Dialogs
 			//if (isAbstract)
 			//	type.Modifiers &= Modifiers.Abstract;
 			
-			var figure = designer.Diagram.CreateFigure (item);
+			var figure = designer.Diagram.CreateTypeFigure (item);
 	
 			if (figure == null) {
 				typeName.GrabFocus ();
