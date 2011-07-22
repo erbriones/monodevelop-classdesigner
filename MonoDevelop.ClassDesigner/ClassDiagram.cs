@@ -64,6 +64,7 @@ namespace MonoDevelop.ClassDesigner
 			groupSetting = grouping;
 			membersFormat = format;
 			CreatedFigure += OnCreatedHandler;
+			FigureAdded += InheritanceLinesHandler;
 		}
 		
 		public override void Dispose ()
@@ -191,32 +192,48 @@ namespace MonoDevelop.ClassDesigner
 				.Any (tf => tf.TypeFullName == fullName);
 		}
 		
-		public void BaseInheritanceLineFromDiagram (IType superClass)
+		#region Inheritence line updaters
+		void InheritanceLinesHandler (object o, FigureEventArgs e)
 		{
-			var superFigure = GetTypeFigure (superClass.FullName) as ClassFigure;
-			var subFigure = GetTypeFigure (superClass.BaseType.FullName) as ClassFigure;
-			
-			if(superFigure == null || subFigure == null)
-				return;
-			
-			Add (new InheritanceConnectionFigure (subFigure, superFigure));
+			var cf = e.Figure as ClassFigure;
+			if (cf != null) {
+				BaseInheritanceLineFromDiagram (cf);
+				DerivedInheritanceLinesFromDiagram (cf);
+			}
 		}
 		
-		public void DerivedInheritanceLinesFromDiagram (IType subClass)
+		public void BaseInheritanceLineFromDiagram (ClassFigure derivedFigure)
 		{
-			var subFigure = GetTypeFigure (subClass.FullName) as ClassFigure;
+			if (derivedFigure == null) {
+				throw new ArgumentNullException ("derivedFigure");
+			}
 			
-			if (subFigure == null)
-				return;
+			var baseFigure = GetTypeFigure (derivedFigure.BaseTypeFullName) as ClassFigure;
 			
-			foreach (ClassFigure f in Figures.OfType<ClassFigure> ()) {
-				if (f.BaseTypeFullName != subClass.FullName)
-					continue;
-				
-				var line = new InheritanceConnectionFigure (subFigure, f);
+			if (baseFigure != null) {
+				Add (new InheritanceConnectionFigure (derivedFigure, baseFigure));
+			}
+		}
+		
+		public void DerivedInheritanceLinesFromDiagram (ClassFigure baseFigure)
+		{
+			if (baseFigure == null) {
+				throw new ArgumentNullException ("baseFigure");
+			}
+			
+			var lines = new LinkedList<InheritanceConnectionFigure> ();
+			
+			foreach (var cf in Figures.OfType<ClassFigure> ()) {
+				if (cf.BaseTypeFullName == baseFigure.TypeFullName) {
+					lines.AddLast (new InheritanceConnectionFigure (cf, baseFigure));
+				}
+			}
+			
+			foreach (var line in lines) {
 				Add (line);
 			}
 		}
+		#endregion
 		
 		// TODO: Kill this method off entirely.
 		public TypeFigure CreateTypeFigure (IType type)

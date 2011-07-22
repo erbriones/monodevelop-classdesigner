@@ -49,6 +49,7 @@ namespace MonoDevelop.ClassDesigner.Commands
 		
 		#region Commands
 		
+		//TODO: Make these two commands play nicely with the new automatic inheritance line adding...
 		[CommandHandler (DesignerCommands.ShowBase)]
 		protected void ShowBase ()
 		{
