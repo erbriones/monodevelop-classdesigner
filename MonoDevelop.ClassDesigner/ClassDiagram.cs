@@ -221,17 +221,15 @@ namespace MonoDevelop.ClassDesigner
 				throw new ArgumentNullException ("baseFigure");
 			}
 			
-			var lines = new LinkedList<InheritanceConnectionFigure> ();
+			var lines = new List<InheritanceConnectionFigure> ();
 			
 			foreach (var cf in Figures.OfType<ClassFigure> ()) {
 				if (cf.BaseTypeFullName == baseFigure.TypeFullName) {
-					lines.AddLast (new InheritanceConnectionFigure (cf, baseFigure));
+					lines.Add (new InheritanceConnectionFigure (cf, baseFigure));
 				}
 			}
 			
-			foreach (var line in lines) {
-				Add (line);
-			}
+			lines.ForEach(line => Add (line));
 		}
 		#endregion
 		
