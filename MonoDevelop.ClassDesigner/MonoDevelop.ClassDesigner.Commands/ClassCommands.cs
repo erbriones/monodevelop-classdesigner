@@ -49,20 +49,18 @@ namespace MonoDevelop.ClassDesigner.Commands
 		
 		#region Commands
 		
-				
 		[CommandHandler (DesignerCommands.ShowBase)]
 		protected void ShowBase ()
 		{
 			var designer = (ClassDesigner) Designer;
 			foreach (var derivedFigure in Designer.View.SelectionEnumerator.OfType<ClassFigure> ()) {
-				var derivedType = designer.Dom.GetType (derivedFigure.TypeFullName);
-				if (derivedType.BaseType != null) {
-					var baseType = designer.Dom.GetType(derivedType.BaseType.FullName);
+				if (!String.IsNullOrEmpty (derivedFigure.BaseTypeFullName)) {
+					var baseType = designer.Dom.GetType(derivedFigure.BaseTypeFullName);
 					
 					var baseFigure = designer.Diagram.GetTypeFigure (baseType.FullName)
 							?? designer.Diagram.CreateTypeFigure (baseType);
 					
-					designer.View.Add (new InheritanceConnectionFigure (baseFigure, derivedFigure));
+					designer.View.Add (new InheritanceConnectionFigure (derivedFigure, baseFigure));
 				}
 			}
 		}
@@ -71,32 +69,17 @@ namespace MonoDevelop.ClassDesigner.Commands
 		protected void ShowDerived ()
 		{
 			var designer = (ClassDesigner) Designer;
+			var baseFigures = designer.View.SelectionEnumerator.OfType<ClassFigure> ();
 			
-			IEnumerable<IType> baseTypes = designer.View.SelectionEnumerator
-				.OfType<ClassFigure> ()
-				.Select (figure => designer.Dom.GetType (figure.TypeFullName));
-			
-			foreach (IType type in designer.Dom.Types) {
-				if (type.BaseType == null || type.ClassType != ClassType.Class)
-					continue;
+			foreach (var type in designer.Dom.Types.Where (t => t.BaseType != null && t.ClassType == ClassType.Class)) {
+				var baseFigure = baseFigures.SingleOrDefault (bf => bf.TypeFullName == type.BaseType.FullName);
 				
-				var baseType = baseTypes
-					.Where (bt => bt.FullName == type.BaseType.FullName)
-					.SingleOrDefault ();
-				
-				if (baseType == null)
-					continue;
-				
-				var baseFigure = (ClassFigure) designer.Diagram.GetTypeFigure (baseType.FullName);
-				var superFigure = (ClassFigure) designer.Diagram.GetTypeFigure (type.FullName);
-				
-				if (baseFigure == null)
-					baseFigure = (ClassFigure) designer.Diagram.CreateTypeFigure (baseType);
-				
-				if (superFigure == null)
-					superFigure = (ClassFigure) designer.Diagram.CreateTypeFigure (type);
-				
-				designer.Diagram.Add (new InheritanceConnectionFigure (baseFigure, superFigure));
+				if (baseFigure != null) {
+					var derivedFigure = designer.Diagram.GetTypeFigure (type.FullName)
+							?? designer.Diagram.CreateTypeFigure (type);
+					
+					designer.Diagram.Add (new InheritanceConnectionFigure (derivedFigure, baseFigure));
+				}
 			}
 		}
 		
