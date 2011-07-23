@@ -405,6 +405,8 @@ namespace MonoHotDraw
 
 		protected override bool OnButtonPressEvent (Gdk.EventButton gdk_event) 
 		{
+			base.IsFocus = true;
+			
 			PointD point = ViewToDrawing (gdk_event.X, gdk_event.Y);
 			var ev = new MouseEvent (this, gdk_event, point);
 
