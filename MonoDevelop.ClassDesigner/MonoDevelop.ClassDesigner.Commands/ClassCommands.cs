@@ -49,7 +49,7 @@ namespace MonoDevelop.ClassDesigner.Commands
 		
 		#region Commands
 		
-		//TODO: Make these two commands play nicely with the new automatic inheritance line adding...
+		//TODO: Once hiding of inheritance is implemented, make these two methods take it into account
 		[CommandHandler (DesignerCommands.ShowBase)]
 		protected void ShowBase ()
 		{
@@ -57,11 +57,11 @@ namespace MonoDevelop.ClassDesigner.Commands
 			foreach (var derivedFigure in Designer.View.SelectionEnumerator.OfType<ClassFigure> ()) {
 				if (!String.IsNullOrEmpty (derivedFigure.BaseTypeFullName)) {
 					var baseType = designer.Dom.GetType(derivedFigure.BaseTypeFullName);
+					var baseFigure = designer.Diagram.GetTypeFigure (baseType.FullName);
 					
-					var baseFigure = designer.Diagram.GetTypeFigure (baseType.FullName)
-							?? designer.Diagram.CreateTypeFigure (baseType);
-					
-					designer.View.Add (new InheritanceConnectionFigure (derivedFigure, baseFigure));
+					if (baseFigure == null) {
+						designer.Diagram.Add (baseType);
+					}
 				}
 			}
 		}
@@ -76,10 +76,11 @@ namespace MonoDevelop.ClassDesigner.Commands
 				var baseFigure = baseFigures.SingleOrDefault (bf => bf.TypeFullName == type.BaseType.FullName);
 				
 				if (baseFigure != null) {
-					var derivedFigure = designer.Diagram.GetTypeFigure (type.FullName)
-							?? designer.Diagram.CreateTypeFigure (type);
+					var derivedFigure = designer.Diagram.GetTypeFigure (type.FullName);
 					
-					designer.Diagram.Add (new InheritanceConnectionFigure (derivedFigure, baseFigure));
+					if (derivedFigure == null) {
+						designer.Diagram.Add (type);
+					}
 				}
 			}
 		}
