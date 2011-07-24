@@ -105,7 +105,9 @@ namespace MonoDevelop.ClassDesigner
 						LoadType (element, dom);
 						break;
 					case "Comment":
-						LoadComment (element);
+						var comment = new CommentFigure ();
+						comment.Deserialize (element, dom);
+						Add (comment);
 						break;
 					case "Font":
 						DeserializeFont (element);
@@ -325,35 +327,6 @@ namespace MonoDevelop.ClassDesigner
 				.OfType<TypeFigure> ()
 				.SingleOrDefault (f => f.TypeFullName == fullName);
 		}
-		
-		void LoadComment (XElement element)
-		{
-			CommentFigure figure;
-			
-			//
-			// Figure Attributes
-			//
-			
-			var attribute = element.Attribute ("CommentText");
-			
-			if (attribute == null)
-				figure = new CommentFigure (String.Empty);
-			else
-				figure = new CommentFigure (attribute.Value);
-			
-			//
-			// Position Element
-			//
-			
-			var position = element.Elements ()
-				.Where (e => e.Name == "Position")
-				.SingleOrDefault ();
-			
-			figure.DeserializePosition (position);
-			
-			Add (figure);
-		}
-				
 		
 		//FIXME: Add proper exceptions or dialog for missing types, etc..
 		void LoadType (XElement element, ProjectDom dom)

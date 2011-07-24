@@ -42,6 +42,10 @@ namespace MonoDevelop.ClassDesigner.Figures
 			if (String.IsNullOrEmpty (comment))
 				Text = "Add your comment here.";
 		}
+		
+		public CommentFigure () : this (null)
+		{
+		}
 
 		#region ICustomDataItem implementation
 		public XElement Serialize ()
@@ -54,7 +58,16 @@ namespace MonoDevelop.ClassDesigner.Figures
 
 		public void Deserialize (XElement xml, ProjectDom dom)
 		{
-			throw new NotImplementedException ();
+			if (xml == null) {
+				throw new ArgumentNullException ("xml");
+			}
+			
+			var textAttr = xml.Attribute ("CommentText");
+			if (textAttr != null) {
+				Text = textAttr.Value;
+			}
+			
+			this.DeserializePosition (xml.Element ("Position"));
 		}
 		#endregion
 
