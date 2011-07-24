@@ -328,7 +328,7 @@ namespace MonoDevelop.ClassDesigner
 		
 		void LoadComment (XElement element)
 		{
-			IFigure figure;
+			CommentFigure figure;
 			
 			//
 			// Figure Attributes
@@ -349,7 +349,7 @@ namespace MonoDevelop.ClassDesigner
 				.Where (e => e.Name == "Position")
 				.SingleOrDefault ();
 			
-			PositionFigure (position, figure, true);
+			figure.DeserializePosition (position);
 			
 			Add (figure);
 		}
@@ -398,8 +398,8 @@ namespace MonoDevelop.ClassDesigner
 			var position = element.Elements ()
 				.Where (e => e.Name == "Position")
 				.SingleOrDefault ();
-						
-			PositionFigure (position, figure, false);
+			
+			figure.DeserializePosition (position);
 			
 			//
 			// Members Element
@@ -596,49 +596,6 @@ namespace MonoDevelop.ClassDesigner
 			}
 		}
 		
-		// A position must have an x, y and width attribute.
-		static void PositionFigure (XElement position, IFigure figure, bool hasHeightAttribute)
-		{
-			if (position == null)
-				return;
-			
-			try {
-				var x = Double.Parse (position.Attributes ()
-					.Where (a => a.Name == "X")
-				    .SingleOrDefault ().Value
-				);
-				
-				var y = Double.Parse (position.Attributes ()
-					.Where (a => a.Name == "Y")
-				    .SingleOrDefault ().Value
-				);
-				
-				var width = Double.Parse (position.Attributes ()
-					.Where (a => a.Name == "Width")
-				    .SingleOrDefault ().Value
-				);
-				
-				figure.MoveTo (x, y);
-				var height = figure.DisplayBox.Height;
-				
-				if (hasHeightAttribute) {
-					height = InchesToPixels (
-						Double.Parse (position.Attributes ()
-							.Where (a => a.Name == "Height")
-						    .SingleOrDefault ().Value
-					    )
-					);
-				}
-					
-				figure.DisplayBox = new RectangleD (InchesToPixels (x),
-				                                    InchesToPixels (y),
-				                                    InchesToPixels (width),
-				                                    height);
-			} catch {
-				Console.WriteLine ("The position element is malformed.");	
-			}
-		}
-		
 		// TODO: Move these method somewhere far more sensible
 		public static double InchesToPixels (double inches)
 		{
@@ -654,15 +611,6 @@ namespace MonoDevelop.ClassDesigner
 				return pixels / 60.0;
 			
 			return pixels / Gdk.Screen.Default.Resolution;
-		}
-		
-		public static XElement GetPositionData (IFigure figure)
-		{
-			return new XElement ("Position",
-				new XAttribute ("X", PixelsToInches (figure.DisplayBox.X)),
-			    new XAttribute ("Y", PixelsToInches (figure.DisplayBox.Y)),
-			    new XAttribute ("Width", PixelsToInches (figure.DisplayBox.Width))
-			);
 		}
 				
 		protected void OnMembersFormatChanged (DiagramEventArgs e)

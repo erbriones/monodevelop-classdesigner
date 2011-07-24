@@ -93,7 +93,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 		{
 			var xml = new XElement ("Type",
 				new XAttribute ("Name", TypeFullName),
-				ClassDiagram.GetPositionData(this),
+				this.SerializePosition (false),
 				new XElement ("TypeIdentifier",
 					new XElement ("HashCode", String.Format ("{0:X}", GetHashCode ())),
 				    new XElement ("FileName", TypeFileName.FileName)

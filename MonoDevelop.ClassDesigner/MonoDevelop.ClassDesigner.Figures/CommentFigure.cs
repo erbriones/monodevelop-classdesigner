@@ -46,15 +46,10 @@ namespace MonoDevelop.ClassDesigner.Figures
 		#region ICustomDataItem implementation
 		public XElement Serialize ()
 		{
-			var xml = new XElement ("Comment",
-				new XAttribute ("CommentText", Text)
+			return new XElement ("Comment",
+				new XAttribute ("CommentText", Text),
+				this.SerializePosition (true)
 			);
-			
-			var position = ClassDiagram.GetPositionData (this);
-			position.Add (new XAttribute ("Height", ClassDiagram.PixelsToInches (DisplayBox.Height).ToString ()));
-			xml.Add (position);
-			
-			return xml;
 		}
 
 		public void Deserialize (XElement xml, ProjectDom dom)
