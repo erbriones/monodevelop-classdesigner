@@ -40,6 +40,7 @@ using MonoHotDraw.Visitor;
 using MonoDevelop.Core;
 using MonoDevelop.Ide;
 using MonoDevelop.Projects.Dom;
+using MonoDevelop.Projects.Dom.Parser;
 
 namespace MonoDevelop.ClassDesigner.Figures
 {
@@ -117,7 +118,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 			return xml;
 		}
 
-		public virtual void Deserialize ()
+		public virtual void Deserialize (XElement xml, ProjectDom dom)
 		{
 			throw new NotImplementedException ();
 		}

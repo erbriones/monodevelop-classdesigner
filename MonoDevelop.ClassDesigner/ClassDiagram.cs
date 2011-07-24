@@ -71,7 +71,7 @@ namespace MonoDevelop.ClassDesigner
 		{
 			CreatedFigure -= OnCreatedHandler;
 		}
-
+		
 		#region ISerializableFigure implementation
 		public XElement Serialize ()
 		{
@@ -90,9 +90,76 @@ namespace MonoDevelop.ClassDesigner
 			return xml;
 		}
 
-		public void Deserialize ()
+		public void Deserialize (XElement xml, ProjectDom dom)
 		{
-			throw new NotImplementedException ();
+			DeserializeGrouping (xml.Attribute ("Grouping"));
+			DeserializeMembersFormat (xml.Attribute ("MembersFormat"));
+			
+			foreach (var element in xml.Elements ()) {
+				switch (element.Name.LocalName) {
+					case "Class":
+					case "Struct":
+					case "Enum":
+					case "Interface":
+					case "Delegate":
+						LoadType (element, dom);
+						break;
+					case "Comment":
+						LoadComment (element);
+						break;
+					case "Font":
+						DeserializeFont (element);
+						break;
+					default:
+						throw new DeserializationException ("Unknown XML element: " + element.Name);
+				}
+			}
+		}
+		
+		private void DeserializeFont (XElement font)
+		{
+			if (font == null) {
+				throw new ArgumentNullException("xml");
+			}
+			
+			var name = font.Attribute ("Name");
+			if (name != null && !String.IsNullOrWhiteSpace (name.Value)) {
+				AttributeFigure.SetDefaultAttribute (FigureAttribute.FontFamily, name.Value);
+			}
+			
+			var size = font.Attribute ("Size");
+			if (size != null && !String.IsNullOrWhiteSpace (size.Value)) {
+				try {
+					AttributeFigure.SetDefaultAttribute (FigureAttribute.FontSize, Double.Parse(size.Value));
+				}
+				catch (Exception e) {
+					throw new DeserializationException ("Couldn't parse font size value: " + size.Value, e);
+				}
+			}
+		}
+		
+		private void DeserializeGrouping (XAttribute grouping)
+		{
+			if (grouping != null) {
+				GroupingSetting value;
+				if (Enum.TryParse (grouping.Value, out value)) {
+					Grouping = value;
+				} else {
+					throw new DeserializationException ("Couldn't parse Grouping value: " + grouping.Value);
+				}
+			}
+		}
+		
+		private void DeserializeMembersFormat (XAttribute format)
+		{
+			if (format != null) {
+				MembersFormat value;
+				if (Enum.TryParse (format.Value, out value)) {
+					Format = value;
+				} else {
+					throw new DeserializationException ("Couldn't parse MembersFormat value: " + format.Value);
+				}
+			}
 		}
 		#endregion
 
@@ -258,78 +325,6 @@ namespace MonoDevelop.ClassDesigner
 				.OfType<TypeFigure> ()
 				.SingleOrDefault (f => f.TypeFullName == fullName);
 		}
-		
-		public void Load (string fileName, ProjectDom dom)
-		{
-			var root = XElement.Load(fileName);
-			var grouping = root.Attributes ()
-				.Where (a => a.Name == "GroupingSetting")
-				.SingleOrDefault ();
-			
-			if (grouping != null) {
-				Console.WriteLine ("Set Group {0}: ", grouping.Value);
-				
-				if (grouping.Value == GroupingSetting.Alphabetical.ToString ())
-					Grouping = GroupingSetting.Alphabetical;
-				else if (grouping.Value == GroupingSetting.Kind.ToString ())
-					Grouping = GroupingSetting.Kind;
-				else
-					Grouping = GroupingSetting.Member;
-			} else  {
-				Grouping = GroupingSetting.Member;
-			}
-			
-			var format = root.Attributes ()
-				.Where (a => a.Name == "MembersFormat")
-				.SingleOrDefault ();
-			
-			if (format != null) {
-				if (format.Value == MembersFormat.NameAndType.ToString ())
-					Format = MembersFormat.NameAndType;
-				else if (format.Value == MembersFormat.Name.ToString ())
-					Format = MembersFormat.Name;
-				else
-					Format = MembersFormat.FullSignature;
-			}
-			
-			var font = root.Elements ()
-				.Where (e => e.Name == "Font")
-				.SingleOrDefault ();
-			
-			if (font != null) {
-				var attribute = font.Attributes ()
-					.Where (a => a.Name == "Name")
-					.SingleOrDefault ();
-			
-				if (attribute != null)
-					AttributeFigure.SetDefaultAttribute (FigureAttribute.FontFamily, attribute.Value);
-				
-				attribute = font.Attributes ()
-					.Where (a => a.Name == "Size")
-					.SingleOrDefault ();
-				
-				if (attribute != null)
-					AttributeFigure.SetDefaultAttribute (FigureAttribute.FontSize, Double.Parse(attribute.Value));	
-			}
-			
-			foreach (var element in root.Elements ()) {				
-				switch (element.Name.LocalName) {
-					case "Class":
-					case "Struct":
-					case "Enum":
-					case "Interface":
-					case "Delegate":
-						LoadType (element, dom);
-						break;
-					case "Comment":
-						LoadComment (element);
-						break;
-					default:
-						break;
-				}
-			}
-		}
-		
 		
 		void LoadComment (XElement element)
 		{

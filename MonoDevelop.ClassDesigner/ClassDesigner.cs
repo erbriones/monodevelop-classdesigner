@@ -371,7 +371,8 @@ namespace MonoDevelop.ClassDesigner
 		#region AbstractViewContent Members
 		public override void Load (string fileName)
 		{
-			Diagram.Load (fileName, this.Dom);	
+			var xml = XElement.Load (fileName);
+			Diagram.Deserialize (xml, this.Dom);	
 			IsDirty = false;
 			Control.GrabFocus ();
 		}

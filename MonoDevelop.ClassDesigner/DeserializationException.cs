@@ -1,5 +1,5 @@
 // 
-// ISerializableFigure.cs
+// DeserializationException.cs
 //  
 // Author:
 //       Graham Lyon <graham.lyon@gmail.com>
@@ -24,18 +24,22 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 using System;
-using System.Xml.Linq;
-
-using MonoHotDraw.Figures;
-
-using MonoDevelop.Projects.Dom.Parser;
 
 namespace MonoDevelop.ClassDesigner.Figures
 {
-	public interface ISerializableFigure : IFigure
+	public class DeserializationException : Exception
 	{
-		XElement Serialize ();
-		void Deserialize (XElement xml, ProjectDom dom);
+		public DeserializationException () : this (null, null)
+		{
+		}
+		
+		public DeserializationException (string message) : this (null, null)
+		{
+		}
+		
+		public DeserializationException (string message, Exception innerException) : base (message, innerException)
+		{
+		}
 	}
 }
 
