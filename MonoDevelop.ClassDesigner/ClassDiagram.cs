@@ -64,12 +64,15 @@ namespace MonoDevelop.ClassDesigner
 			groupSetting = grouping;
 			membersFormat = format;
 			CreatedFigure += OnCreatedHandler;
-			FigureAdded += InheritanceLinesHandler;
+			FigureAdded += OnFigureAddedInheritanceHandler;
+			FigureRemoved += OnFigureRemovedInheritanceHandler;
 		}
 		
 		public override void Dispose ()
 		{
 			CreatedFigure -= OnCreatedHandler;
+			FigureAdded -= OnFigureAddedInheritanceHandler;
+			FigureRemoved -= OnFigureRemovedInheritanceHandler;
 		}
 		
 		#region ISerializableFigure implementation
@@ -262,12 +265,27 @@ namespace MonoDevelop.ClassDesigner
 		}
 		
 		#region Inheritence line updaters
-		void InheritanceLinesHandler (object o, FigureEventArgs e)
+		void OnFigureAddedInheritanceHandler (object o, FigureEventArgs e)
 		{
 			var cf = e.Figure as ClassFigure;
 			if (cf != null) {
 				BaseInheritanceLineFromDiagram (cf);
 				DerivedInheritanceLinesFromDiagram (cf);
+			}
+		}
+		
+		void OnFigureRemovedInheritanceHandler (object o, FigureEventArgs e)
+		{
+			var cf = e.Figure as ClassFigure;
+			if (cf != null) {
+				var toRemove = new List<InheritanceConnectionFigure> ();
+				var lines = Figures
+					.OfType<InheritanceConnectionFigure> ()
+					.Where (l => l.ConnectionLine.StartFigure == e.Figure || l.ConnectionLine.EndFigure == e.Figure);
+				foreach (var line in lines) {
+					toRemove.Add (line);
+				}
+				toRemove.ForEach (line => Remove (line));
 			}
 		}
 		
