@@ -231,7 +231,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 			
 			Clear ();
 			
-			TypeFileName = domType.CompilationUnit.FileName;
+			TypeFileName = domType.CompilationUnit == null ? null : domType.CompilationUnit.FileName;
 			TypeFullName = domType.FullName;
 			
 			Header.Name = domType.Name;
