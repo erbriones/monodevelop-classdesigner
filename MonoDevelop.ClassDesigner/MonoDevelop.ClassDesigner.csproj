@@ -125,6 +125,7 @@
     <EmbeddedResource Include="gtk-gui\gui.stetic">
       <LogicalName>gui.stetic</LogicalName>
     </EmbeddedResource>
+    <EmbeddedResource Include="ClassDiagram.xft.xml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="MonoDevelop.ClassDesigner.Figures\" />

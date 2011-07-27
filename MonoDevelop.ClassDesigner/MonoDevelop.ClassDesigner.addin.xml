@@ -182,6 +182,9 @@
 	</Extension>
 
 	<!-- Class Diagram File Support -->
+	<Extension path="/MonoDevelop/Ide/FileTemplates">
+		<FileTemplate id="ClassDiagram" resource="MonoDevelop.ClassDesigner.ClassDiagram.xft.xml" />
+	</Extension>
 	
 	<Extension path="/MonoDevelop/Ide/FileFilters">
 		<FileFilter _label="Class Diagram Files" extensions="*.cd" />

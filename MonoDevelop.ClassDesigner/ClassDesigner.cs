@@ -31,6 +31,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Xml;
 using System.Xml.Linq;
 
 using MonoDevelop.DesignerSupport.Toolbox;
@@ -371,8 +372,17 @@ namespace MonoDevelop.ClassDesigner
 		#region AbstractViewContent Members
 		public override void Load (string fileName)
 		{
-			var xml = XElement.Load (fileName);
-			Diagram.Deserialize (xml, this.Dom);	
+			XElement xml;
+			try {
+				xml = XElement.Load (fileName);
+				Diagram.Deserialize (xml, this.Dom);
+			}
+			catch (XmlException e) {
+				//FIXME: Dirty quick-fix for completely empty files (in VS's blank diagram style).
+				if (!String.IsNullOrWhiteSpace (File.ReadAllText (fileName))) {
+					throw e;
+				}
+			}
 			IsDirty = false;
 			Control.GrabFocus ();
 		}

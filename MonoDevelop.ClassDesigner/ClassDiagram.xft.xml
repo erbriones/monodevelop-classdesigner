@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<Template Originator="Graham Lyon" Language="XML" Created="19/07/2011" LastModified="19/07/2011">
+
+    <TemplateConfiguration>
+        <_Name>Class Diagram</_Name>
+        <Icon>gtk-convert</Icon>
+        <_Category>Misc</_Category>
+        <ProjectType>DotNet</ProjectType>
+        <_Description>Creates an empty class diagram</_Description>
+    </TemplateConfiguration>
+
+    <TemplateFiles>
+        <File DefaultExtension=".cd" DefaultName="ClassDiagram" />
+    </TemplateFiles>
+
+    <FileOptions/>
+</Template>
