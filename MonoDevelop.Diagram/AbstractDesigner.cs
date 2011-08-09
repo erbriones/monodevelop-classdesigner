@@ -32,6 +32,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+using Mono.Addins;
+
 using MonoHotDraw;
 using MonoHotDraw.Commands;
 using MonoHotDraw.Figures;
@@ -59,7 +61,6 @@ namespace MonoDevelop.Diagram
 
 		protected AbstractDesigner (int undoBufferSize)
 		{
-			CommandList = new List<ICommand> ();
 			tool = new SelectionTool (this);
 			View = new StandardDrawingView (this);
 			UndoBufferSize = undoBufferSize;
@@ -69,8 +70,8 @@ namespace MonoDevelop.Diagram
 				OnStackChanged ();
 			};
 
-			AddDefaultCommands ();
-			AddCommands ();
+			CommandList = new List<ICommand> ();
+			RebuildCommandList ();
 			
 			window = new ScrolledWindow ();
 			window.Add ((Widget) View);
@@ -92,7 +93,6 @@ namespace MonoDevelop.Diagram
 			}
 		}
 		
-		public abstract void AddCommands ();
 		public abstract void AddFromFile (string file);
 		public abstract void AddFromProject (Project project);
 		
@@ -132,8 +132,6 @@ namespace MonoDevelop.Diagram
 		#endregion
 		
 		#region Inheritable Members
-		protected abstract IEnumerable <FigureCommandHandler> CommandHandlers { get; }
-		public List<ICommand> CommandList { get; set; }
 		protected int UndoBufferSize { get; set; }
 		
 		protected virtual void OnStackChanged ()
@@ -355,6 +353,14 @@ namespace MonoDevelop.Diagram
 		#endregion
 		
 		#region Command System
+		protected abstract string CommandHandlersPath { get; }
+		
+		protected IEnumerable<FigureCommandHandler> CommandHandlers {
+			get { return AddinManager.GetExtensionObjects<FigureCommandHandler> (CommandHandlersPath); }
+		}
+		
+		public List<ICommand> CommandList { get; private set; }
+		
 		public object GetNextCommandTarget ()
 		{
 			return null;
@@ -397,6 +403,25 @@ namespace MonoDevelop.Diagram
 			return null;
 		}
 		
+		public virtual void RebuildCommandList ()
+		{
+			CommandList.Clear ();
+			
+			// Diagram specific commands
+			CommandList.Add (new BringToFrontCommand ("BringToFront", this));
+			CommandList.Add (new SendToBackCommand ("SendToBack", this));
+			CommandList.Add (new DuplicateCommand ("Duplicate", this));
+			
+			// Default Edit commands
+			CommandList.Add (new SelectAllCommand ("SelectAll", this));
+			CommandList.Add (new UndoCommand ("Undo", this));
+			CommandList.Add (new RedoCommand ("Redo", this));
+			CommandList.Add (new DeleteCommand ("Delete", this));
+			CommandList.Add (new PasteCommand ("Paste", this));
+			CommandList.Add (new CopyCommand ("Copy", this));
+			CommandList.Add (new CutCommand ("Cut", this));
+		}
+		
 		class MulticastNodeRouter : IMultiCastCommandRouter
 		{
 			ArrayList targets;
@@ -436,28 +461,6 @@ namespace MonoDevelop.Diagram
 				return target;
 			}
 		}
-
 		#endregion
-
-		
-		#region Private Methods
-		private void AddDefaultCommands ()
-		{
-			// Diagram specific commands
-			CommandList.Add (new BringToFrontCommand ("BringToFront", this));
-			CommandList.Add (new SendToBackCommand ("SendToBack", this));
-			CommandList.Add (new DuplicateCommand ("Duplicate", this));
-			
-			// Default Edit commands
-			CommandList.Add (new SelectAllCommand ("SelectAll", this));
-			CommandList.Add (new UndoCommand ("Undo", this));
-			CommandList.Add (new RedoCommand ("Redo", this));
-			CommandList.Add (new DeleteCommand ("Delete", this));
-			CommandList.Add (new PasteCommand ("Paste", this));
-			CommandList.Add (new CopyCommand ("Copy", this));
-			CommandList.Add (new CutCommand ("Cut", this));
-		}
-		#endregion
-
 	}
 }

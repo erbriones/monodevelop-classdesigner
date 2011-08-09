@@ -34,8 +34,6 @@ using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
 
-using Mono.Addins;
-
 using MonoDevelop.DesignerSupport.Toolbox;
 using MonoDevelop.Diagram;
 using MonoDevelop.Diagram.Components;
@@ -412,15 +410,8 @@ namespace MonoDevelop.ClassDesigner
 		#endregion
 
 		#region AbstractDesigner Members
-		protected override IEnumerable<FigureCommandHandler> CommandHandlers {
-			get {
-				var path = "/MonoDevelop/ClassDesigner/FigureCommandHandlers";
-				return AddinManager.GetExtensionObjects<FigureCommandHandler> (path);
-			}
-		}
-		
-		public override void AddCommands ()
-		{
+		protected override string CommandHandlersPath {
+			get { return "/MonoDevelop/ClassDesigner/FigureCommandHandlers"; }
 		}
 		
 		public override void DisplayMenu (IFigure figure, MouseEvent ev)
