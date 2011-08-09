@@ -38,10 +38,8 @@ namespace MonoDevelop.Diagram.Commands
 	{
 		public override bool CanHandle (IEnumerable<IFigure> figures)
 		{
-			if (figures != null && figures.Count () == 0)
-				return true;
-			
-			return false;
+			//FIXME: Surely we can auto-layout an empty diagram, no?
+			return figures != null && figures.Count () > 0;
 		}
 		
 		[CommandHandler (DiagramCommands.Layout)]

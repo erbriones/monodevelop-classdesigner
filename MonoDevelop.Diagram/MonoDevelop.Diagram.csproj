@@ -68,7 +68,6 @@
     <Compile Include="AbstractDesigner.cs" />
     <Compile Include="DiagramCommands.cs" />
     <Compile Include="MonoDevelop.Diagram.Components\FigureCommandHandler.cs" />
-    <Compile Include="MonoDevelop.Diagram.Components\FigureCommandHandlerCollection.cs" />
     <Compile Include="MonoDevelop.Diagram.Commands\ZoomCommands.cs" />
     <Compile Include="MonoDevelop.Diagram.Commands\EditingCommands.cs" />
     <Compile Include="MonoDevelop.Diagram.Commands\LayoutCommands.cs" />
