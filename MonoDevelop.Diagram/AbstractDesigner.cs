@@ -373,11 +373,9 @@ namespace MonoDevelop.Diagram
 			FigureCommandTargetChain targetChain = null;
 			FigureCommandTargetChain lastNode = null;
 			
+			//TODO: Fix this reference leak
 			foreach (var c in CommandHandlers) {
-				if (c.IsInitialized)
-					continue;
-				
-				c.Initialize (this);
+				c.Designer = this;
 			}
 			
 			var commands = CommandHandlers.Where (c => c.CanHandle (View.SelectionEnumerator));

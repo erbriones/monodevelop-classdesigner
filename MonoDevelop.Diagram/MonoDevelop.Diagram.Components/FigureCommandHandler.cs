@@ -41,9 +41,7 @@ namespace MonoDevelop.Diagram.Components
 	//[FigureCommandHandler.TransactedNodeHandler]
 	public class FigureCommandHandler: ICommandRouter
 	{
-		bool initialized;
 		FigureCollection selection;
-		AbstractDesigner designer;
 		object nextTarget;
 //		CanDeleteFlags canDeleteFlags;
 				
@@ -53,17 +51,6 @@ namespace MonoDevelop.Diagram.Components
 			Checked = 1,
 			Single = 2,
 			Multiple = 4
-		}
-		
-		
-		internal bool IsInitialized {
-			get { return initialized; }
-		}
-		
-		internal void Initialize (AbstractDesigner designer)
-		{
-			this.designer = designer;
-			initialized = true;
 		}
 		
 		internal void SetSelection (FigureCollection selection)
@@ -85,8 +72,9 @@ namespace MonoDevelop.Diagram.Components
 			get { return selection; }
 		}
 		
-		protected AbstractDesigner Designer {
-			get { return designer; }
+		internal protected AbstractDesigner Designer {
+			protected get;
+			set;
 		}
 		
 		public virtual void RenameItem (string newName)
@@ -230,7 +218,7 @@ namespace MonoDevelop.Diagram.Components
 			protected override void Run (object target, Command cmd)
 			{
 				FigureCommandHandler handler = (FigureCommandHandler) target;
-				if (handler.designer == null) {
+				if (handler.Designer == null) {
 					base.Run (target, cmd);
 					return;
 				}
