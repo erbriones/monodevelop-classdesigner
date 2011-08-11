@@ -54,7 +54,7 @@ namespace MonoDevelop.ClassDesigner.Commands
 		protected void ShowBase ()
 		{
 			var designer = (ClassDesigner) Designer;
-			foreach (var derivedFigure in Designer.View.SelectionEnumerator.OfType<ClassFigure> ()) {
+			foreach (var derivedFigure in SelectedFigures.OfType<ClassFigure> ()) {
 				if (!String.IsNullOrEmpty (derivedFigure.BaseTypeFullName)) {
 					var baseType = designer.Dom.GetType(derivedFigure.BaseTypeFullName);
 					var baseFigure = designer.Diagram.GetTypeFigure (baseType.FullName);
@@ -70,7 +70,7 @@ namespace MonoDevelop.ClassDesigner.Commands
 		protected void ShowDerived ()
 		{
 			var designer = (ClassDesigner) Designer;
-			var baseFigures = designer.View.SelectionEnumerator.OfType<ClassFigure> ();
+			var baseFigures = SelectedFigures.OfType<ClassFigure> ();
 			
 			foreach (var type in designer.Dom.Types.Where (t => t.BaseType != null && t.ClassType == ClassType.Class)) {
 				var baseFigure = baseFigures.SingleOrDefault (bf => bf.TypeFullName == type.BaseType.FullName);

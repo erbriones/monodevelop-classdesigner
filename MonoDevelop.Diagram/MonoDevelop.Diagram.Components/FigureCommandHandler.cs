@@ -41,7 +41,6 @@ namespace MonoDevelop.Diagram.Components
 	//[FigureCommandHandler.TransactedNodeHandler]
 	public class FigureCommandHandler: ICommandRouter
 	{
-		FigureCollection selection;
 		object nextTarget;
 //		CanDeleteFlags canDeleteFlags;
 				
@@ -51,11 +50,6 @@ namespace MonoDevelop.Diagram.Components
 			Checked = 1,
 			Single = 2,
 			Multiple = 4
-		}
-		
-		internal void SetSelection (FigureCollection selection)
-		{
-			this.selection = selection;
 		}
 
 		internal void SetNextTarget (object nextTarget)
@@ -68,12 +62,12 @@ namespace MonoDevelop.Diagram.Components
 			return nextTarget;
 		}
 		
-		internal protected FigureCollection CurrentFigureSelection {
-			get { return selection; }
+		internal protected IEnumerable<IFigure> SelectedFigures {
+			get { return Designer.View.SelectionEnumerator; }
 		}
 		
 		internal protected AbstractDesigner Designer {
-			protected get;
+			get;
 			set;
 		}
 		
@@ -112,7 +106,7 @@ namespace MonoDevelop.Diagram.Components
 		}
 
 		internal protected virtual bool MultipleFiguresSelected {
-			get { return CurrentFigureSelection.Count > 1; }
+			get { return SelectedFigures.Count () > 1; }
 		}
 		
 		public virtual bool CanHandle (IEnumerable<IFigure> figures)

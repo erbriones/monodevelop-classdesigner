@@ -49,22 +49,16 @@ namespace MonoDevelop.ClassDesigner.Commands
 		[CommandHandler (DesignerCommands.Collapse)]
 		protected void CollapseItem ()
 		{
-			foreach (IFigure figure in Designer.View.SelectionEnumerator) {
-				var c = figure as ICollapsable;
-					
-				if (c != null)		
-					c.Collapse ();
+			foreach (var figure in SelectedFigures.OfType<ICollapsable> ()) {
+				figure.Collapse ();
 			}
 		}
 		
 		[CommandHandler (DesignerCommands.Expand)]
 		protected void ExpandItem ()
 		{
-			foreach (IFigure figure in Designer.View.SelectionEnumerator) {
-				var c = figure as ICollapsable;
-					
-				if (c != null)
-					c.Expand ();
+			foreach (var figure in SelectedFigures.OfType<ICollapsable> ()) {
+				figure.Expand ();
 			}
 		}
 		
@@ -79,13 +73,10 @@ namespace MonoDevelop.ClassDesigner.Commands
 				return;
 			}
 			
-			foreach (IFigure figure in Designer.View.SelectionEnumerator) {
-				var c = figure as ICollapsable;
-				if (c != null) {
-					if (!c.IsCollapsed) {
-						info.Visible = info.Enabled = true;
-						return;
-					}
+			foreach (var figure in SelectedFigures.OfType<ICollapsable> ()) {
+				if (!figure.IsCollapsed) {
+					info.Visible = info.Enabled = true;
+					return;
 				}
 			}
 		}
@@ -101,11 +92,10 @@ namespace MonoDevelop.ClassDesigner.Commands
 				return;
 			}
 			
-			foreach (IFigure figure in Designer.View.SelectionEnumerator) {
-				var c = figure as ICollapsable;
-				if (c != null && c.IsCollapsed) {
-						info.Visible = info.Enabled = true;
-						return;
+			foreach (var figure in SelectedFigures.OfType <ICollapsable> ()) {
+				if (figure.IsCollapsed) {
+					info.Visible = info.Enabled = true;
+					return;
 				}
 			}
 		}

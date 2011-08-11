@@ -48,10 +48,9 @@ namespace MonoDevelop.ClassDesigner.Commands
 		[CommandHandler (DesignerCommands.ShowAllMembers)]
 		protected void ShowAllMemberItems ()
 		{
-			var figures = Designer.View.SelectionEnumerator.OfType<TypeFigure> ();
-			
-			foreach (TypeFigure type in figures)
+			foreach (var type in SelectedFigures.OfType<TypeFigure> ()) {
 				type.ShowAll ();
+			}
 		}
 	}
 }
