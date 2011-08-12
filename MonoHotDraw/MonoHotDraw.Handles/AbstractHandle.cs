@@ -127,7 +127,6 @@ namespace MonoHotDraw.Handles
 				throw new ArgumentNullException ("view");
 			
 			PointD center = Locate ();
-			center = view.DrawingToView (center.X, center.Y);
 			var displayBox = new RectangleD (center);
 			displayBox.Inflate (Width/2 * view.Scale, Height/2 * view.Scale);
 			displayBox.OffsetDot5 ();
