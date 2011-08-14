@@ -24,6 +24,7 @@
 // THE SOFTWARE.
 
 using System;
+using System.Linq;
 using Gdk;
 using Cairo;
 using MonoHotDraw.Figures;
@@ -40,6 +41,14 @@ namespace MonoHotDraw.Tools
 		
 		public IFigure AnchorFigure { get; set; }
 		public bool HasMoved { get; protected set; }
+		
+		private bool CanDragSelection ()
+		{
+			return View.SelectionEnumerator
+				.OfType<AttributeFigure> ()
+				.Select (f => f.GetAttribute (FigureAttribute.Draggable))
+				.All (a => a != null && (bool) a == true);
+		}
 		
 		#region Mouse Events
 		public override void MouseDown (MouseEvent ev)
@@ -68,7 +77,7 @@ namespace MonoHotDraw.Tools
 		{
 			HasMoved = (Math.Abs (ev.X - AnchorX) > 4 || Math.Abs (ev.Y - AnchorX) > 4);
 			
-			if (HasMoved) {
+			if (HasMoved && CanDragSelection ()) {
 				foreach (IFigure figure in ev.View.SelectionEnumerator)
 					figure.MoveBy (ev.X - LastX, ev.Y - LastY);
 			}

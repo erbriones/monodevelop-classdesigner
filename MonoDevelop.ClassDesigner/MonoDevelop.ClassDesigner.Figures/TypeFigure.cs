@@ -78,6 +78,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 			memberCompartments = new VStackFigure ();
 			expandHandle = new ToggleButtonHandle (this, new AbsoluteLocator (10, 15));
 			expandHandle.Toggled += OnToggled;
+			SetAttribute (FigureAttribute.Draggable, true);
 			
 			Add (Header);
 			Expand ();

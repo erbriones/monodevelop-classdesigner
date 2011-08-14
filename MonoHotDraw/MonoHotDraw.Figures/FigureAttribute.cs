@@ -36,6 +36,7 @@ namespace MonoHotDraw.Figures
 		FillColor,
 		LineColor,
 		// Other attributes
+		Draggable,
 		Location,
 		Selected,
 		LineWidth
