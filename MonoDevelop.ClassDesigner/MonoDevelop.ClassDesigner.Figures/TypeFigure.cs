@@ -79,6 +79,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 			expandHandle = new ToggleButtonHandle (this, new AbsoluteLocator (10, 15));
 			expandHandle.Toggled += OnToggled;
 			SetAttribute (FigureAttribute.Draggable, true);
+			SetAttribute (FigureAttribute.Selectable, true);
 			
 			Add (Header);
 			Expand ();

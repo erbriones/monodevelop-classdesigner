@@ -45,6 +45,7 @@ namespace MonoHotDraw
 		bool Includes (IFigure figure);
 		IFigure FindFigure (double x, double y);
 		void RecalculateDisplayBox ();
+		IFigure SelectableAt (double x, double y);
 		
 		void BringToFront (IFigure figure);
 		void SendToBack (IFigure figure);

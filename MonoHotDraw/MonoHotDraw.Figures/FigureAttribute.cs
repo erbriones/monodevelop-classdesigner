@@ -38,6 +38,7 @@ namespace MonoHotDraw.Figures
 		// Other attributes
 		Draggable,
 		Location,
+		Selectable,
 		Selected,
 		LineWidth
 	}

@@ -139,6 +139,25 @@ namespace MonoHotDraw.Figures
 			
 			return false;
 		}
+		
+		public override IFigure SelectableAt (double x, double y)
+		{
+			if (ContainsPoint (x, y)) {
+				var sub = FindFigure (x, y);
+				if (sub != null) {
+					sub = sub.SelectableAt (x, y);
+					if (sub != null) {
+						return sub;
+					}
+				}
+				
+				var selectable = GetAttribute (FigureAttribute.Selectable);
+				if (selectable != null && (bool) selectable) {
+					return this;
+				}
+			}
+			return null;
+		}
 
 		public void SendToBack (IFigure figure)
 		{

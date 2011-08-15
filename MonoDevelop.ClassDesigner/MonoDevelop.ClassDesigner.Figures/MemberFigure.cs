@@ -88,6 +88,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 			
 			AllowFormatting = true;
 			Alignment = HStackAlignment.Bottom;
+			SetAttribute (FigureAttribute.Selectable, true);
 			
 			Add (this.icon);
 			Add (retval);

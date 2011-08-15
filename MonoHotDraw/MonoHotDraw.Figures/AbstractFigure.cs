@@ -191,6 +191,12 @@ namespace MonoHotDraw.Figures
 			DisplayBox = r;
 		}
 		
+		public virtual IFigure SelectableAt (double x, double y)
+		{
+			var selectable = GetAttribute (FigureAttribute.Selectable);
+			return selectable != null && (bool) selectable == true ? this : null;
+		}
+		
 		public virtual void SetAttribute (FigureAttribute attribute, object value)
 		{
 			switch (attribute) {

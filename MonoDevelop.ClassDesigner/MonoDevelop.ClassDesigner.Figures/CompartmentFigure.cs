@@ -54,6 +54,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 			compartmentName.Padding = 0;
 			compartmentName.FontSize = 10;
 			compartmentName.FontColor = new Cairo.Color(0.3, 0.0, 0.0);			
+			SetAttribute (FigureAttribute.Selectable, true);
 			
 			membersStack = new VStackFigure();
 			membersStack.Spacing = 2;

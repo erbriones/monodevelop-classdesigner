@@ -50,6 +50,7 @@ namespace MonoHotDraw.Figures
 		void Invalidate ();
 		IConnector ConnectorAt (double x, double y);
 		ITool CreateFigureTool (IDrawingEditor editor, ITool defaultTool);
+		IFigure SelectableAt (double x, double y);
 		
 		// Child management
 		void Add (IFigure figure);

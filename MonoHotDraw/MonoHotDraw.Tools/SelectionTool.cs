@@ -69,7 +69,7 @@ namespace MonoHotDraw.Tools
 			if (handle != null)
 				DelegateTool = new HandleTool (Editor, new UndoableHandle (handle));
 			else {
-				var figure = view.Drawing.FindFigure (ev.X, ev.Y);
+				var figure = view.Drawing.SelectableAt (ev.X, ev.Y);
 				var button_event = (Gdk.EventButton) ev.GdkEvent;
 				
 				if (button_event.Button == 3)
