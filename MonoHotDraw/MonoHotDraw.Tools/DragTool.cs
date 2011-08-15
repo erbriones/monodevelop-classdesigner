@@ -40,15 +40,16 @@ namespace MonoHotDraw.Tools
 		}
 		
 		public IFigure AnchorFigure { get; set; }
-		public bool HasMoved { get; protected set; }
 		
-		private bool CanDragSelection ()
-		{
-			return View.SelectionEnumerator
-				.OfType<AttributeFigure> ()
-				.Select (f => f.GetAttribute (FigureAttribute.Draggable))
-				.All (a => a != null && (bool) a == true);
+		public bool CanDragSelection {
+			get {
+				return View.SelectionEnumerator
+					.Select (f => f.GetAttribute (FigureAttribute.Draggable))
+					.All (a => a != null && (bool) a);
+			}
 		}
+		
+		public bool HasMoved { get; protected set; }
 		
 		#region Mouse Events
 		public override void MouseDown (MouseEvent ev)
@@ -77,7 +78,7 @@ namespace MonoHotDraw.Tools
 		{
 			HasMoved = (Math.Abs (ev.X - AnchorX) > 4 || Math.Abs (ev.Y - AnchorX) > 4);
 			
-			if (HasMoved && CanDragSelection ()) {
+			if (HasMoved && CanDragSelection) {
 				foreach (IFigure figure in ev.View.SelectionEnumerator)
 					figure.MoveBy (ev.X - LastX, ev.Y - LastY);
 			}
