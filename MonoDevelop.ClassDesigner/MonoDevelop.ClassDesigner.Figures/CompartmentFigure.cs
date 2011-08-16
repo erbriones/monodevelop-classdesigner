@@ -120,7 +120,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 		
 		public void Collapse ()
 		{
-			expandHandle.Active = true;
+			expandHandle.Active = false;
 		}
 		#endregion
 		
