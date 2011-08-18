@@ -48,7 +48,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 	{
 		VStackFigure memberCompartments;
 		ArrayList compartments;
-		Dictionary<string, IFigure> members;
+		List<MemberFigure> members;
 
 		ToggleButtonHandle expandHandle;
 		
@@ -73,7 +73,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 		{
 			Spacing = 1.5;
 			compartments  = new ArrayList (12);
-			members = new Dictionary<string, IFigure> ();
+			members = new List<MemberFigure> ();
 			Header = new HeaderFigure ();
 			memberCompartments = new VStackFigure ();
 			expandHandle = new ToggleButtonHandle (this, new AbsoluteLocator (10, 15));
@@ -159,7 +159,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 			get { return !expandHandle.Active; }
 		}
 		
-		public IDictionary<string, IFigure> Members {
+		public IEnumerable<MemberFigure> Members {
 			get { return members; }
 		}
 		
@@ -246,11 +246,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 		
 		public void ShowAll ()
 		{
-			foreach (IFigure figure in members.
-				
-				
-				Values) {
-				var member = (MemberFigure) figure;
+			foreach (var member in members) {
 				member.Show ();
 			}
 		}
@@ -302,7 +298,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 				var icon = ImageService.GetPixbuf (member.StockIcon, IconSize.Menu);
 				var figure = new MemberFigure (icon, member, false);
 				
-				members.Add (member.GetHashCode ().ToString (), figure);
+				members.Add (figure);
 			}
 		}
 		

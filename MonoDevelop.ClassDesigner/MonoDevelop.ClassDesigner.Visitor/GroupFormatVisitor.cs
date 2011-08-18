@@ -86,15 +86,14 @@ namespace MonoDevelop.ClassDesigner.Visitor
 				return;
 			}
 			
-			IEnumerable<IFigure> members = TypeFigure.Members.Values
-				.OrderBy (m => (((MemberFigure) m).Name));
+			var members = TypeFigure.Members.OrderBy (m => m.Name);
 			
 			Rebuild (figure, members);
 		}
 				
 		void GroupByAccess (CompartmentFigure figure)
 		{
-			IEnumerable<MemberFigure> members = TypeFigure.Members.Values.OfType<MemberFigure> ();
+			var members = TypeFigure.Members;
 			
 			if (figure.Name == "Public" &&
  				(TypeFigure.ClassType == ClassType.Delegate || 
@@ -127,7 +126,7 @@ namespace MonoDevelop.ClassDesigner.Visitor
 
 		void GroupByKind (CompartmentFigure figure)
 		{
-			IEnumerable<MemberFigure> members = TypeFigure.Members.Values.OfType<MemberFigure> ();
+			var members = TypeFigure.Members;
 			
 			if (figure.Name == "Parameters")
 				members = members.Where (m => (m.MemberInfo.MemberType == MemberType.Parameter));
