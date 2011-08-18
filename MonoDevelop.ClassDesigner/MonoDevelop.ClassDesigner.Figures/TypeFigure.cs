@@ -82,7 +82,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 			SetAttribute (FigureAttribute.Selectable, true);
 			
 			Add (Header);
-			Expand ();
+			Collapse ();
 		}
 		
 		public TypeFigure (IType domType) : this ()
