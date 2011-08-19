@@ -65,6 +65,7 @@
 		</ItemSet>
 		<CommandItem id="MonoDevelop.ClassDesigner.DesignerCommands.ShowAssociation" />
 		<CommandItem id="MonoDevelop.ClassDesigner.DesignerCommands.ShowAssociationCollection" />
+		<CommandItem id="MonoDevelop.ClassDesigner.DesignerCommands.GoToDeclaration" />
 		<CommandItem id="MonoDevelop.ClassDesigner.DesignerCommands.ShowBase" />
 		<CommandItem id="MonoDevelop.ClassDesigner.DesignerCommands.ShowDerived" />
 		<SeparatorItem id="Separator2" />
@@ -132,6 +133,8 @@
 				_label = "Collapse" />			
 		<Command id = "MonoDevelop.ClassDesigner.DesignerCommands.Expand"
 				_label = "Expand" />
+		<Command id = "MonoDevelop.ClassDesigner.DesignerCommands.GoToDeclaration"
+				_label = "Go to declaration" />
 		<Command id = "MonoDevelop.ClassDesigner.DesignerCommands.ShowDesigner"
 		         _label = "Class Designer" icon = "gtk-convert"/>
 		<Command id = "MonoDevelop.ClassDesigner.DesignerCommands.ShowBase"

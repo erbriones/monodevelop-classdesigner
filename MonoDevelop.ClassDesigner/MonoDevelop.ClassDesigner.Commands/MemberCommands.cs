@@ -32,6 +32,7 @@ using MonoHotDraw.Figures;
 using MonoDevelop.ClassDesigner.Figures;
 using MonoDevelop.Components.Commands;
 using MonoDevelop.Diagram.Components;
+using MonoDevelop.Ide;
 using MonoDevelop.Projects.Dom;
 
 namespace MonoDevelop.ClassDesigner.Commands
@@ -41,6 +42,25 @@ namespace MonoDevelop.ClassDesigner.Commands
 		public override bool CanHandle (IEnumerable<IFigure> figures)
 		{
 			return figures != null && figures.Count () > 0 && figures.All (f => f is MemberFigure);
+		}
+		
+		[CommandHandler (DesignerCommands.GoToDeclaration)]
+		protected void GoToDeclaration ()
+		{
+			var type = SelectedFigures.OfType<MemberFigure> ().SingleOrDefault ().MemberInfo;
+			if (type != null) {
+				IdeApp.ProjectOperations.JumpToDeclaration (type);
+			}
+		}
+		
+		[CommandUpdateHandler (DesignerCommands.GoToDeclaration)]
+		protected void GoToDeclarationUpdate (CommandInfo info)
+		{
+			if (SelectedFigures.Count () == 1) {
+				info.Enabled = info.Visible = true;
+			} else {
+				info.Enabled = info.Visible = false;
+			}
 		}
 		
 		[CommandHandler (DesignerCommands.ShowAssociation)]

@@ -31,6 +31,7 @@ using System.Collections.Generic;
 using MonoDevelop.ClassDesigner;
 using MonoDevelop.ClassDesigner.Figures;
 using MonoDevelop.Components.Commands;
+using MonoDevelop.Ide;
 using MonoDevelop.Diagram.Components;
 using MonoDevelop.Projects.Dom;
 using MonoHotDraw.Figures;
@@ -85,6 +86,15 @@ namespace MonoDevelop.ClassDesigner.Commands
 			}
 		}
 		
+		[CommandHandler (DesignerCommands.GoToDeclaration)]
+		protected void GoToDeclaration ()
+		{
+			var type = Designer.Dom.GetType (SelectedFigures.OfType<ClassFigure> ().SingleOrDefault ().TypeFullName);
+			if (type != null) {
+				IdeApp.ProjectOperations.JumpToDeclaration (type);
+			}
+		}
+		
 		[CommandUpdateHandler (DesignerCommands.ShowBase)]
 		protected void UpdateShowBase (CommandInfo info)
 		{
@@ -95,6 +105,16 @@ namespace MonoDevelop.ClassDesigner.Commands
 		protected void UpdateShowDerived (CommandInfo info)
 		{
 			info.Enabled = true;
+		}
+		
+		[CommandUpdateHandler (DesignerCommands.GoToDeclaration)]
+		protected void UpdateGoToDeclaration (CommandInfo info)
+		{
+			if (SelectedFigures.Count () == 1) {
+				info.Enabled = info.Visible = true;
+			} else {
+				info.Enabled = info.Visible = false;
+			}
 		}
 		#endregion
 	}

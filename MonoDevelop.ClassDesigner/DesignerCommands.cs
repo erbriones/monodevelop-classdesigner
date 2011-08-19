@@ -36,6 +36,7 @@ namespace MonoDevelop.ClassDesigner
 		AddStruct,
 		Collapse,
 		Expand,
+		GoToDeclaration,
 		Hide,
 		ShowAllMembers,
 		ShowAssociation,
