@@ -482,7 +482,7 @@ namespace MonoDevelop.ClassDesigner
 					if (startfig == null)
 						continue;
 					
-					Add (new AssociationConnectionFigure (property, ConnectionType.Association, startfig, figure));
+//					Add (new AssociationConnectionFigure (property, ConnectionType.Association, startfig, figure));
 				}
 			}
 			
@@ -515,11 +515,11 @@ namespace MonoDevelop.ClassDesigner
 					else
 						startfig = CreateTypeFigure (property.ReturnType.Type);
 					
-					if (startfig is System.Collections.ICollection)
-						Add (new AssociationConnectionFigure (property, ConnectionType.CollectionAssociation,
-						                                  startfig, figure));
-					else
-						throw new ArgumentException ("The type is not a valid collection.");
+//					if (startfig is System.Collections.ICollection)
+//						Add (new AssociationConnectionFigure (property, ConnectionType.CollectionAssociation,
+//						                                  startfig, figure));
+//					else
+//						throw new ArgumentException ("The type is not a valid collection.");
 				}
 			}
 			

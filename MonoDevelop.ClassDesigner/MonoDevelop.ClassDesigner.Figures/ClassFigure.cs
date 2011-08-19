@@ -141,15 +141,15 @@ namespace MonoDevelop.ClassDesigner.Figures
 
 		public void AddAssociation (IBaseMember member, IFigure associatedFigure, bool AsCollection)
 		{
-			AssociationConnectionFigure association; 
-			
-			if (AsCollection)
-				association = new AssociationConnectionFigure (member, ConnectionType.CollectionAssociation,
-				                                               this, associatedFigure);
-			else
-				association = new AssociationConnectionFigure (member, ConnectionType.Association,
-				                                               this, associatedFigure);
-				associations.Add (association);
+//			AssociationConnectionFigure association; 
+//			
+//			if (AsCollection)
+//				association = new AssociationConnectionFigure (member, ConnectionType.CollectionAssociation,
+//				                                               this, associatedFigure);
+//			else
+//				association = new AssociationConnectionFigure (member, ConnectionType.Association,
+//				                                               this, associatedFigure);
+//				associations.Add (association);
 		}
 
 		public void RemoveAssociation (IBaseMember member)

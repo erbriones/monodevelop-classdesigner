@@ -49,17 +49,6 @@ namespace MonoDevelop.ClassDesigner.Commands
 		}
 		
 		#region Commands
-		[CommandHandler (DesignerCommands.ShowAssociation)]
-		protected void ShowAsAssociation ()
-		{
-			
-		}
-		
-		[CommandHandler (DesignerCommands.ShowAssociationCollection)]
-		protected void ShowAsAssociationCollection ()
-		{
-			
-		}
 		#endregion
 	}
 }

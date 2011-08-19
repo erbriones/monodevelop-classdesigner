@@ -35,28 +35,20 @@ using MonoHotDraw.Figures;
 namespace MonoDevelop.ClassDesigner.Figures
 {
 	public sealed class AssociationConnectionFigure : AbstractConnectionFigure
-	{	
-		bool manual_label_position;
-		bool manual_label_size;
-		HStackFigure member_label;
-		ImageFigure image;
-		TextFigure name;
-		ConnectionType type;
-		
+	{
 		public AssociationConnectionFigure (ConnectionType connectionType)
 		{
 			ConnectionLine = new AssociationLine ();
 			if (connectionType == ConnectionType.Inheritance)
 				throw new ArgumentException ("Connection must be of type association or collection");
 			
-			type = connectionType;
-			manual_label_size = false;
-			manual_label_position = false;
+			Type = connectionType;
 			
 			Add (ConnectionLine);
+			SetAttribute (FigureAttribute.Selectable, true);
 		}
 		
-		public AssociationConnectionFigure (IBaseMember memberName,
+		public AssociationConnectionFigure (MemberFigure member,
 		                                    ConnectionType connectionType,
 		                                    IFigure startFigure,
 		                                    IFigure endFigure) : this (connectionType)
@@ -66,31 +58,26 @@ namespace MonoDevelop.ClassDesigner.Figures
 				return;
 			}
 			
-			var pixbuf = ImageService.GetPixbuf (memberName.StockIcon, IconSize.Menu);
-			
-			image = new ImageFigure (pixbuf);
-			name = new TextFigure (memberName.Name);
-			member_label = new HStackFigure ();
-			member_label.Add (image);
-			member_label.Add (name);
+			Member = member;
 			
 			ConnectionLine.ConnectStart (startFigure.ConnectorAt (0.0, 0.0));
 			ConnectionLine.ConnectEnd (endFigure.ConnectorAt (0.0, 0.0));
-			
-			type = connectionType;
 			
 			// FIXME: handle collection setup
 			//
 			//if (Type == ConnectionType.CollectionAssociation)
 			//
 			
-			Add (MemberLabel);			
-			MemberLabel.MoveTo (ConnectionLine.EndPoint.X - 5.0, ConnectionLine.EndPoint.Y + 10.0);
+			//FIXME: this isn't quite working yet - startFigure isn't the direct parent of Member...
+			startFigure.Remove (Member);
+			Add (Member);
+			Member.MoveTo (ConnectionLine.EndPoint.X - 5.0, ConnectionLine.EndPoint.Y + 10.0);
+			Member.SetAttribute (FigureAttribute.Draggable, true);
+			Member.SetAttribute (FigureAttribute.Selectable, false);
 		}
 		
-		public ConnectionType Type {
-			get { return type; }
-		}
+		public ConnectionType Type { get; private set; }
+		public MemberFigure Member { get; private set; }
 		
 		public void Show ()
 		{
@@ -102,10 +89,6 @@ namespace MonoDevelop.ClassDesigner.Figures
 		{
 			ConnectionLine.DisconnectStart ();
 			ConnectionLine.DisconnectEnd ();
-		}
-		
-		HStackFigure MemberLabel {
-			get { return member_label; }
 		}
 	}
 }

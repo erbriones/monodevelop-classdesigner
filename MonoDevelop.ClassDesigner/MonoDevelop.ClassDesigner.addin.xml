@@ -99,6 +99,7 @@
 		<FigureCommand class="MonoDevelop.ClassDesigner.Commands.AssociationCommands" id="IAssociation" />
 		<FigureCommand class="MonoDevelop.ClassDesigner.Commands.CollapsableCommands" id="ICollaspable" />
 		<FigureCommand class="MonoDevelop.ClassDesigner.Commands.ClassCommands" id="ClassFigure" />
+		<FigureCommand class="MonoDevelop.ClassDesigner.Commands.MemberCommands" id="ClassFigure" />
 		<FigureCommand class="MonoDevelop.Diagram.Commands.ZoomCommands" id="IZoomable" />
 	</Extension>
 	
