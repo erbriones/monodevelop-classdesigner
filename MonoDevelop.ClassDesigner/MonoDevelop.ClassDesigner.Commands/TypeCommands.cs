@@ -1,5 +1,5 @@
 // 
-// MemberCommadns.cs
+// TypeCommands.cs
 //  
 // Author:
 //       Graham Lyon <graham.lyon@gmail.com>
@@ -27,27 +27,27 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using MonoHotDraw.Figures;
-
+using MonoDevelop.ClassDesigner;
 using MonoDevelop.ClassDesigner.Figures;
 using MonoDevelop.Components.Commands;
-using MonoDevelop.Diagram.Components;
 using MonoDevelop.Ide;
+using MonoDevelop.Diagram.Components;
 using MonoDevelop.Projects.Dom;
+using MonoHotDraw.Figures;
 
 namespace MonoDevelop.ClassDesigner.Commands
 {
-	internal sealed class MemberCommands : FigureCommandHandler
+	public class TypeCommands : FigureCommandHandler
 	{
 		public override bool CanHandle (IEnumerable<IFigure> figures)
 		{
-			return figures != null && figures.Count () > 0 && figures.All (f => f is MemberFigure);
+			return figures != null && figures.Count () > 0 && figures.All (f => f is TypeFigure);
 		}
 		
 		[CommandHandler (DesignerCommands.GoToDeclaration)]
 		protected void GoToDeclaration ()
 		{
-			var type = SelectedFigures.OfType<MemberFigure> ().SingleOrDefault ().MemberInfo;
+			var type = Designer.Dom.GetType (SelectedFigures.OfType<TypeFigure> ().SingleOrDefault ().TypeFullName);
 			if (type != null) {
 				IdeApp.ProjectOperations.JumpToDeclaration (type);
 			}
@@ -57,47 +57,11 @@ namespace MonoDevelop.ClassDesigner.Commands
 		protected void GoToDeclarationUpdate (CommandInfo info)
 		{
 			if (SelectedFigures.Count () == 1) {
-				var type = SelectedFigures.OfType<MemberFigure> ().SingleOrDefault ().MemberInfo;
+				var type = Designer.Dom.GetType (SelectedFigures.OfType<TypeFigure> ().SingleOrDefault ().TypeFullName);
 				info.Enabled = info.Visible = IdeApp.ProjectOperations.CanJumpToDeclaration (type);
 			} else {
 				info.Enabled = info.Visible = false;
 			}
-		}
-		
-		[CommandHandler (DesignerCommands.ShowAssociation)]
-		protected void ShowAsAssociation ()
-		{
-			var designer = (ClassDesigner) Designer;
-			foreach (var m in SelectedFigures.OfType<MemberFigure> ()) {
-				var type = designer.Dom.GetType (m.MemberInfo.ReturnType.FullName);
-				var typeFigure = designer.Diagram.GetTypeFigure (type.FullName)
-						?? designer.Diagram.CreateTypeFigure (type);
-				var classFigure = designer.Diagram.GetTypeFigure (m.MemberInfo.DeclaringType.FullName);
-				
-				designer.Diagram.Add (new AssociationConnectionFigure (m, ConnectionType.Association, classFigure, typeFigure));
-			}
-		}
-		
-		[CommandUpdateHandler (DesignerCommands.ShowAssociation)]
-		protected void ShowAsAssociationUpdate (CommandInfo info)
-		{
-			if (SelectedFigures.OfType<MemberFigure> ().All (f => f.MemberInfo.MemberType == MemberType.Property)) {
-				info.Visible = info.Enabled = true;
-			} else {
-				info.Visible = info.Enabled = false;
-			}
-		}
-		
-		[CommandHandler (DesignerCommands.ShowAssociationCollection)]
-		protected void ShowAsAssociationCollection ()
-		{
-			
-		}
-		
-		[CommandUpdateHandler (DesignerCommands.ShowAssociationCollection)]
-		protected void ShowAsAssociationCollectionUpdate (CommandInfo info)
-		{
-			info.Visible = info.Enabled = false;
 		}
 	}
 }

@@ -119,6 +119,7 @@
     <Compile Include="MonoDevelop.ClassDesigner.Figures\FigureExtensions.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Commands\MemberCommands.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Commands\AssociationCommands.cs" />
+    <Compile Include="MonoDevelop.ClassDesigner.Commands\TypeCommands.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
