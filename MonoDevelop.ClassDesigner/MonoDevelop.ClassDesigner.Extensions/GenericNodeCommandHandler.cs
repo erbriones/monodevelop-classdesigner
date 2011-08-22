@@ -64,6 +64,7 @@ namespace MonoDevelop.ClassDesigner.Extensions
 				}
 			}
 			
+			designer.AutoLayout ();
 			designer.AutoName ();
 			designer.Save ();
 			project.AddFile (designer.ContentName);
