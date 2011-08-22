@@ -199,6 +199,7 @@ namespace MonoDevelop.ClassDesigner
 				
 				var visitor = new MemberFormatVisitor (value);
 				AcceptVisitor (visitor);
+				OnMembersFormatChanged (new DiagramEventArgs ());
 			}	
 		}
 		
@@ -210,6 +211,7 @@ namespace MonoDevelop.ClassDesigner
 				
 				groupSetting = value;
 				AcceptVisitor(new GroupFormatVisitor (value));
+				OnGroupSettingChanged (new DiagramEventArgs ());
 			}
 		}
 		
