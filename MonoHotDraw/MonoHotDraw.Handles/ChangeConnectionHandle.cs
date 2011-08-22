@@ -25,6 +25,8 @@
 
 using Cairo;
 using System;
+using System.Linq;
+
 using MonoHotDraw.Connectors;
 using MonoHotDraw.Commands;
 using MonoHotDraw.Figures;
@@ -160,12 +162,7 @@ namespace MonoHotDraw.Handles
 		#region Private Members
 		private IFigure FindConnectableFigure (double x, double y, IDrawing drawing)
 		{
-			foreach (IFigure figure in drawing.FiguresReversed) {
-				if (figure.ContainsPoint (x, y) && IsConnectionPossible (figure)) {
-					return figure;
-				}
-			}
-			return null;
+			return drawing.Figures.LastOrDefault (f => f.ContainsPoint (x, y) && IsConnectionPossible (f));
 		}
 
 		private IConnector FindConnectionTarget (double x, double y, IDrawing drawing)

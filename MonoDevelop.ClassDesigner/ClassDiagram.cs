@@ -401,7 +401,7 @@ namespace MonoDevelop.ClassDesigner
 		protected void OnCreatedHandler (object o, FigureEventArgs e)
 		{
 			Add (e.Figure);
-			IFigure last = FiguresReversed.LastOrDefault ();
+			IFigure last = Figures.FirstOrDefault ();
 			
 			if (last == null)
 				return;

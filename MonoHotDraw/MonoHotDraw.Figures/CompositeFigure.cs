@@ -52,10 +52,6 @@ namespace MonoHotDraw.Figures
 			get { return FigureCollection; }
 		}
 
-		public IEnumerable<IFigure> FiguresReversed {
- 			get { return FigureCollection.Reverse<IFigure> (); }
- 		}
-
 		public override IEnumerable<IHandle> Handles {
 			get {
 				foreach (IFigure fig in FigureCollection)
@@ -126,11 +122,7 @@ namespace MonoHotDraw.Figures
 
 		public IFigure FindFigure (double x, double y)
 		{
-			foreach (IFigure figure in FiguresReversed)
-				if (figure.ContainsPoint (x, y))
-					return figure;
-			
-			return null;
+			return Figures.LastOrDefault (f => f.ContainsPoint (x, y));
 		}
 
 		public override bool Includes (IFigure figure)
