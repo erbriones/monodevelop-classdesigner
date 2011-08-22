@@ -174,8 +174,8 @@ namespace MonoDevelop.ClassDesigner.Figures
 								continue;
 							
 							var compartmentCollapsed = compartmentElem.Attribute ("Collapsed");
-							//compartment.IsCollapsed = compartmentCollapsed != null
-							//		&& Boolean.Parse (compartmentCollapsed.Value);
+							compartment.IsCollapsed = compartmentCollapsed != null
+									&& Boolean.Parse (compartmentCollapsed.Value);
 						}
 					}
 				}
