@@ -181,10 +181,8 @@ namespace MonoDevelop.ClassDesigner
 			}
 			figure.Deserialize (typeInfo, dom);
 			Add (figure);
-				
-			foreach (var compartment in figure.Compartments) {
-				compartment.AcceptVisitor (new GroupFormatVisitor (this, figure));
-			}
+			
+			figure.AcceptVisitor (new GroupFormatVisitor (Grouping));
 			
 			// TODO: do something about Associations here...
 			// make sure to check if the other figure has been loaded yet or not and then act accordingly...
@@ -211,18 +209,7 @@ namespace MonoDevelop.ClassDesigner
 					return;
 				
 				groupSetting = value;
-				var visitor = new GroupFormatVisitor (this, null);
-				
-				foreach (var figure in Figures) {
-					var tf = figure as TypeFigure;
-					if (tf == null)
-						continue;
-					
-					visitor.TypeFigure = tf;
-				
-					foreach (IFigure fig in tf.Compartments)
-						fig.AcceptVisitor (visitor);
-				}
+				AcceptVisitor(new GroupFormatVisitor (value));
 			}
 		}
 		
@@ -261,10 +248,6 @@ namespace MonoDevelop.ClassDesigner
 			var figure = GetTypeFigure(type.FullName) as TypeFigure;
 			if (figure != null) {
 				figure.Rebuild(type);
-				
-				foreach (var compartment in figure.Compartments) {
-					compartment.AcceptVisitor (new GroupFormatVisitor (this, figure));
-				}
 			}
 		}
 		
@@ -348,10 +331,6 @@ namespace MonoDevelop.ClassDesigner
 			
 			var figure = TypeFigure.FromType (type);
 			Add (figure);
-			
-			foreach (var fig in figure.Compartments) {
-				fig.AcceptVisitor (new GroupFormatVisitor (this, figure));
-			}
 			
 			OnCreated (new FigureEventArgs (figure, RectangleD.Empty));
 			

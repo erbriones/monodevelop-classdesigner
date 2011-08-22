@@ -61,31 +61,10 @@ namespace MonoDevelop.ClassDesigner.Figures
 			get { return ClassType.Enum; }
 		}
 		
-		/*
-		// FIXME: Set up correct compartments
-		public override void UpdateGroups ()
+		protected override void RebuildCompartments ()
 		{
-			var members = new List<TypeMemberFigure> ();
-			TypeMemberGroupFigure compartment = Compartments
-				.Where (c => c.Name == "Fields")
-				.SingleOrDefault ();
-			
-			members.AddRange (Compartments.Select(c => c.Figures).OfType<TypeMemberFigure> ());
-			
-			if (members.Count () != Name.FieldCount) {
-				foreach (var f in Name.Fields) {
-					var icon = ImageService.GetPixbuf (f.StockIcon, IconSize.Menu);
-					members.Add (new TypeMemberFigure (icon, f, false));
-				}
-			}
-			
-			if (grouping == GroupingSetting.Alphabetical) {
-				compartment.AddRange (members.OrderBy (m => m.Name).OfType<IFigure> ());
-			} else
-				compartment.Add ((IFigure)members);
-			
-			AddMemberGroup (compartment);
+			MemberCompartments.Clear ();
+			MemberCompartments.AddRange (Members.OrderBy (m => m.Name));
 		}
-		*/
 	}
 }

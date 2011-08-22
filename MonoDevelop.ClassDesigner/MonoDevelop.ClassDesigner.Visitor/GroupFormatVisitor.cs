@@ -25,133 +25,35 @@
 // THE SOFTWARE.
 
 using MonoDevelop.ClassDesigner.Figures;
-using MonoDevelop.Projects.Dom;
 
 using MonoHotDraw;
 using MonoHotDraw.Figures;
 using MonoHotDraw.Handles;
 using MonoHotDraw.Visitor;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
 namespace MonoDevelop.ClassDesigner.Visitor
 {
 	internal sealed class GroupFormatVisitor : IFigureVisitor
 	{
-		IDrawing drawing;
-		TypeFigure typeFigure;
+		GroupingSetting grouping;
 		
-		public GroupFormatVisitor (IDrawing drawing, TypeFigure typeFigure)
+		public GroupFormatVisitor (GroupingSetting grouping)
 		{
-			this.drawing = drawing;
-			this.typeFigure = typeFigure;
-		}
-		
-		public TypeFigure TypeFigure {
-			get {return typeFigure;}
-			set {
-				typeFigure = value;
-				typeFigure.Clear ();
-			}
+			this.grouping = grouping;
 		}
 		
 		#region IFigureVisitor implementation
 		public void VisitFigure (IFigure figure)
 		{			
-			var diagram = (ClassDiagram) drawing;
-			var compartment = figure as CompartmentFigure;
-			
-			if (compartment == null)
-				return;
-			
-			if (diagram.Grouping == GroupingSetting.Alphabetical)
-				GroupByAlphabetical (compartment);
-			else if (diagram.Grouping == GroupingSetting.Member)
-				GroupByAccess (compartment);
-			else if (diagram.Grouping == GroupingSetting.Kind)
-				GroupByKind (compartment);
+			var tf = figure as TypeFigure;
+			if (tf != null) {
+				tf.Grouping = grouping;
+			}
 		}
 
 		public void VisitHandle (IHandle hostHandle)
 		{
 		}
 		#endregion
-		
-		void GroupByAlphabetical (CompartmentFigure figure)
-		{
-			if (figure.Name != "Members") {
-				TypeFigure.Remove (figure);
-				return;
-			}
-			
-			var members = TypeFigure.Members.OrderBy (m => m.Name);
-			
-			Rebuild (figure, members);
-		}
-				
-		void GroupByAccess (CompartmentFigure figure)
-		{
-			var members = TypeFigure.Members;
-			
-			if (figure.Name == "Public" &&
- 				(TypeFigure.ClassType == ClassType.Delegate || 
-				TypeFigure.ClassType == ClassType.Interface ||
-				TypeFigure.ClassType == ClassType.Enum)) {
-				
-				Rebuild (figure, members.OfType<IFigure> ());
-				return;
-			}
-			
-			if (figure.Name == "Public")
-				members = members.Where (m => m.MemberInfo.IsPublic);
-			else if (figure.Name == "Private")
-				members = members
-					.Where (m => m.MemberInfo.IsPrivate || m.MemberInfo.IsDefault);
-			else if (figure.Name == "Protected")
-				members = members
-					.Where (m => m.MemberInfo.IsProtected);
-			else if (figure.Name == "Protected Internal")
-				members = members.Where (m => m.MemberInfo.IsProtectedAndInternal);
-			else if (figure.Name == "Internal")
-				members = members.Where (m => m.MemberInfo.IsInternal);
-			else {
-				TypeFigure.Remove (figure);
-				return;
-			}
-			
-			Rebuild (figure, members.OfType<IFigure> ());
-		}
-
-		void GroupByKind (CompartmentFigure figure)
-		{
-			var members = TypeFigure.Members;
-			
-			if (figure.Name == "Parameters")
-				members = members.Where (m => (m.MemberInfo.MemberType == MemberType.Parameter));
-			else if (figure.Name == "Fields")
-				members = members.Where (m => (m.MemberInfo.MemberType == MemberType.Field));
-			else if (figure.Name == "Properties")
-				members = members.Where (m => (m.MemberInfo.MemberType == MemberType.Property));
-			else if (figure.Name == "Methods")
-				members = members.Where (m => (m.MemberInfo.MemberType == MemberType.Method));
-			else if (figure.Name == "Events")
-				members = members.Where (m => (m.MemberInfo.MemberType == MemberType.Event));
-			else {
-				TypeFigure.Remove (figure);
-				return;
-			}
-				
-			Rebuild (figure, members.OfType<IFigure> ());
-		}
-		
-		void Rebuild (CompartmentFigure figure, IEnumerable<IFigure> members)
-		{
-			var removableMembers = figure.Figures.Where (f => members.Contains (f));
-			figure.AddRange (members);
-			figure.RemoveRange (removableMembers);
-			TypeFigure.AddCompartment (figure);
-		}
 	}
 }

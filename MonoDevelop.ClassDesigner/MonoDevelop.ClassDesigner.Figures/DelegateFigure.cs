@@ -64,5 +64,11 @@ namespace MonoDevelop.ClassDesigner.Figures
 		public override ClassType ClassType {
 			get { return ClassType.Delegate; }
 		}
+		
+		protected override void RebuildCompartments ()
+		{
+			MemberCompartments.Clear ();
+			MemberCompartments.AddRange (Members.OrderBy (m => m.Name));
+		}
 	}
 }

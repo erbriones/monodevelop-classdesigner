@@ -46,8 +46,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 {
 	public abstract class TypeFigure : VStackFigure, ICollapsable, ISerializableFigure
 	{
-		VStackFigure memberCompartments;
-		ArrayList compartments;
+		GroupingSetting grouping;
 		List<MemberFigure> members;
 
 		ToggleButtonHandle expandHandle;
@@ -70,14 +69,14 @@ namespace MonoDevelop.ClassDesigner.Figures
 		public TypeFigure () : base ()
 		{
 			Spacing = 1.5;
-			compartments  = new ArrayList (12);
 			members = new List<MemberFigure> ();
 			Header = new HeaderFigure ();
-			memberCompartments = new VStackFigure ();
+			MemberCompartments = new VStackFigure ();
 			expandHandle = new ToggleButtonHandle (this, new AbsoluteLocator (10, 15));
 			expandHandle.Toggled += OnToggled;
 			SetAttribute (FigureAttribute.Draggable, true);
 			SetAttribute (FigureAttribute.Selectable, true);
+			grouping = GroupingSetting.Member;
 			
 			Add (Header);
 			Collapse ();
@@ -188,11 +187,14 @@ namespace MonoDevelop.ClassDesigner.Figures
 			this.DeserializePosition (position);
 		}
 		#endregion
+
+		protected VStackFigure MemberCompartments { get; private set; }
 		
-		public IEnumerable<IFigure> Compartments {
-			get {
-				foreach (object c in compartments)
-					yield return (IFigure) c;
+		public GroupingSetting Grouping {
+			get { return grouping; }
+			set {
+				grouping = value;
+				RebuildCompartments ();
 			}
 		}
 		
@@ -259,13 +261,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 			if (compartment.IsEmpty)
 				return;
 			
-			memberCompartments.Add (compartment);
-		}
-
-		public new void Clear ()
-		{
-			foreach (object c in compartments)
-				memberCompartments.Remove ((IFigure) c);
+			MemberCompartments.Add (compartment);
 		}
 
 		public void Collapse ()
@@ -287,15 +283,13 @@ namespace MonoDevelop.ClassDesigner.Figures
 			
 		public void RemoveCompartment (CompartmentFigure compartment)
 		{
-			memberCompartments.Remove (compartment);
+			MemberCompartments.Remove (compartment);
 		}
 		
 		public virtual void Rebuild (IType domType)
 		{
 			if (domType == null || domType.ClassType != this.ClassType)
 				throw new ArgumentException ();
-			
-			Clear ();
 			
 			TypeFileName = domType.CompilationUnit == null ? null : domType.CompilationUnit.FileName;
 			TypeFullName = domType.FullName;
@@ -304,8 +298,8 @@ namespace MonoDevelop.ClassDesigner.Figures
 			Header.Namespace = domType.Namespace;
 			Header.Type = domType.ClassType.ToString ();
 			
-			CreateCompartments ();
 			BuildMembers (domType);
+			RebuildCompartments ();
 		}
 		
 		public void ShowAll ()
@@ -350,9 +344,60 @@ namespace MonoDevelop.ClassDesigner.Figures
 		protected void OnToggled (object o, ToggleEventArgs e)
 		{
 			if (e.Active)
-				Add (memberCompartments);
+				Add (MemberCompartments);
 			else
-				Remove (memberCompartments);
+				Remove (MemberCompartments);
+		}
+		
+		protected virtual void RebuildCompartments ()
+		{
+			MemberCompartments.Clear ();
+
+			switch (Grouping) {
+				case GroupingSetting.Alphabetical:
+					var members = new CompartmentFigure (GettextCatalog.GetString ("Members"));
+					members.AddRange (Members.OrderBy (m => m.Name));
+					AddCompartment (members);
+					break;
+				case GroupingSetting.Kind:
+					var fields = new CompartmentFigure (GettextCatalog.GetString ("Fields"));
+					fields.AddRange (Members.Where (m => m.MemberInfo.MemberType == MemberType.Field));
+					AddCompartment (fields);
+				
+					var properties = new CompartmentFigure (GettextCatalog.GetString ("Properties"));
+					properties.AddRange (Members.Where (m => m.MemberInfo.MemberType == MemberType.Property));
+					AddCompartment (properties);
+				
+					var methods = new CompartmentFigure (GettextCatalog.GetString ("Methods"));
+					methods.AddRange (Members.Where (m => m.MemberInfo.MemberType == MemberType.Method));
+					AddCompartment (methods);
+				
+					var events = new CompartmentFigure (GettextCatalog.GetString ("Events"));
+					events.AddRange (Members.Where (m => m.MemberInfo.MemberType == MemberType.Event));
+					AddCompartment (events);
+					break;
+				case GroupingSetting.Member:
+					var @public = new CompartmentFigure (GettextCatalog.GetString ("Public"));
+					@public.AddRange (Members.Where (m => m.MemberInfo.IsPublic));
+					AddCompartment (@public);
+				
+					var @protected = new CompartmentFigure (GettextCatalog.GetString ("Protected"));
+					@protected.AddRange (Members.Where (m => m.MemberInfo.IsProtected));
+					AddCompartment (@protected);
+				
+					var @protectedInternal = new CompartmentFigure (GettextCatalog.GetString ("Protected Internal"));
+					@protectedInternal.AddRange (Members.Where (m => m.MemberInfo.IsProtectedAndInternal));
+					AddCompartment (@protectedInternal);
+				
+					var @internal = new CompartmentFigure (GettextCatalog.GetString ("Internal"));
+					@internal.AddRange (Members.Where (m => m.MemberInfo.IsInternal));
+					AddCompartment (@internal);
+				
+					var @private = new CompartmentFigure (GettextCatalog.GetString ("Private"));
+					@private.AddRange (Members.Where (m => m.MemberInfo.IsPrivate));
+					AddCompartment (@private);
+					break;
+			}
 		}
 		
 		private void BuildMembers (IType domType)
@@ -364,44 +409,6 @@ namespace MonoDevelop.ClassDesigner.Figures
 				
 				members.Add (figure);
 			}
-		}
-		
-		private void CreateCompartments ()
-		{
-			compartments.Clear ();
-			
-			// Default Group
-			var parameters = new CompartmentFigure (GettextCatalog.GetString ("Parameters"));
-			var fields = new CompartmentFigure (GettextCatalog.GetString ("Fields"));
-			var properties = new CompartmentFigure (GettextCatalog.GetString ("Properties"));
-			var methods = new CompartmentFigure (GettextCatalog.GetString ("Methods"));
-			var events = new CompartmentFigure (GettextCatalog.GetString ("Events"));
-			
-			// Group Alphabetical
-			var members = new CompartmentFigure (GettextCatalog.GetString ("Members"));
-			
-			// Group by Access
-			var pub = new CompartmentFigure (GettextCatalog.GetString ("Public"));
-			var priv = new CompartmentFigure (GettextCatalog.GetString ("Private"));
-			var pro = new CompartmentFigure (GettextCatalog.GetString ("Protected"));
-			var pro_intr = new CompartmentFigure (GettextCatalog.GetString ("Protected Internal"));
-			var intr = new CompartmentFigure (GettextCatalog.GetString ("Internal"));
-			
-			// Other Groups
-			var nestedTypes = new CompartmentFigure (GettextCatalog.GetString ("Nested Types", true));
-			
-			compartments.Add (parameters);
-			compartments.Add (fields);
-			compartments.Add (properties);
-			compartments.Add (methods);
-			compartments.Add (events);
-			compartments.Add (members);
-			compartments.Add (pub);
-			compartments.Add (priv);
-			compartments.Add (pro);
-			compartments.Add (pro_intr);
-			compartments.Add (intr);
-			compartments.Add (nestedTypes);
 		}
 
 		private void DrawPattern (Cairo.Context context)
