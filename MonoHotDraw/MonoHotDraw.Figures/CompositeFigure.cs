@@ -83,7 +83,8 @@ namespace MonoHotDraw.Figures
 		
 		public void Clear ()	
 		{
-			RemoveRange (FigureCollection);
+			var tmp = new List<IFigure> (FigureCollection);
+			RemoveRange (tmp);
 		}
 
 		public sealed override void Remove (IFigure figure)
