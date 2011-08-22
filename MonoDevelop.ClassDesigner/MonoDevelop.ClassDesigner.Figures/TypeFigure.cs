@@ -37,6 +37,7 @@ using MonoHotDraw.Util;
 using MonoHotDraw.Locators;
 using MonoHotDraw.Visitor;
 
+using MonoDevelop.ClassDesigner.Visitor;
 using MonoDevelop.Core;
 using MonoDevelop.Ide;
 using MonoDevelop.Projects.Dom;
@@ -77,6 +78,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 			SetAttribute (FigureAttribute.Draggable, true);
 			SetAttribute (FigureAttribute.Selectable, true);
 			grouping = GroupingSetting.Member;
+			MembersFormat = MembersFormat.FullSignature;
 			
 			Add (Header);
 			Collapse ();
@@ -197,6 +199,8 @@ namespace MonoDevelop.ClassDesigner.Figures
 				RebuildCompartments ();
 			}
 		}
+		
+		public MembersFormat MembersFormat { get; set; }
 		
 		public override RectangleD DisplayBox {
 			get {
@@ -403,9 +407,11 @@ namespace MonoDevelop.ClassDesigner.Figures
 		private void BuildMembers (IType domType)
 		{
 			members.Clear ();
+			var visitor = new MemberFormatVisitor (MembersFormat);
 			foreach (IMember member in domType.Members) {
 				var icon = ImageService.GetPixbuf (member.StockIcon, IconSize.Menu);
 				var figure = new MemberFigure (icon, member, false);
+				figure.AcceptVisitor (visitor);
 				
 				members.Add (figure);
 			}

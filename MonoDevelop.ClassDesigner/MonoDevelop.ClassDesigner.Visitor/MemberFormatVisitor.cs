@@ -51,6 +51,13 @@ namespace MonoDevelop.ClassDesigner.Visitor
 			var mf = hostFigure as MemberFigure;
 			if (mf != null) {
 				mf.UpdateFormat (format);
+				return;
+			}
+			
+			var tf = hostFigure as TypeFigure;
+			if (tf != null) {
+				tf.MembersFormat = format;
+				return;
 			}
 		}
 		
