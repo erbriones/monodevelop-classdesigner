@@ -356,52 +356,65 @@ namespace MonoDevelop.ClassDesigner.Figures
 		protected virtual void RebuildCompartments ()
 		{
 			MemberCompartments.Clear ();
-
+			var notNested = Members.Where (m => m.MemberInfo.MemberType != MemberType.Type);
+			
 			switch (Grouping) {
 				case GroupingSetting.Alphabetical:
 					var members = new CompartmentFigure (GettextCatalog.GetString ("Members"));
-					members.AddRange (Members.OrderBy (m => m.Name));
+					members.AddRange (notNested.OrderBy (m => m.Name));
 					AddCompartment (members);
 					break;
 				case GroupingSetting.Kind:
 					var fields = new CompartmentFigure (GettextCatalog.GetString ("Fields"));
-					fields.AddRange (Members.Where (m => m.MemberInfo.MemberType == MemberType.Field));
+					fields.AddRange (notNested.Where (m => m.MemberInfo.MemberType == MemberType.Field));
 					AddCompartment (fields);
 				
 					var properties = new CompartmentFigure (GettextCatalog.GetString ("Properties"));
-					properties.AddRange (Members.Where (m => m.MemberInfo.MemberType == MemberType.Property));
+					properties.AddRange (notNested.Where (m => m.MemberInfo.MemberType == MemberType.Property));
 					AddCompartment (properties);
 				
 					var methods = new CompartmentFigure (GettextCatalog.GetString ("Methods"));
-					methods.AddRange (Members.Where (m => m.MemberInfo.MemberType == MemberType.Method));
+					methods.AddRange (notNested.Where (m => m.MemberInfo.MemberType == MemberType.Method));
 					AddCompartment (methods);
 				
 					var events = new CompartmentFigure (GettextCatalog.GetString ("Events"));
-					events.AddRange (Members.Where (m => m.MemberInfo.MemberType == MemberType.Event));
+					events.AddRange (notNested.Where (m => m.MemberInfo.MemberType == MemberType.Event));
 					AddCompartment (events);
 					break;
 				case GroupingSetting.Member:
 					var @public = new CompartmentFigure (GettextCatalog.GetString ("Public"));
-					@public.AddRange (Members.Where (m => m.MemberInfo.IsPublic));
+					@public.AddRange (notNested.Where (m => m.MemberInfo.IsPublic));
 					AddCompartment (@public);
 				
 					var @protected = new CompartmentFigure (GettextCatalog.GetString ("Protected"));
-					@protected.AddRange (Members.Where (m => m.MemberInfo.IsProtected));
+					@protected.AddRange (notNested.Where (m => m.MemberInfo.IsProtected));
 					AddCompartment (@protected);
 				
 					var @protectedInternal = new CompartmentFigure (GettextCatalog.GetString ("Protected Internal"));
-					@protectedInternal.AddRange (Members.Where (m => m.MemberInfo.IsProtectedAndInternal));
+					@protectedInternal.AddRange (notNested.Where (m => m.MemberInfo.IsProtectedAndInternal));
 					AddCompartment (@protectedInternal);
 				
 					var @internal = new CompartmentFigure (GettextCatalog.GetString ("Internal"));
-					@internal.AddRange (Members.Where (m => m.MemberInfo.IsInternal));
+					@internal.AddRange (notNested.Where (m => m.MemberInfo.IsInternal));
 					AddCompartment (@internal);
 				
 					var @private = new CompartmentFigure (GettextCatalog.GetString ("Private"));
-					@private.AddRange (Members.Where (m => m.MemberInfo.IsPrivate));
+					@private.AddRange (notNested.Where (m => m.MemberInfo.IsPrivate));
 					AddCompartment (@private);
 					break;
 			}
+			
+			var nested = new CompartmentFigure (GettextCatalog.GetString ("Nested Types"));
+			nested.AddRange (
+				Members
+					.Where (m => m.MemberInfo.MemberType == MemberType.Type)
+					.Select (m => {
+						var dom = m.MemberInfo.SourceProjectDom;
+						var type = dom.GetType (m.MemberInfo.FullName);
+						return TypeFigure.FromType (type);
+					})
+			);
+			AddCompartment (nested);
 		}
 		
 		private void BuildMembers (IType domType)

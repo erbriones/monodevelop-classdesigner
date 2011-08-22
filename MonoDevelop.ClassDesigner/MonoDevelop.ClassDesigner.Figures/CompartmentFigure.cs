@@ -130,8 +130,9 @@ namespace MonoDevelop.ClassDesigner.Figures
 				if (membersStack.Figures.Count () == 0)
 					return true;
 				
-				foreach (MemberFigure member in membersStack.Figures) {
-					if (!member.Hidden)
+				foreach (var member in membersStack.Figures) {
+					var mf = member as MemberFigure;
+					if (mf == null || !mf.Hidden)
 						return false;
 				}
 				
