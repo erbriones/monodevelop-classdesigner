@@ -1,7 +1,7 @@
 <Addin id          = "ClassDesigner"
        namespace   = "MonoDevelop"
        name        = "Visual Class Designer"
-       author      = "Manuel Cerón, Evan Briones"
+       author      = "Manuel Cerón, Evan Briones, Graham Lyon"
        copyright   = "MIT X11"
        url         = "http://www.monodevelop.com"
        description = "A Visual Class Designer for MonoDevelop"
