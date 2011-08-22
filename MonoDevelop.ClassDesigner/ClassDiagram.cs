@@ -199,12 +199,8 @@ namespace MonoDevelop.ClassDesigner
 				
 				membersFormat = value;
 				
-				var visitor = new MemberFormatVisitor (this);
-				foreach (var figure in Figures) {
-					var tf = figure as TypeFigure;
-					if (tf != null)
-						visitor.VisitFigure (tf);
-				}
+				var visitor = new MemberFormatVisitor (value);
+				AcceptVisitor (visitor);
 			}	
 		}
 		

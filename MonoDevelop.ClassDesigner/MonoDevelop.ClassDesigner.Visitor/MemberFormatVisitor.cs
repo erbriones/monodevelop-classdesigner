@@ -38,23 +38,25 @@ namespace MonoDevelop.ClassDesigner.Visitor
 {
 	internal sealed class MemberFormatVisitor : IFigureVisitor
 	{
-		public MemberFormatVisitor (IDrawing drawing) 
+		MembersFormat format;
+		
+		public MemberFormatVisitor (MembersFormat format) 
 		{
-			this.drawing = drawing;
+			this.format = format;
 		}		
 	
 		#region IFigureVisitor implementation
-		public void VisitFigure (IFigure typeFigure)
+		public void VisitFigure (IFigure hostFigure)
 		{
-			var diagram = (ClassDiagram) drawing;
-			var tf = typeFigure as MemberFigure;
+			var mf = hostFigure as MemberFigure;
+			if (mf != null) {
+				mf.UpdateFormat (format);
+			}
 		}
 		
 		public void VisitHandle (IHandle hostHandle)
 		{
 		}
-		#endregion
-		
-		IDrawing drawing;
+		#endregion;
 	}
 }
