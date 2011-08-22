@@ -54,8 +54,6 @@ namespace MonoDevelop.ClassDesigner.Figures
 		
 		public static TypeFigure FromType(IType type)
 		{
-			TypeFigure figure;
-			
 			if (type == null)
 				return null;
 			
