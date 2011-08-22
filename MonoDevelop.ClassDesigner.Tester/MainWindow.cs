@@ -24,26 +24,16 @@ public partial class MainWindow: Gtk.Window
 
 	protected virtual void OnAddStackFigureActionActivated (object sender, System.EventArgs e)
 	{
-		Pixbuf pb = RenderIcon("gtk-info", IconSize.Button, "");
-		mhdcanvas.AddWithDragging((IFigure) new MemberFigure (pb, "Hello", "World", true));
+		throw new NotImplementedException ();
 	}
 
 	protected virtual void OnAddMemberGroupActionActivated (object sender, System.EventArgs e)
 	{
-		CompartmentFigure group = new CompartmentFigure("Methods");
-		Pixbuf icon = RenderIcon("gtk-info", IconSize.Menu, "");
-		
-		for (int i=0; i<5; i++) {
-			group.AddMember(new MemberFigure (icon, "int", string.Format("method{0}", i), true));
-		}
-		
-		mhdcanvas.AddWithDragging(group);
+		throw new NotImplementedException ();
 	}
 
 	protected virtual void OnAddSimpleTextFigureActionActivated (object sender, System.EventArgs e)
 	{
-		TextFigure figure = new TextFigure("Hello World");
-		figure.Padding = 0;
-		mhdcanvas.AddWithDragging(figure);
+		mhdcanvas.AddWithDragging(new TextFigure("Hello World"));
 	}
 }

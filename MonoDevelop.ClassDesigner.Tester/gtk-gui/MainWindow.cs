@@ -12,7 +12,7 @@ public partial class MainWindow
 	private global::Gtk.VBox vbox1;
 	private global::Gtk.MenuBar menubar1;
 	private global::MonoHotDraw.SteticComponent mhdcanvas;
-	
+    
 	protected virtual void Build ()
 	{
 		global::Stetic.Gui.Initialize (this);
