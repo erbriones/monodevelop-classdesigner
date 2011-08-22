@@ -44,6 +44,16 @@ namespace MonoDevelop.ClassDesigner.Figures
 		bool hideAssociations;
 		bool hideCollection;
 		
+		public ClassFigure () : base ()
+		{
+			// TODO: de-duplicate this stuff...
+			hideInheritance = false;
+			HideAssociations = false;
+			nestedFigures = new List<IFigure> ();
+			FillColor = new Cairo.Color (0.1, 0.1, 0.9, 0.4);
+		}
+			
+		
 		public ClassFigure (IType domType) : base (domType)
 		{
 			hideInheritance = false;
@@ -63,6 +73,16 @@ namespace MonoDevelop.ClassDesigner.Figures
 			}
 			
 			return xml;
+		}
+
+		public override void Deserialize (XElement xml, MonoDevelop.Projects.Dom.Parser.ProjectDom dom)
+		{
+			base.Deserialize (xml, dom);
+			
+			var hideInheritanceAttr = xml.Attribute ("HideInheritance");
+			if (hideInheritanceAttr != null) {
+				HideInheritance = Boolean.Parse (hideInheritanceAttr.Value);
+			}
 		}
 		#endregion
 		

@@ -105,7 +105,7 @@ namespace MonoDevelop.ClassDesigner
 					case "Enum":
 					case "Interface":
 					case "Delegate":
-						LoadType (element, dom);
+						DeserializeType (element, dom);
 						break;
 					case "Comment":
 						var comment = new CommentFigure ();
@@ -165,6 +165,29 @@ namespace MonoDevelop.ClassDesigner
 					throw new DeserializationException ("Couldn't parse MembersFormat value: " + format.Value);
 				}
 			}
+		}
+		
+		private void DeserializeType (XElement typeInfo, ProjectDom dom)
+		{
+			TypeFigure figure;
+			
+			switch (typeInfo.Name.ToString ()) {
+				case "Class": figure = new ClassFigure(); break;
+				case "Struct": figure = new StructFigure(); break;
+				case "Enum": figure = new EnumFigure(); break;
+				case "Interface": figure = new InterfaceFigure(); break;
+				case "Delegate": figure = new DelegateFigure(); break;
+				default: throw new DeserializationException ("Unknown type: " + typeInfo.Name);
+			}
+			figure.Deserialize (typeInfo, dom);
+			Add (figure);
+				
+			foreach (var compartment in figure.Compartments) {
+				compartment.AcceptVisitor (new GroupFormatVisitor (this, figure));
+			}
+			
+			// TODO: do something about Associations here...
+			// make sure to check if the other figure has been loaded yet or not and then act accordingly...
 		}
 		#endregion
 
@@ -344,247 +367,6 @@ namespace MonoDevelop.ClassDesigner
 			return (String.IsNullOrEmpty (fullName)) ? null : Figures
 				.OfType<TypeFigure> ()
 				.SingleOrDefault (f => f.TypeFullName == fullName);
-		}
-		
-		//FIXME: Add proper exceptions or dialog for missing types, etc..
-		void LoadType (XElement element, ProjectDom dom)
-		{	
-			TypeFigure figure = null;
-			
-			//
-			// Figure Attributes
-			//
-			
-			var typeName = element.Attributes ()
-				.Where (a => a.Name == "Name")
-				.SingleOrDefault ();
-			
-			var type = dom.GetType(typeName.Value);
-			figure = (TypeFigure) CreateTypeFigure (type);
-			
-			if (figure == null)
-				return;
-			
-			if (figure is ClassFigure) {
-				var cls = (ClassFigure) figure;
-				var hideInheritance = element.Attributes ()
-					.Where (a => a.Name == "HideInheritanceLine")
-					.SingleOrDefault ();
-				
-				if (hideInheritance != null)
-					cls.HideInheritance = Boolean.Parse (hideInheritance.Value);
-			}
-					
-			var collapsed = element.Attributes ()
-				.Where (a => a.Name == "Collapsed")
-				.SingleOrDefault ();
-			
-			if (collapsed != null && !Boolean.Parse (collapsed.Value))
-				figure.Collapse ();
-	
-			//
-			// Position Element
-			//
-			
-			var position = element.Elements ()
-				.Where (e => e.Name == "Position")
-				.SingleOrDefault ();
-			
-			figure.DeserializePosition (position);
-			
-			//
-			// Members Element
-			//
-			
-			var members = element.Elements ()
-				.Where (e => e.Name == "Members")
-				.SingleOrDefault ();
-			
-			if (members != null) {
-				foreach (var e in members.Elements ()) {
-					var name = e.Attribute ("Name");
-					
-					if (name == null)
-						return;
-					Console.WriteLine ("hide member {0}", name.Value);
-					var member = type.SearchMember (name.Value, true)
-						.SingleOrDefault ();
-					
-					if (member == null)
-						return;
-					
-					foreach (var c in figure.Figures) {
-						var memberFigure = c.Figures
-							.OfType<MemberFigure> ()
-							.Where (f => f.Name == member.Name)
-							.SingleOrDefault ();
-						
-						if (memberFigure == null)
-							continue;
-						
-						memberFigure.Hide ();
-					}
-				}
-				// FIXME:
-				// Make sure Empty Compartments Hidden
-				// ie. hidelist = figure.Figures.Where (c == c.IsEmpty);
-				// hidelist.ForEach (f => f.Hide ());
-			}
-			
-			//
-			// AssociationLine Element
-			//
-			
-			var association_lines = element.Elements ()
-				.Where (e =>element.Name == "AssociationLine");
-			
-			if (association_lines != null) {
-				foreach (var e in association_lines) {
-					var name = e.Attribute ("Name");
-					var t = e.Attribute ("Type");
-					
-				}
-			}
-			
-			//
-			// InheritanceLine
-			//
-			
-			//
-			// Associations Element
-			//
-			
-			var associations = element.Elements ()
-				.Where (e => e.Name == "ShowAsAssociation")
-				.SingleOrDefault ();
-			
-			if (associations != null) {
-				foreach (var e in associations.Elements ("Property")) {
-					var name = e.Attribute ("Name");
-										
-					if (name == null)
-						continue;
-					
-					var property = type.Properties
-						.Where (p => p.Name == name.Value)
-						.SingleOrDefault ();
-					
-					if (property == null)
-						continue;
-					
-					IFigure startfig;
-										
-					if (HasTypeFigure (property.ReturnType.FullName))
-						startfig = GetTypeFigure (property.ReturnType.FullName);
-					else
-						startfig = CreateTypeFigure (property.ReturnType.Type);					
-					
-					if (startfig == null)
-						continue;
-					
-//					Add (new AssociationConnectionFigure (property, ConnectionType.Association, startfig, figure));
-				}
-			}
-			
-			//
-			// Association Collections Element
-			//
-			
-			var collection = element.Elements ()
-				.Where (e => e.Name == "ShowAsAssociationCollection")
-				.SingleOrDefault ();
-			
-			if (collection != null) {
-					foreach (var e in collection.Elements ("Property")) {
-					var name = e.Attribute ("Name");
-										
-					if (name == null)
-						continue;
-					
-					var property = type.Properties
-						.Where (p => p.Name == name.Value)
-						.SingleOrDefault ();
-					
-					if (property == null)
-						continue;
-					
-					IFigure startfig;
-										
-					if (HasTypeFigure (property.ReturnType.FullName))
-						startfig = GetTypeFigure (property.ReturnType.FullName);
-					else
-						startfig = CreateTypeFigure (property.ReturnType.Type);
-					
-//					if (startfig is System.Collections.ICollection)
-//						Add (new AssociationConnectionFigure (property, ConnectionType.CollectionAssociation,
-//						                                  startfig, figure));
-//					else
-//						throw new ArgumentException ("The type is not a valid collection.");
-				}
-			}
-			
-			//
-			// Compartments Element
-			//
-			
-			var compartments = element.Elements ()
-				.Where (e => e.Name == "Compartments")
-				.SingleOrDefault ();
-			
-			if (compartments != null) {							
-				foreach (var e in compartments.Elements ("Compartment")) {
-					var name = e.Attribute ("Name");
-					
-					if (name == null)
-						continue;
-					
-					var compartment = figure.Figures
-						.OfType<CompartmentFigure> ()
-						.Where (c => c.Name == name.Value)
-						.SingleOrDefault ();
-					
-					if (compartment == null)
-						continue;
-					
-					collapsed = e.Attribute ("Collapsed");
-					
-					if (collapsed == null)
-						continue;
-					
-					if (Boolean.Parse (collapsed.Value))
-						compartment.Hide ();
-				}
-			}
-			
-			//
-			// NestedTypes Element
-			//
-			
-			var nestedTypes = element.Elements ()
-				.Where (e => e.Name == "NestedTypes")
-				.SingleOrDefault ();
-			
-			if (nestedTypes != null) {
-				var nsupport = figure as INestedTypeSupport;
-					
-				//FIXME: probably should give a dialog or exception.
-				if (nsupport == null)
-					return;
-				
-				foreach (var nt in nestedTypes.Elements ("NestedType")) {
-					var name = nt.Attribute("Name");
-					
-					if (name == null)
-						continue;
-					
-					var nestedFigure = CreateTypeFigure (dom.GetType(name.Value));
-					
-					if (nestedFigure == null)
-						continue;
-					
-					nsupport.AddNestedType (nestedFigure);
-				}
-			}
 		}
 		
 		// TODO: Move these method somewhere far more sensible

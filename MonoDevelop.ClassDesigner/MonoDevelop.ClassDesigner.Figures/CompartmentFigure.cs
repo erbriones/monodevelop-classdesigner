@@ -111,6 +111,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 		#region ICollapsable
 		public bool IsCollapsed {
 			get { return !expandHandle.Active; }
+			set { expandHandle.Active = !value; }
 		}
 		
 		public void Expand ()

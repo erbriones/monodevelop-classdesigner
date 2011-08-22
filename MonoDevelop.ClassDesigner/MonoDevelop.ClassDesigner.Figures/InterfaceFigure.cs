@@ -42,6 +42,14 @@ namespace MonoDevelop.ClassDesigner.Figures
 		bool hideAssociations;		
 		bool hideCollection;
 		
+		public InterfaceFigure () : base ()
+		{
+			// TODO: de-duplicate this stuff...
+			hideCollection = false;
+			hideAssociations = false;
+			FillColor = new Cairo.Color (0.8, 0.8, 0.8, 0.4);
+		}
+		
 		public InterfaceFigure (IType domType) : base (domType)
 		{
 			hideCollection = false;

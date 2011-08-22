@@ -42,6 +42,11 @@ namespace MonoDevelop.ClassDesigner.Figures
 {
 	public sealed class DelegateFigure : TypeFigure
 	{
+		public DelegateFigure () : base ()
+		{
+			FillColor = new Cairo.Color (0.8, 0.1, 0.8, 0.4);
+		}
+		
 		public DelegateFigure (IType domType) : base (domType)
 		{
 			FillColor = new Cairo.Color (0.8, 0.1, 0.8, 0.4);

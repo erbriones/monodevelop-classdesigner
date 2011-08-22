@@ -38,6 +38,14 @@ namespace MonoDevelop.ClassDesigner.Figures
 		bool hideAssociations;
 		List<IFigure> nestedFigures;
 		
+		public StructFigure () : base ()
+		{
+			// TODO: de-duplicate this stuff...
+			SetAttribute (FigureAttribute.FillColor, new Cairo.Color (0.0, 0.2, 0.9, 0.4));
+			nestedFigures = new List<IFigure> ();
+			HideAssociations = false;
+		}
+		
 		public StructFigure (IType domType) : base(domType)
 		{
 			SetAttribute (FigureAttribute.FillColor, new Cairo.Color (0.0, 0.2, 0.9, 0.4));

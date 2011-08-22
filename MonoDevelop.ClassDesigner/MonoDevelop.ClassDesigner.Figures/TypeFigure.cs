@@ -122,7 +122,72 @@ namespace MonoDevelop.ClassDesigner.Figures
 
 		public virtual void Deserialize (XElement xml, ProjectDom dom)
 		{
-			throw new NotImplementedException ();
+			var typeName = xml.Attribute ("Name");
+			if (typeName == null) {
+				throw new DeserializationException (xml.Name + " element with no \"Name\" attribute");
+			}
+			
+			var domType = dom.GetType (typeName.Value);
+			if (domType == null) {
+				// TODO: Handle orphaned figures here..
+				throw new NotImplementedException ();
+			} else {
+				Rebuild (domType);
+				var members = xml.Element ("Members");
+				if (members != null) {
+					foreach (var memberElem in members.Elements ()) {
+						var memberName = memberElem.Attribute ("Name");
+						if (memberName == null) {
+							throw new DeserializationException ("Member element with no name in " + domType.FullName);
+						}
+						
+						var member = domType.SearchMember (memberName.Value, true).SingleOrDefault ();
+						if (member != null) {
+							foreach (var c in Figures) {
+								var memberFigure = c.Figures
+									.OfType<MemberFigure> ()
+									.Where (f => f.Name == member.Name)
+									.SingleOrDefault ();
+								
+								if (memberFigure != null) {
+									memberFigure.Hide ();
+								}
+							}
+						}
+					}
+					// FIXME:
+					// Make sure Empty Compartments Hidden
+					// ie. hidelist = figure.Figures.Where (c == c.IsEmpty);
+					// hidelist.ForEach (f => f.Hide ());
+			
+					var compartmentsElem = xml.Element ("Compartments");
+					if (compartmentsElem != null) {							
+						foreach (var compartmentElem in compartmentsElem.Elements ("Compartment")) {
+							var name = compartmentElem.Attribute ("Name");
+							if (name == null)
+								continue;
+							
+							var compartment = Figures
+								.OfType<CompartmentFigure> ()
+								.Where (c => c.Name == name.Value)
+								.SingleOrDefault ();
+							
+							if (compartment == null)
+								continue;
+							
+							var compartmentCollapsed = compartmentElem.Attribute ("Collapsed");
+							//compartment.IsCollapsed = compartmentCollapsed != null
+							//		&& Boolean.Parse (compartmentCollapsed.Value);
+						}
+					}
+				}
+			}
+			
+			var collapsed = xml.Attribute ("Collapsed");
+			IsCollapsed = collapsed != null && Boolean.Parse (collapsed.Value);
+			
+			var position = xml.Element ("Position");
+			this.DeserializePosition (position);
 		}
 		#endregion
 		
@@ -157,6 +222,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 		
 		public bool IsCollapsed {
 			get { return !expandHandle.Active; }
+			set { expandHandle.Active = !value; }
 		}
 		
 		public IEnumerable<MemberFigure> Members {

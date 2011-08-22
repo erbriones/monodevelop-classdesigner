@@ -39,6 +39,10 @@ namespace MonoDevelop.ClassDesigner.Figures
 {	
 	public sealed class EnumFigure: TypeFigure
 	{
+		public EnumFigure (): base ()
+		{
+			FillColor = new Cairo.Color (0.1, 0.9, 0.2, 0.4);
+		}
 		public EnumFigure (IType domtype): base (domtype)
 		{
 			FillColor = new Cairo.Color (0.1, 0.9, 0.2, 0.4);
