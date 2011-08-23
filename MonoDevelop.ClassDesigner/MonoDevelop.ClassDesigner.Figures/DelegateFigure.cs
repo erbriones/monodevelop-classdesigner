@@ -44,12 +44,12 @@ namespace MonoDevelop.ClassDesigner.Figures
 	{
 		public DelegateFigure () : base ()
 		{
-			FillColor = new Cairo.Color (0.8, 0.1, 0.8, 0.4);
+			FillColor = new Cairo.Color (0.9140, 0.6367, 0.9140);
 		}
 		
 		public DelegateFigure (IType domType) : base (domType)
 		{
-			FillColor = new Cairo.Color (0.8, 0.1, 0.8, 0.4);
+			FillColor = new Cairo.Color (0.9140, 0.6367, 0.9140);
 		}
 
 		#region ISerializableFigure implementation

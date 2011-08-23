@@ -47,14 +47,14 @@ namespace MonoDevelop.ClassDesigner.Figures
 			// TODO: de-duplicate this stuff...
 			hideCollection = false;
 			hideAssociations = false;
-			FillColor = new Cairo.Color (0.8, 0.8, 0.8, 0.4);
+			FillColor = new Cairo.Color (0.9140, 0.9140, 0.9140);
 		}
 		
 		public InterfaceFigure (IType domType) : base (domType)
 		{
 			hideCollection = false;
 			hideAssociations = false;
-			FillColor = new Cairo.Color (0.8, 0.8, 0.8, 0.4);
+			FillColor = new Cairo.Color (0.9140, 0.9140, 0.9140);
 		}
 
 		#region ISerializableFigure implementation

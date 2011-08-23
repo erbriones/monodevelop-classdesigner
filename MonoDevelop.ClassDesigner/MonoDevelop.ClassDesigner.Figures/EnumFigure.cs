@@ -41,11 +41,11 @@ namespace MonoDevelop.ClassDesigner.Figures
 	{
 		public EnumFigure (): base ()
 		{
-			FillColor = new Cairo.Color (0.1, 0.9, 0.2, 0.4);
+			FillColor = new Cairo.Color (0.6367, 0.9570, 0.6757);
 		}
 		public EnumFigure (IType domtype): base (domtype)
 		{
-			FillColor = new Cairo.Color (0.1, 0.9, 0.2, 0.4);
+			FillColor = new Cairo.Color (0.6367, 0.9570, 0.6757);
 		}
 
 		#region ISerializableFigure implementation
