@@ -63,19 +63,12 @@ namespace MonoDevelop.ClassDesigner.Figures
 			expandHandle.Toggled += OnToggled;
 			
 			Add (compartmentName);
-			Expand ();
+			Add (membersStack);
+			Collapsed = false;
 		}
 		
 		public override IEnumerable<IHandle> Handles {
 			get { yield return expandHandle; }
-		}
-		
-		void OnToggled (object o, ToggleEventArgs e)
-		{
-			if (e.Active)
-				Add (membersStack);
-			else
-				Remove (membersStack);
 		}
 		
 		public new void AddRange (IEnumerable<IFigure> figures)
@@ -105,20 +98,15 @@ namespace MonoDevelop.ClassDesigner.Figures
 			get { return _name; }
 		}
 		
-		#region ICollapsable
-		public bool IsCollapsed {
+		#region ICollapsable implementation
+		public bool Collapsed {
 			get { return !expandHandle.Active; }
 			set { expandHandle.Active = !value; }
 		}
 		
-		public void Expand ()
+		void OnToggled (object o, ToggleEventArgs e)
 		{
-			expandHandle.Active = true;
-		}
-		
-		public void Collapse ()
-		{
-			expandHandle.Active = false;
+			membersStack.Visible = e.Active;
 		}
 		#endregion
 	}

@@ -47,7 +47,7 @@ namespace MonoDevelop.ClassDesigner.Commands
 		protected void CollapseItem ()
 		{
 			foreach (var figure in SelectedFigures.OfType<ICollapsable> ()) {
-				figure.Collapse ();
+				figure.Collapsed = true;
 			}
 		}
 		
@@ -55,46 +55,20 @@ namespace MonoDevelop.ClassDesigner.Commands
 		protected void ExpandItem ()
 		{
 			foreach (var figure in SelectedFigures.OfType<ICollapsable> ()) {
-				figure.Expand ();
+				figure.Collapsed = false;
 			}
 		}
 		
 		[CommandUpdateHandler (DesignerCommands.Collapse)]
 		protected void UpdateCollapseItem (CommandInfo info)
 		{
-			info.Enabled = false;
-			info.Visible = true;
-			
-			if (Designer.View.SelectionCount == 0) {
-				info.Visible = false;	
-				return;
-			}
-			
-			foreach (var figure in SelectedFigures.OfType<ICollapsable> ()) {
-				if (!figure.IsCollapsed) {
-					info.Visible = info.Enabled = true;
-					return;
-				}
-			}
+			info.Enabled = info.Visible = SelectedFigures.OfType<ICollapsable> ().Any (f => !f.Collapsed);
 		}
 		
 		[CommandUpdateHandler (DesignerCommands.Expand)]
 		protected void UpdateExpandItem (CommandInfo info)
 		{
-			info.Enabled = false;
-			info.Visible = true;
-			
-			if (Designer.View.SelectionCount == 0) {
-				info.Visible = false;
-				return;
-			}
-			
-			foreach (var figure in SelectedFigures.OfType <ICollapsable> ()) {
-				if (figure.IsCollapsed) {
-					info.Visible = info.Enabled = true;
-					return;
-				}
-			}
+			info.Enabled = info.Visible = SelectedFigures.OfType<ICollapsable> ().Any (f => f.Collapsed);
 		}
 		#endregion
 	}

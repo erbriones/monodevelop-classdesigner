@@ -81,7 +81,8 @@ namespace MonoDevelop.ClassDesigner.Figures
 			MembersFormat = MembersFormat.FullSignature;
 			
 			Add (Header);
-			Collapse ();
+			Add (MemberCompartments);
+			Collapsed = true;
 		}
 		
 		public TypeFigure (IType domType) : this ()
@@ -101,12 +102,12 @@ namespace MonoDevelop.ClassDesigner.Figures
 				)
 			);
 			
-			if (IsCollapsed) {
+			if (Collapsed) {
 				xml.Add (new XAttribute ("Collapsed", "true"));
 			}
 			
 			// Get collapsed compartment info
-			var clist = Figures.OfType<CompartmentFigure> ().Where (c => c.IsCollapsed );
+			var clist = Figures.OfType<CompartmentFigure> ().Where (c => c.Collapsed );
 			if (clist.Count() > 0) {
 				xml.Add (new XElement ("Compartments",
 					clist.Select(c => new XElement ("Compartment",
@@ -171,7 +172,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 								continue;
 							
 							var compartmentCollapsed = compartmentElem.Attribute ("Collapsed");
-							compartment.IsCollapsed = compartmentCollapsed != null
+							compartment.Collapsed = compartmentCollapsed != null
 									&& Boolean.Parse (compartmentCollapsed.Value);
 						}
 					}
@@ -179,7 +180,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 			}
 			
 			var collapsed = xml.Attribute ("Collapsed");
-			IsCollapsed = collapsed != null && Boolean.Parse (collapsed.Value);
+			Collapsed = collapsed != null && Boolean.Parse (collapsed.Value);
 			
 			var position = xml.Element ("Position");
 			this.DeserializePosition (position);
@@ -203,18 +204,6 @@ namespace MonoDevelop.ClassDesigner.Figures
 		}
 		
 		public MembersFormat MembersFormat { get; set; }
-		
-		public override RectangleD DisplayBox {
-			get {
-				RectangleD rect = base.DisplayBox;
-				rect.X -= 20;
-				rect.Y -= 10;
-				rect.Width += 30;
-				rect.Height += 20;
-				return rect;
-			}
-			set { base.DisplayBox = value; }
-		}
 
 		public override IEnumerable<IHandle> Handles {
 			get {
@@ -226,7 +215,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 			}
 		}
 		
-		public bool IsCollapsed {
+		public bool Collapsed {
 			get { return !expandHandle.Active; }
 			set { expandHandle.Active = !value; }
 		}
@@ -262,21 +251,10 @@ namespace MonoDevelop.ClassDesigner.Figures
 		#region Figure Drawing
 
 		#endregion
-		public void Collapse ()
-		{
-			if (!IsCollapsed)
-				expandHandle.Active = false;
-		}
-
+		
 		public override bool ContainsPoint (double x, double y)
 		{
 			return DisplayBox.Contains (x, y);
-		}
-		
-		public void Expand ()
-		{
-			if (IsCollapsed)
-				expandHandle.Active = true;
 		}
 		
 		public virtual void Rebuild (IType domType)
@@ -299,6 +277,24 @@ namespace MonoDevelop.ClassDesigner.Figures
 		{
 			foreach (var member in members) {
 				member.Visible = true;
+			}
+		}
+		
+		protected override RectangleD BasicDisplayBox {
+			get {
+				RectangleD rect = base.BasicDisplayBox;
+				rect.X -= 20;
+				rect.Y -= 10;
+				rect.Width += 30;
+				rect.Height += 20;
+				return rect;
+			}
+			set {
+				value.X += 20;
+				value.Y += 10;
+				value.Width -= 30;
+				value.Height -= 20;
+				base.BasicDisplayBox = value;
 			}
 		}
 		
@@ -336,10 +332,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 
 		protected void OnToggled (object o, ToggleEventArgs e)
 		{
-			if (e.Active)
-				Add (MemberCompartments);
-			else
-				Remove (MemberCompartments);
+			MemberCompartments.Visible = e.Active;
 		}
 		
 		protected virtual void RebuildCompartments ()
