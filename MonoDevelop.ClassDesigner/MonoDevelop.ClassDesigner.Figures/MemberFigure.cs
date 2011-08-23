@@ -57,7 +57,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 			this.retval.FontSize = 10;
 			this.retval.FontColor = new Cairo.Color(0, 0, 1.0);
 			
-			Hidden = hidden;
+			Visible = !hidden;
 			AllowFormatting = true;
 			Alignment = HStackAlignment.Bottom;
 			
@@ -78,7 +78,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 			name = new TextFigure (memberInfo.Name);
 			
 			MemberInfo = memberInfo;
-			Hidden = hidden;
+			Visible = !hidden;
 			
 			name.Padding = 1.0;
 			name.FontSize = 10;
@@ -94,38 +94,9 @@ namespace MonoDevelop.ClassDesigner.Figures
 			Add (retval);
 			Add (name);
 		}
-
-		protected override void BasicDraw (Context context)
-		{
-			if (Hidden)
-				return;
-			
-			base.BasicDraw (context);
-		}
-		
-		protected override void BasicDrawSelected (Context context)
-		{
-			if (Hidden)
-				return;
-			
-			base.BasicDrawSelected (context);
-		}
-				
-		public void Show ()
-		{
-			Hidden = false;
-			Invalidate ();
-		}
-		
-		public void Hide ()
-		{
-			Hidden = true;
-			Invalidate ();
-		}
 		
 		internal bool AllowFormatting { get; set; }
 		public IMember MemberInfo { get; private set; }
-		public bool Hidden { get; private set; }
 		
 		public string Name {
 			get { return name.Text; }

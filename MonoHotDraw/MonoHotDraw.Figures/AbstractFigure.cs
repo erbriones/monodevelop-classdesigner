@@ -38,11 +38,14 @@ namespace MonoHotDraw.Figures
 {
 	[Serializable]
 	public abstract class AbstractFigure : IFigure
-	{	
+	{
+		bool visible;
+		
 		protected AbstractFigure ()
 		{
 			FillColor = new Color (1.0, 1.0, 0.2, 0.8);
 			LineColor = (Color) AttributeFigure.GetDefaultAttribute (FigureAttribute.LineColor);
+			visible = true;
 		}
 
 		protected AbstractFigure (SerializationInfo info, StreamingContext context)
@@ -75,7 +78,13 @@ namespace MonoHotDraw.Figures
 		}
 
 		public virtual RectangleD DisplayBox {
-			get { return BasicDisplayBox; }
+			get {
+				if (Visible) {
+					return BasicDisplayBox;
+				} else {
+					return new RectangleD (0, 0);
+				}
+			}
 			set {
 				if (value != DisplayBox) {
 					WillChange ();
@@ -110,6 +119,17 @@ namespace MonoHotDraw.Figures
 			set {
 				if (value >= 0)
 					SetAttribute (FigureAttribute.LineWidth, value);
+			}
+		}
+		
+		public virtual bool Visible {
+			get { return visible; }
+			set {
+				if (visible != value) {
+					WillChange ();
+					visible = value;
+					Changed ();
+				}
 			}
 		}
 		

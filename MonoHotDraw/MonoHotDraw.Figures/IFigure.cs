@@ -60,6 +60,7 @@ namespace MonoHotDraw.Figures
 		IEnumerable <IFigure> Figures { get; }
 		IEnumerable <IHandle> Handles { get; }
 		bool CanConnect { get; }
+		bool Visible { get; set; }
 		
 		object GetAttribute (FigureAttribute attribute);
 		void SetAttribute (FigureAttribute attribute, object value);

@@ -64,6 +64,20 @@ namespace MonoDevelop.ClassDesigner.Commands
 			}
 		}
 		
+		[CommandHandler (DesignerCommands.Hide)]
+		protected void Hide ()
+		{
+			foreach (var figure in SelectedFigures) {
+				figure.Visible = false;
+			}
+		}
+		
+		[CommandUpdateHandler (DesignerCommands.Hide)]
+		protected void HideUpdate (CommandInfo info)
+		{
+			info.Enabled = info.Visible = true;
+		}
+		
 		[CommandHandler (DesignerCommands.ShowAssociation)]
 		protected void ShowAsAssociation ()
 		{

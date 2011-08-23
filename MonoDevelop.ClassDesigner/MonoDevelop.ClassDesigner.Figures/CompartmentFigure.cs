@@ -92,16 +92,13 @@ namespace MonoDevelop.ClassDesigner.Figures
 			}
 		}
 		
-		protected override void BasicDraw (Cairo.Context context)
-		{
-			if (!Hidden)
-				base.BasicDraw (context);
-		}
-		
-		protected override void BasicDrawSelected (Cairo.Context context)
-		{
-			if (!Hidden)
-				base.BasicDrawSelected (context);
+		public override bool Visible {
+			get {
+				return base.Visible && membersStack != null && membersStack.Figures.Any (f => f.Visible);
+			}
+			set {
+				base.Visible = value;
+			}
 		}
 		
 		public string Name {
@@ -124,34 +121,5 @@ namespace MonoDevelop.ClassDesigner.Figures
 			expandHandle.Active = false;
 		}
 		#endregion
-		
-		public bool IsEmpty {
-			get {		
-				if (membersStack.Figures.Count () == 0)
-					return true;
-				
-				foreach (var member in membersStack.Figures) {
-					var mf = member as MemberFigure;
-					if (mf == null || !mf.Hidden)
-						return false;
-				}
-				
-				return true;
-			}
-		}
-		
-		public bool Hidden { get; private set; }
-		
-		public void Hide ()
-		{
-			Hidden = true;
-			Invalidate ();
-		}
-		
-		public void Show ()
-		{
-			Hidden = false;
-			Invalidate ();
-		}
 	}
 }
