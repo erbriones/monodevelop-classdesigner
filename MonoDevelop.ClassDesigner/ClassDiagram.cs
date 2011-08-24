@@ -218,7 +218,7 @@ namespace MonoDevelop.ClassDesigner
 		#region TypeFigure Add/Remove/Update
 		public void Add (IType type)
 		{
-			if (!HasTypeFigure (type.FullName)) {
+			if (!HasTypeFigure (type.DecoratedFullName)) {
 				CreateTypeFigure(type);
 			}
 		}
@@ -232,7 +232,7 @@ namespace MonoDevelop.ClassDesigner
 		
 		public void Remove (IType type)
 		{
-			var fig = GetTypeFigure(type.FullName);
+			var fig = GetTypeFigure(type.DecoratedFullName);
 			if (fig != null) {
 				Remove(fig);
 			}
@@ -247,7 +247,7 @@ namespace MonoDevelop.ClassDesigner
 		
 		public void Update (IType type)
 		{
-			var figure = GetTypeFigure(type.FullName) as TypeFigure;
+			var figure = GetTypeFigure(type.DecoratedFullName);
 			if (figure != null) {
 				figure.Rebuild(type);
 			}
@@ -261,11 +261,11 @@ namespace MonoDevelop.ClassDesigner
 		}
 		#endregion
 		
-		public bool HasTypeFigure (string fullName)
+		public bool HasTypeFigure (string decoratedFullName)
 		{
-			return (String.IsNullOrEmpty (fullName)) ? false : Figures
+			return (String.IsNullOrEmpty (decoratedFullName)) ? false : Figures
 				.OfType<TypeFigure> ()
-				.Any (tf => tf.TypeFullName == fullName);
+				.Any (tf => tf.DecoratedFullName == decoratedFullName);
 		}
 		
 		#region Inheritence line updaters
@@ -299,7 +299,7 @@ namespace MonoDevelop.ClassDesigner
 				throw new ArgumentNullException ("derivedFigure");
 			}
 			
-			var baseFigure = GetTypeFigure (derivedFigure.BaseTypeFullName) as ClassFigure;
+			var baseFigure = GetTypeFigure (derivedFigure.BaseDecoratedFullName) as ClassFigure;
 			
 			if (baseFigure != null) {
 				Add (new InheritanceConnectionFigure (derivedFigure, baseFigure));
@@ -315,7 +315,7 @@ namespace MonoDevelop.ClassDesigner
 			var lines = new List<InheritanceConnectionFigure> ();
 			
 			foreach (var cf in Figures.OfType<ClassFigure> ()) {
-				if (cf.BaseTypeFullName == baseFigure.TypeFullName) {
+				if (cf.BaseDecoratedFullName == baseFigure.DecoratedFullName) {
 					lines.Add (new InheritanceConnectionFigure (cf, baseFigure));
 				}
 			}
@@ -327,7 +327,7 @@ namespace MonoDevelop.ClassDesigner
 		// TODO: Kill this method off entirely.
 		public TypeFigure CreateTypeFigure (IType type)
 		{
-			if (type == null || HasTypeFigure (type.FullName)) {
+			if (type == null || HasTypeFigure (type.DecoratedFullName)) {
 				return null;
 			}
 			
@@ -339,11 +339,11 @@ namespace MonoDevelop.ClassDesigner
 			return figure;
 		}
 
-		public TypeFigure GetTypeFigure (string fullName)
+		public TypeFigure GetTypeFigure (string decoratedFullName)
 		{
-			return (String.IsNullOrEmpty (fullName)) ? null : Figures
+			return (String.IsNullOrEmpty (decoratedFullName)) ? null : Figures
 				.OfType<TypeFigure> ()
-				.SingleOrDefault (f => f.TypeFullName == fullName);
+				.SingleOrDefault (f => f.DecoratedFullName == decoratedFullName);
 		}
 		
 		// TODO: Move these method somewhere far more sensible

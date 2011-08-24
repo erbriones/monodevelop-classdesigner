@@ -83,10 +83,10 @@ namespace MonoDevelop.ClassDesigner.Commands
 		{
 			var designer = (ClassDesigner) Designer;
 			foreach (var m in SelectedFigures.OfType<MemberFigure> ()) {
-				var type = designer.Dom.GetType (m.MemberInfo.ReturnType.FullName);
-				var typeFigure = designer.Diagram.GetTypeFigure (type.FullName)
+				var type = designer.Dom.GetType (m.MemberInfo.ReturnType.DecoratedFullName);
+				var typeFigure = designer.Diagram.GetTypeFigure (type.DecoratedFullName)
 						?? designer.Diagram.CreateTypeFigure (type);
-				var classFigure = designer.Diagram.GetTypeFigure (m.MemberInfo.DeclaringType.FullName);
+				var classFigure = designer.Diagram.GetTypeFigure (m.MemberInfo.DeclaringType.DecoratedFullName);
 				
 				designer.Diagram.Add (new AssociationConnectionFigure (m, ConnectionType.Association, classFigure, typeFigure));
 			}

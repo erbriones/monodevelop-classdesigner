@@ -94,11 +94,11 @@ namespace MonoDevelop.ClassDesigner.Figures
 		public virtual XElement Serialize ()
 		{
 			var xml = new XElement ("Type",
-				new XAttribute ("Name", TypeFullName),
+				new XAttribute ("Name", PrettyFullName),
 				this.SerializePosition (false),
 				new XElement ("TypeIdentifier",
 					new XElement ("HashCode", String.Format ("{0:X}", GetHashCode ())),
-				    new XElement ("FileName", TypeFileName.FileName)
+				    new XElement ("FileName", ContainerFilePath.FileName)
 				)
 			);
 			
@@ -127,7 +127,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 				throw new DeserializationException (xml.Name + " element with no \"Name\" attribute");
 			}
 			
-			var domType = dom.GetType (typeName.Value);
+			var domType = dom.GetType (DeserializeTypeName(typeName.Value));
 			if (domType == null) {
 				// TODO: Handle orphaned figures here..
 				throw new NotImplementedException ();
@@ -138,7 +138,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 					foreach (var memberElem in members.Elements ()) {
 						var memberName = memberElem.Attribute ("Name");
 						if (memberName == null) {
-							throw new DeserializationException ("Member element with no name in " + domType.FullName);
+							throw new DeserializationException ("Member element with no name in " + domType.DecoratedFullName);
 						}
 						
 						var member = domType.SearchMember (memberName.Value, true).SingleOrDefault ();
@@ -185,6 +185,11 @@ namespace MonoDevelop.ClassDesigner.Figures
 			var position = xml.Element ("Position");
 			this.DeserializePosition (position);
 		}
+		
+		public static string DeserializeTypeName (string name) {
+			var i = name.IndexOf ('<');
+			return (i == -1) ? name : name.Substring (0, i) + "`" + (name.Where (c => c == ',').Count () + 1);
+		}
 		#endregion
 
 		protected VStackFigure MemberCompartments { get; private set; }
@@ -225,26 +230,28 @@ namespace MonoDevelop.ClassDesigner.Figures
 		}
 		
 		#region Type Information
-		public virtual ClassType ClassType {
-			get { return ClassType.Unknown; }
+		public abstract ClassType ClassType { get; }
+		public FilePath ContainerFilePath { get; private set; }
+		public string DecoratedFullName { get; protected set; }
+		public string Name { get; protected set; }
+		public string Namespace { get; protected set; }
+		
+		public IEnumerable<string> TypeParameters { get; protected set; }
+		public string TypeParametersString {
+			get { return TypeParameters.Count () == 0 ? null : "<" + String.Join (",", TypeParameters) + ">"; }
 		}
 		
-		public FilePath TypeFileName {
-			get;
-			private set;
+		public string PrettyFullName {
+			get {
+				var i = DecoratedFullName.IndexOf ('`');
+				return i == -1 ? DecoratedFullName : DecoratedFullName.Substring (0, i) + TypeParametersString;
+			}
 		}
 		
-		public string TypeFullName {
-			get;
-			private set;
-		}
-		
-		public string TypeName {
-			get { return Header.Name; }
-		}
-		
-		public string TypeNamespace {
-			get { return Header.Namespace; }
+		public string PrettyName {
+			get {
+				return Name + TypeParametersString;
+			}
 		}
 		#endregion
 		
@@ -262,13 +269,13 @@ namespace MonoDevelop.ClassDesigner.Figures
 			if (domType == null || domType.ClassType != this.ClassType)
 				throw new ArgumentException ();
 			
-			TypeFileName = domType.CompilationUnit == null ? null : domType.CompilationUnit.FileName;
-			TypeFullName = domType.FullName;
+			ContainerFilePath = domType.CompilationUnit == null ? null : domType.CompilationUnit.FileName;
+			TypeParameters = domType.TypeParameters == null ? null : domType.TypeParameters.Select (tp => tp.Name);
+			DecoratedFullName = domType.DecoratedFullName;
+			Name = domType.Name;
+			Namespace = domType.Namespace;
 			
-			Header.Name = domType.Name;
-			Header.Namespace = domType.Namespace;
-			Header.Type = domType.ClassType.ToString ();
-			
+			RebuildHeader ();
 			BuildMembers (domType);
 			RebuildCompartments ();
 		}
@@ -397,6 +404,13 @@ namespace MonoDevelop.ClassDesigner.Figures
 					})
 			);
 			MemberCompartments.Add (nested);
+		}
+		
+		protected virtual void RebuildHeader ()
+		{
+			Header.Type = ClassType.ToString ();
+			Header.Namespace = Namespace;
+			Header.Name = PrettyName;
 		}
 		
 		private void BuildMembers (IType domType)

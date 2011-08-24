@@ -178,7 +178,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 		}
 		#endregion
 		
-		public string BaseTypeFullName {
+		public string BaseDecoratedFullName {
 			get;
 			private set;
 		}
@@ -191,7 +191,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 		
 		public override void Rebuild (IType domType) {
 			base.Rebuild (domType);
-			BaseTypeFullName = (domType.BaseType == null) ? null : domType.BaseType.FullName;
+			BaseDecoratedFullName = (domType.BaseType == null) ? null : domType.BaseType.DecoratedFullName;
 		}
 	}
 }

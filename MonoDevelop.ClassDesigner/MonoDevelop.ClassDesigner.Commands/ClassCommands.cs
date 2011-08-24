@@ -55,9 +55,9 @@ namespace MonoDevelop.ClassDesigner.Commands
 		{
 			var designer = (ClassDesigner) Designer;
 			foreach (var derivedFigure in SelectedFigures.OfType<ClassFigure> ()) {
-				if (!String.IsNullOrEmpty (derivedFigure.BaseTypeFullName)) {
-					var baseType = designer.Dom.GetType(derivedFigure.BaseTypeFullName);
-					var baseFigure = designer.Diagram.GetTypeFigure (baseType.FullName);
+				if (!String.IsNullOrEmpty (derivedFigure.BaseDecoratedFullName)) {
+					var baseType = designer.Dom.GetType(derivedFigure.BaseDecoratedFullName);
+					var baseFigure = designer.Diagram.GetTypeFigure (baseType.DecoratedFullName);
 					
 					if (baseFigure == null) {
 						designer.Diagram.Add (baseType);
@@ -73,10 +73,11 @@ namespace MonoDevelop.ClassDesigner.Commands
 			var baseFigures = SelectedFigures.OfType<ClassFigure> ();
 			
 			foreach (var type in designer.Dom.Types.Where (t => t.BaseType != null && t.ClassType == ClassType.Class)) {
-				var baseFigure = baseFigures.SingleOrDefault (bf => bf.TypeFullName == type.BaseType.FullName);
+				var baseType = type.BaseType;
+				var baseFigure = baseFigures.SingleOrDefault (bf => bf.DecoratedFullName == baseType.DecoratedFullName);
 				
 				if (baseFigure != null) {
-					var derivedFigure = designer.Diagram.GetTypeFigure (type.FullName);
+					var derivedFigure = designer.Diagram.GetTypeFigure (type.DecoratedFullName);
 					
 					if (derivedFigure == null) {
 						designer.Diagram.Add (type);

@@ -47,7 +47,7 @@ namespace MonoDevelop.ClassDesigner.Commands
 		[CommandHandler (DesignerCommands.GoToDeclaration)]
 		protected void GoToDeclaration ()
 		{
-			var type = Designer.Dom.GetType (SelectedFigures.OfType<TypeFigure> ().SingleOrDefault ().TypeFullName);
+			var type = Designer.Dom.GetType (SelectedFigures.OfType<TypeFigure> ().SingleOrDefault ().DecoratedFullName);
 			if (type != null) {
 				IdeApp.ProjectOperations.JumpToDeclaration (type);
 			}
@@ -57,7 +57,7 @@ namespace MonoDevelop.ClassDesigner.Commands
 		protected void GoToDeclarationUpdate (CommandInfo info)
 		{
 			if (SelectedFigures.Count () == 1) {
-				var type = Designer.Dom.GetType (SelectedFigures.OfType<TypeFigure> ().SingleOrDefault ().TypeFullName);
+				var type = Designer.Dom.GetType (SelectedFigures.OfType<TypeFigure> ().SingleOrDefault ().DecoratedFullName);
 				info.Enabled = info.Visible = IdeApp.ProjectOperations.CanJumpToDeclaration (type);
 			} else {
 				info.Enabled = info.Visible = false;
