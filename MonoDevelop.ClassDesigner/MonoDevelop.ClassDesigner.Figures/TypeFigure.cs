@@ -344,6 +344,11 @@ namespace MonoDevelop.ClassDesigner.Figures
 		
 		protected virtual void RebuildCompartments ()
 		{
+			foreach (var member in Members) {
+				if (member.Parent != null) {
+					member.Parent.Remove (member);
+				}
+			}
 			MemberCompartments.Clear ();
 			var notNested = Members.Where (m => m.MemberInfo.MemberType != MemberType.Type);
 			
