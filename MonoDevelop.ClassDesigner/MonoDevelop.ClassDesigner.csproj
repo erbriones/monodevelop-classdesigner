@@ -89,7 +89,6 @@
     <Compile Include="MonoDevelop.ClassDesigner.Gui\MonoDevelop.ClassDesigner.Gui.Toolbox\FigureToolboxItemNode.cs" />
     <Compile Include="ClassDiagram.cs" />
     <Compile Include="DiagramEventArgs.cs" />
-    <Compile Include="MonoDevelop.ClassDesigner.Figures\INestedTypeSupport.cs" />
     <Compile Include="ClassDesigner.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Figures\ConnectionType.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Figures\AssociationLine.cs" />

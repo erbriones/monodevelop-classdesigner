@@ -33,21 +33,17 @@ using MonoDevelop.Projects.Dom;
 
 namespace MonoDevelop.ClassDesigner.Figures
 {
-	public sealed class StructFigure : TypeFigure, INestedTypeSupport
+	public sealed class StructFigure : TypeFigure
 	{
-		List<IFigure> nestedFigures;
-		
 		public StructFigure () : base ()
 		{
 			// TODO: de-duplicate this stuff...
 			FillColor = new Cairo.Color (0.9960, 0.9960, 0.3555);
-			nestedFigures = new List<IFigure> ();
 		}
 		
 		public StructFigure (IType domType) : base(domType)
 		{
 			FillColor = new Cairo.Color (0.9960, 0.9960, 0.3555);
-			nestedFigures = new List<IFigure> ();
 		}
 
 		#region ISerializableFigure implementation
@@ -62,21 +58,5 @@ namespace MonoDevelop.ClassDesigner.Figures
 		public override ClassType ClassType {
 			get { return ClassType.Struct; }
 		}
-
-		#region INestedTypeSupport implementation
-		public void AddNestedType (IFigure figure)
-		{
-			nestedFigures.Add (figure);
-		}
-
-		public void RemoveNestedType (IFigure figure)
-		{
-			nestedFigures.Remove (figure);
-		}
-
-		public IEnumerable<IFigure> NestedTypes {
-			get { return nestedFigures; }
-		}
-		#endregion
 	}
 }

@@ -36,16 +36,14 @@ using MonoDevelop.Projects.Dom;
 
 namespace MonoDevelop.ClassDesigner.Figures
 {		
-	public sealed class ClassFigure: TypeFigure, INestedTypeSupport
+	public sealed class ClassFigure: TypeFigure
 	{
-		List<IFigure> nestedFigures;
 		bool hideInheritance;
 		
 		public ClassFigure () : base ()
 		{
 			// TODO: de-duplicate this stuff...
 			hideInheritance = false;
-			nestedFigures = new List<IFigure> ();
 			FillColor = new Cairo.Color (0.6367, 0.6367, 0.9570);
 		}
 			
@@ -53,7 +51,6 @@ namespace MonoDevelop.ClassDesigner.Figures
 		public ClassFigure (IType domType) : base (domType)
 		{
 			hideInheritance = false;
-			nestedFigures = new List<IFigure> ();
 			FillColor = new Cairo.Color (0.6367, 0.6367, 0.9570);
 		}
 		
@@ -86,22 +83,6 @@ namespace MonoDevelop.ClassDesigner.Figures
 			set { hideInheritance = value; }
 		}
 		
-		#region INestedTypeSupport implementation
-		public void AddNestedType (IFigure figure)
-		{
-			nestedFigures.Add (figure);
-		}
-
-		public void RemoveNestedType (IFigure figure)
-		{
-			nestedFigures.Remove (figure);
-		}
-
-		public IEnumerable<IFigure> NestedTypes {
-			get { return nestedFigures; }
-		}
-		#endregion
-		
 		public string BaseDecoratedFullName {
 			get;
 			private set;
@@ -115,7 +96,9 @@ namespace MonoDevelop.ClassDesigner.Figures
 		
 		public override void Rebuild (IType domType) {
 			base.Rebuild (domType);
-			BaseDecoratedFullName = (domType.BaseType == null) ? null : domType.BaseType.DecoratedFullName;
+			BaseDecoratedFullName = domType.BaseType == null
+				? DecoratedFullName == "System.Object"
+					? null : "System.Object" : domType.BaseType.DecoratedFullName;
 		}
 	}
 }
