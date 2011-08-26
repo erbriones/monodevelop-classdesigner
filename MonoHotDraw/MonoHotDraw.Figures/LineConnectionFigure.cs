@@ -31,232 +31,116 @@ using System.Runtime.Serialization;
 using MonoHotDraw.Connectors;
 using MonoHotDraw.Handles;
 using MonoHotDraw.Locators;
+using MonoHotDraw.Util;
 
 namespace MonoHotDraw.Figures
 {
 	[Serializable]
-	public class LineConnectionFigure : PolyLineFigure, IConnectionFigure, IDeserializationCallback
+	public class LineConnectionFigure : ConnectionFigure
 	{
-		public LineConnectionFigure () : base ()
+		protected LineConnectionFigure (SerializationInfo info, StreamingContext context)
 		{
-			AddPoint (0.0, 0.0);
-			AddPoint (0.0, 0.0);
-		}
-
-		protected LineConnectionFigure (SerializationInfo info, StreamingContext context) : base (info, context)
-		{
-			_endConnector = (IConnector) info.GetValue ("EndConnector", typeof (IConnector));
-			_startConnector = (IConnector) info.GetValue ("StartConnector", typeof (IConnector));
+			Line = (PolyLineFigure) info.GetValue ("Line", typeof (PolyLineFigure));
 		}
 		
-		public event EventHandler ConnectionChanged;
-
-		public LineConnectionFigure (IFigure fig1, IFigure fig2) : this ()
+		public LineConnectionFigure () : this (null, null)
 		{
-			if (fig1 != null)
-				ConnectStart (fig1.ConnectorAt (0.0, 0.0));
-
-			if (fig2 != null)
-				ConnectEnd (fig2.ConnectorAt (0.0, 0.0));
+			Line.AddPoint (0.0, 0.0);
+			Line.AddPoint (0.0, 0.0);
 		}
 
-		public virtual IConnector StartConnector
+		public LineConnectionFigure (IFigure startFigure, IFigure endFigure) : base (startFigure, endFigure)
 		{
-			get { return _startConnector; }
-			protected set { _startConnector = value; }
-		}
-
-		public virtual IConnector EndConnector
-		{
-			get { return _endConnector; }
-			protected set {	_endConnector = value; }
+			Line = new PolyLineFigure ();
+			UpdateConnection ();
 		}
 		
-		#region Serialization
-		public void OnDeserialization (Object sender)
-		{
-			ConnectFigure (_startConnector);
-			StartConnector = _startConnector;
-			
-			ConnectFigure (_endConnector);
-			EndConnector = _endConnector;
-		}
-		
-		public override void GetObjectData (SerializationInfo info, StreamingContext context)
-		{
-			info.AddValue ("EndConnector",   EndConnector);
-			info.AddValue ("StartConnector", StartConnector);
-			
-			base.GetObjectData (info, context);
-		}
-		
-		#endregion
-
-		public virtual void ConnectStart (IConnector start)
-		{
-			if (StartConnector == start)
-				return;
-
-			DisconnectStart ();
-			StartConnector = start;
-			ConnectFigure (StartConnector);
-			OnConnectionChanged ();
-		}
-
-		public virtual void ConnectEnd (IConnector end)
-		{
-			if (EndConnector == end)
-				return;
-			
-			DisconnectEnd ();
-			EndConnector = end;
-			ConnectFigure (EndConnector);
-			OnConnectionChanged ();
-		}
-
-		public virtual void DisconnectStart ()
-		{
-			if (StartConnector == null)
-				return;
-			
-			DisconnectFigure (StartConnector);
-			StartConnector = null;
-			OnConnectionChanged();
-		}
-
-		public virtual void DisconnectEnd ()
-		{
-			if (EndConnector == null)
-				return;
-			
-			DisconnectFigure (EndConnector);
-			EndConnector = null;
-			OnConnectionChanged();
-		}
-
-		public virtual bool CanConnectEnd (IFigure figure)
-		{
-			return true;
-		}
-
-		public virtual bool CanConnectStart (IFigure figure)
-		{
-			return true;
-		}
-
-		public virtual IFigure StartFigure
-		{
-			get {
-				if (StartConnector != null)
-					return StartConnector.Owner;
-				
-				return null;
-			}
-		}
-		
-		public virtual IFigure EndFigure {
-			get {
-				if (EndConnector != null)
-					return EndConnector.Owner;
-
-				return null;
-			}
-		}
-		
-		public virtual void UpdateConnection ()
-		{	
-			if (StartConnector != null)
-				StartPoint = StartConnector.FindStart (this);
-
-			if (EndConnector != null)
-				EndPoint = EndConnector.FindEnd (this);
-		}
-		
-		public virtual IHandle StartHandle {
+		public override IHandle StartHandle {
 			get { return new ChangeConnectionStartHandle (this); }
 		}
 		
-		public virtual IHandle EndHandle {
+		public override IHandle EndHandle {
 			get { return new ChangeConnectionEndHandle (this); }
 		}
-
-		protected override void BasicMoveBy (double x, double y)
-		{
-			for (int i = 1; i < PointCount - 1; i++) {
-				PointD newpoint = PointAt (i);
-				newpoint.X += x;
-				newpoint.Y += y;
-				SetPointAt (i, newpoint.X, newpoint.Y);
-			}
 		
-			UpdateConnection ();
+		public override PointD StartPoint {
+			get { return Line.StartPoint; }
+			set { Line.StartPoint = value; }
+		}
+		
+		public override PointD EndPoint {
+			get { return Line.EndPoint; }
+			set { Line.EndPoint = value; }
+		}
+		
+		public override PointD AfterStart {
+			get { return Line.PointAt (1); }
+		}
+		
+		public override PointD BeforeEnd {
+			get { return Line.PointAt (Line.PointCount - 2); }
+		}
+		
+		public PolyLineFigure Line { get; protected set; }
+
+		protected override RectangleD BasicDisplayBox {
+			get { return Line.DisplayBox; }
+			set { Line.DisplayBox = value; }
 		}
 		
 		public override bool CanConnect {
 			get { return false; }
 		}
-
-		public override void SetPointAt (int index, double x, double y)
-		{
-			base.SetPointAt (index, x, y);
-			UpdateConnection ();
-		}
 		
-		public override void RemovePointAt (int i)
-		{
-			base.RemovePointAt (i);
-			UpdateConnection ();
-		}
-		
-		public override void InsertPointAt (int index, double x, double y)
-		{
-			base.InsertPointAt (index, x, y);
-			UpdateConnection ();
-		}
-
-		public override IEnumerable <IHandle> Handles {
+		public override IEnumerable<IFigure> Figures {
 			get {
-				if (PointCount < 2)
+				foreach (var figure in base.Figures) {
+					yield return figure;
+				}
+				yield return Line;
+			}
+		}
+
+		public override IEnumerable<IHandle> Handles {
+			get {
+				if (Line.PointCount < 2)
 					yield break;
 
-				yield return StartHandle;
+				foreach (var handle in base.Handles) {
+					yield return handle;
+				}
 				
-				for (int i = 1; i < PointCount - 1; i++)
-					yield return new LineConnectionHandle (this, new PolyLineLocator (i), i);
-
-				yield return EndHandle;
+				for (int i = 1; i < Line.PointCount - 1; i++)
+					yield return new LineConnectionHandle (Line, new PolyLineLocator (i), i);
 			}
 		}
 		
-		protected virtual void OnConnectionChanged ()
+		protected override void BasicMoveBy (double x, double y)
 		{
-			if (ConnectionChanged != null)
-				ConnectionChanged (this, EventArgs.Empty);
-		}
-		
-		private void ConnectFigure (IConnector connector)
-		{
-			if (connector == null)
-				return;
-			
-			connector.Owner.FigureChanged += FigureChangedHandler;
+			Line.MoveBy (x, y);
 			UpdateConnection ();
 		}
 		
-		private void DisconnectFigure (IConnector connector)
+		public override void UpdateConnection ()
 		{
-			if (connector == null)
-				return;
-			
-			connector.Owner.FigureChanged -= FigureChangedHandler;
-		}
-
-		private void FigureChangedHandler (object sender, FigureEventArgs args)
-		{
-			UpdateConnection ();
+			if (Line != null) {
+				WillChange ();
+				if (StartConnector != null) {
+					Line.StartPoint = StartConnector.FindStart (this);
+				}
+				if (EndConnector != null) {
+					Line.EndPoint = EndConnector.FindEnd (this);
+				}
+				Changed ();
+			}
 		}
 		
-		private IConnector _endConnector;
-		private IConnector _startConnector;
+		#region Serialization
+		public override void GetObjectData (SerializationInfo info, StreamingContext context)
+		{
+			base.GetObjectData (info, context);
+			info.AddValue ("Line", Line);
+		}
+		#endregion
 	}
 }

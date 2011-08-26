@@ -43,24 +43,14 @@ namespace MonoHotDraw.Connectors
 		}
 		
 		#region Public Members
-		public override PointD FindStart (IConnectionFigure connection)
+		public override PointD FindStart (ConnectionFigure connection)
 		{
-			if (connection == null)
-				return DisplayBox.Center;
-				
-			PointD point = connection.PointAt (1);
-	
-			return Chop (Owner, point);
+			return connection == null ? DisplayBox.Center : Chop (Owner, connection.AfterStart);
 		}
 
-		public override PointD FindEnd (IConnectionFigure connection)
+		public override PointD FindEnd (ConnectionFigure connection)
 		{
-			if (connection == null)
-				return DisplayBox.Center;
-
-			PointD point = connection.PointAt (connection.PointCount - 2);
-
-			return Chop (Owner, point);
+			return connection == null ? DisplayBox.Center : Chop (Owner, connection.BeforeEnd);
 		}
 		#endregion
 		

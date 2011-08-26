@@ -39,6 +39,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 		{
 			type = ConnectionType.Inheritance;
 			ConnectionLine = new InheritanceLine ();
+			SetAttribute (FigureAttribute.Selectable, true);
 			Add (ConnectionLine);
 		}
 		
@@ -48,11 +49,11 @@ namespace MonoDevelop.ClassDesigner.Figures
 			    !ConnectionLine.CanConnectEnd (superClass))
 				throw new InvalidOperationException ("Both figures must be class figures.");
 				
-			ConnectionLine.DisconnectEnd ();
-			ConnectionLine.DisconnectStart ();
+			ConnectionLine.EndConnector = null;
+			ConnectionLine.EndConnector = null;
 
-			ConnectionLine.ConnectStart (subClass.ConnectorAt (0.0, 0.0));
-			ConnectionLine.ConnectEnd (superClass.ConnectorAt (0.0, 0.0));
+			ConnectionLine.StartConnector = subClass.ConnectorAt (0.0, 0.0);
+			ConnectionLine.EndConnector = superClass.ConnectorAt (0.0, 0.0);
 		}
 		
 		public ConnectionType Type {

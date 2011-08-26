@@ -31,13 +31,13 @@ namespace MonoDevelop.ClassDesigner.Figures
 {
 	public abstract class AbstractConnectionFigure : CompositeFigure
 	{
-		IConnectionFigure _line;
+		ConnectionFigure _line;
 		
 		protected AbstractConnectionFigure ()
 		{
 		}
 		
-		public IConnectionFigure ConnectionLine {
+		public ConnectionFigure ConnectionLine {
 			get { return _line; }
 			set { _line = value; }
 		}

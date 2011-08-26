@@ -36,7 +36,7 @@ namespace MonoHotDraw.Handles
 {
 	public abstract class ChangeConnectionHandle : AbstractHandle
 	{
-		protected ChangeConnectionHandle (IConnectionFigure owner) : base (owner)
+		protected ChangeConnectionHandle (ConnectionFigure owner) : base (owner)
 		{
 			Connection = owner;
 			TargetFigure = null;
@@ -154,7 +154,7 @@ namespace MonoHotDraw.Handles
 		
 		protected abstract PointD FindPoint (IConnector connector);
 
-		protected IConnectionFigure Connection { get; set; }
+		protected ConnectionFigure Connection { get; set; }
 
 		protected IFigure TargetFigure { get; set; }
 		#endregion

@@ -162,7 +162,6 @@
     <Compile Include="MonoHotDraw.Figures\VStackFigure.cs" />
     <Compile Include="MonoHotDraw.Figures\CompositeFigure.cs" />
     <Compile Include="MonoHotDraw.Figures\HStackFigure.cs" />
-    <Compile Include="MonoHotDraw.Figures\IConnectionFigure.cs" />
     <Compile Include="MonoHotDraw.Figures\TextFigure.cs" />
     <Compile Include="MonoHotDraw.Tools\MenuTool.cs" />
     <Compile Include="DrawingEvent.cs" />
@@ -174,6 +173,7 @@
     <Compile Include="MonoHotDraw.Vistor\InsertIntoDrawingVisitor.cs" />
     <Compile Include="MonoHotDraw.Vistor\IFigureVisitor.cs" />
     <Compile Include="MonoHotDraw.Vistor\DrawInRegionVisitor.cs" />
+    <Compile Include="MonoHotDraw.Figures\ConnectionFigure.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

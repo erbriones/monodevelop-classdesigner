@@ -37,11 +37,11 @@ namespace MonoHotDraw.Tools
 {
 	public class ConnectionCreationTool : CreationTool
 	{
-		public ConnectionCreationTool (IDrawingEditor editor, IConnectionFigure fig) : base (editor, fig)
+		public ConnectionCreationTool (IDrawingEditor editor, ConnectionFigure fig) : base (editor, fig)
 		{
 			_connection = fig;
-			_connection.DisconnectStart ();
-			_connection.DisconnectEnd ();
+			_connection.StartConnector = null;
+			_connection.EndConnector = null;
 		}
 		
 		#region Mouse Events
@@ -59,7 +59,7 @@ namespace MonoHotDraw.Tools
 			if (figure != null) {
 				_connection.EndPoint = new PointD (ev.X, ev.Y);
 				_connection.StartPoint = new PointD (ev.X, ev.Y);
-				_connection.ConnectStart (figure.ConnectorAt (ev.X, ev.Y));
+				_connection.StartConnector = figure.ConnectorAt (ev.X, ev.Y);
 				_connection.UpdateConnection ();
 				view.Drawing.Add (_connection);
 				view.ClearSelection ();
@@ -77,8 +77,8 @@ namespace MonoHotDraw.Tools
 				_handle.InvokeEnd (ev.X, ev.Y, ev.View);
 						
 			if (_connection.EndConnector == null) {
-				_connection.DisconnectStart ();
-				_connection.DisconnectEnd ();
+				_connection.StartConnector = null;
+				_connection.EndConnector = null;
 				ev.View.Drawing.Remove (_connection);
 				ev.View.ClearSelection ();
 				UndoActivity = null;
@@ -116,8 +116,8 @@ namespace MonoHotDraw.Tools
 				if (!base.Undo ())
 					return false;
 				
-				Connection.DisconnectStart ();
-				Connection.DisconnectEnd ();
+				Connection.StartConnector = null;
+				Connection.EndConnector = null;
 				DrawingView.Drawing.Remove (Connection);
 				DrawingView.RemoveFromSelection (Connection);
 				
@@ -130,13 +130,13 @@ namespace MonoHotDraw.Tools
 					return false;
 				
 				DrawingView.Drawing.Add (Connection);
-				Connection.ConnectStart (StartConnector);
-				Connection.ConnectEnd (EndConnector);
+				Connection.StartConnector = StartConnector;
+				Connection.EndConnector = EndConnector;
 				
 				return true;
 			}
 			
-			public IConnectionFigure Connection { set; get; }
+			public ConnectionFigure Connection { set; get; }
 			public IConnector StartConnector { set; get; }
 			public IConnector EndConnector { set; get; }
 		}
@@ -152,7 +152,7 @@ namespace MonoHotDraw.Tools
 		}
 
 		private IHandle _handle;
-		private IConnectionFigure _connection;	
+		private ConnectionFigure _connection;	
 		#endregion
 	}
 }

@@ -32,12 +32,12 @@ namespace MonoDevelop.ClassDesigner.Figures
 		{
 			public InheritanceLine () : base ()
 			{
-				EndTerminal = new TriangleArrowLineTerminal ();
+				Line.EndTerminal = new TriangleArrowLineTerminal ();
 			}
 			
 			public InheritanceLine (IFigure fig1, IFigure fig2) : base (fig1, fig2)
 			{
-				EndTerminal = new TriangleArrowLineTerminal ();
+				Line.EndTerminal = new TriangleArrowLineTerminal ();
 			}
 			
 			public override bool CanConnectEnd (IFigure figure)

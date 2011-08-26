@@ -60,8 +60,8 @@ namespace MonoDevelop.ClassDesigner.Figures
 			
 			Member = member;
 			
-			ConnectionLine.ConnectStart (startFigure.ConnectorAt (0.0, 0.0));
-			ConnectionLine.ConnectEnd (endFigure.ConnectorAt (0.0, 0.0));
+			ConnectionLine.StartConnector = startFigure.ConnectorAt (0.0, 0.0);
+			ConnectionLine.EndConnector = endFigure.ConnectorAt (0.0, 0.0);
 			
 			// FIXME: handle collection setup
 			//
@@ -81,14 +81,14 @@ namespace MonoDevelop.ClassDesigner.Figures
 		
 		public void Show ()
 		{
-			ConnectionLine.ConnectStart (ConnectionLine.StartConnector);
-			ConnectionLine.ConnectEnd (ConnectionLine.EndConnector);
+			ConnectionLine.StartConnector = ConnectionLine.StartConnector;
+			ConnectionLine.EndConnector = ConnectionLine.EndConnector;
 		}
 		
 		public void Hide ()
 		{
-			ConnectionLine.DisconnectStart ();
-			ConnectionLine.DisconnectEnd ();
+			ConnectionLine.StartConnector = null;
+			ConnectionLine.EndConnector = null;
 		}
 	}
 }

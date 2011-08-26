@@ -31,7 +31,7 @@ namespace MonoHotDraw.Handles {
 
 	public class ChangeConnectionEndHandle: ChangeConnectionHandle {
 	
-		public ChangeConnectionEndHandle (IConnectionFigure owner): base (owner) {
+		public ChangeConnectionEndHandle (ConnectionFigure owner): base (owner) {
 		}
 
 		public override PointD Locate () {
@@ -43,11 +43,11 @@ namespace MonoHotDraw.Handles {
 		}
 
 		protected override void Connect (IConnector connector) {
-			Connection.ConnectEnd (connector);
+			Connection.EndConnector = connector;
 		}
 
 		protected override void Disconnect () {
-			Connection.DisconnectEnd ();
+			Connection.EndConnector = null;
 		}
 		
 		protected override bool IsConnectionPossible (IFigure figure) {

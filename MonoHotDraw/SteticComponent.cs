@@ -96,7 +96,7 @@ namespace MonoHotDraw
 			Tool = new ResizeCreationTool(this, figure);
 		}
 		
-		public void AddConnection (IConnectionFigure figure)
+		public void AddConnection (ConnectionFigure figure)
 		{
 			Tool = new ConnectionCreationTool(this, figure);
 		}

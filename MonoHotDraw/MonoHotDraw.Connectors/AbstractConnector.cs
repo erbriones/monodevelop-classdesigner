@@ -63,12 +63,12 @@ namespace MonoHotDraw.Connectors
 		{
 		}
 
-		public virtual PointD FindStart (IConnectionFigure connection)
+		public virtual PointD FindStart (ConnectionFigure connection)
 		{
 			return DisplayBox.Center;
 		}
 
-		public virtual PointD FindEnd (IConnectionFigure connection)
+		public virtual PointD FindEnd (ConnectionFigure connection)
 		{
 			return DisplayBox.Center;
 		}

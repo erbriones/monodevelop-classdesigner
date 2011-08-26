@@ -37,8 +37,8 @@ namespace MonoHotDraw.Connectors
 		RectangleD DisplayBox { get; }
 		IFigure Owner { get; }
 
-		PointD FindStart (IConnectionFigure connection);
-		PointD FindEnd (IConnectionFigure connection);
+		PointD FindStart (ConnectionFigure connection);
+		PointD FindEnd (ConnectionFigure connection);
 		bool ContainsPoint (double x, double y);
 		void Draw (Context context);
 	}

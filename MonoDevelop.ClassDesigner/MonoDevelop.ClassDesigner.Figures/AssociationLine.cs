@@ -34,12 +34,12 @@ namespace MonoDevelop.ClassDesigner
 	{				
 		internal AssociationLine () : base ()
 		{
-			EndTerminal = new TriangleArrowLineTerminal (5.0, 10.0);
+			Line.EndTerminal = new TriangleArrowLineTerminal (5.0, 10.0);
 		}
 		
 		internal AssociationLine (IFigure fig1, IFigure fig2) : base (fig1, fig2)
 		{
-			EndTerminal = new TriangleArrowLineTerminal (5.0, 10.0);
+			Line.EndTerminal = new TriangleArrowLineTerminal (5.0, 10.0);
 		}
 								
 		public override bool CanConnectStart (IFigure figure)
@@ -66,11 +66,6 @@ namespace MonoDevelop.ClassDesigner
 				return true;
 			
 			return false;
-		}
-
-		public override void DisconnectStart ()
-		{
-			base.DisconnectStart ();
 		}
 	}
 }

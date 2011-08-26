@@ -31,7 +31,7 @@ namespace MonoHotDraw.Handles
 {
 	public class ChangeConnectionStartHandle : ChangeConnectionHandle
 	{
-		public ChangeConnectionStartHandle (IConnectionFigure owner) : base (owner)
+		public ChangeConnectionStartHandle (ConnectionFigure owner) : base (owner)
 		{
 		}
 		
@@ -50,12 +50,12 @@ namespace MonoHotDraw.Handles
 
 		protected override void Connect (IConnector connector)
 		{
-			Connection.ConnectStart (connector);
+			Connection.StartConnector = connector;
 		}
 
 		protected override void Disconnect ()
 		{
-			Connection.DisconnectStart ();
+			Connection.StartConnector = null;
 		}
 		
 		protected override bool IsConnectionPossible (IFigure figure)
