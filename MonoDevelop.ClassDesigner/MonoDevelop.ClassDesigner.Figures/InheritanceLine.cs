@@ -28,40 +28,26 @@ using MonoHotDraw.Figures;
 
 namespace MonoDevelop.ClassDesigner.Figures
 {
-		internal sealed class InheritanceLine : LineConnectionFigure
+	internal sealed class InheritanceLine : LineConnectionFigure
+	{
+		public InheritanceLine () : base ()
 		{
-			public InheritanceLine () : base ()
-			{
-				Line.EndTerminal = new TriangleArrowLineTerminal ();
-			}
-			
-			public InheritanceLine (IFigure fig1, IFigure fig2) : base (fig1, fig2)
-			{
-				Line.EndTerminal = new TriangleArrowLineTerminal ();
-			}
-			
-			public override bool CanConnectEnd (IFigure figure)
-			{
-				if (!(figure is ClassFigure))
-					return false;
-				
-				if (figure.Includes (StartFigure))
-					return false;
-				
-				return true;
-			}
-			
-			public override bool CanConnectStart (IFigure figure)
-			{
-				if (!(figure is ClassFigure))
-					return false;
-				
-				if (figure.Includes (EndFigure))
-					return false;
-				
-				return true;
-			}
+			Line.EndTerminal = new TriangleArrowLineTerminal ();
 		}
-
+		
+		public InheritanceLine (IFigure derivedFigure, IFigure baseFigure) : base (derivedFigure, baseFigure)
+		{
+			Line.EndTerminal = new TriangleArrowLineTerminal ();
+		}
+		
+		public override bool CanConnectEnd (IFigure figure)
+		{
+			return figure is ClassFigure && !figure.Includes (StartFigure);
+		}
+		
+		public override bool CanConnectStart (IFigure figure)
+		{
+			return figure is ClassFigure && !figure.Includes (EndFigure);
+		}
+	}
 }
-

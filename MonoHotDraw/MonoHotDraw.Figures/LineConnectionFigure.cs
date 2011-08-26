@@ -45,13 +45,13 @@ namespace MonoHotDraw.Figures
 		
 		public LineConnectionFigure () : this (null, null)
 		{
-			Line.AddPoint (0.0, 0.0);
-			Line.AddPoint (0.0, 0.0);
 		}
 
 		public LineConnectionFigure (IFigure startFigure, IFigure endFigure) : base (startFigure, endFigure)
 		{
 			Line = new PolyLineFigure ();
+			Line.AddPoint (0.0, 0.0);
+			Line.AddPoint (0.0, 0.0);
 			UpdateConnection ();
 		}
 		

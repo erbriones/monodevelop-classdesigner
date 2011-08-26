@@ -36,24 +36,15 @@ using MonoHotDraw.Figures;
 
 namespace MonoDevelop.ClassDesigner.Figures
 {
-	public sealed class InterfaceFigure : TypeFigure, IAssociation
+	public sealed class InterfaceFigure : TypeFigure
 	{
-		List<AssociationConnectionFigure> associations;
-		bool hideAssociations;		
-		bool hideCollection;
-		
 		public InterfaceFigure () : base ()
 		{
-			// TODO: de-duplicate this stuff...
-			hideCollection = false;
-			hideAssociations = false;
 			FillColor = new Cairo.Color (0.9140, 0.9140, 0.9140);
 		}
 		
 		public InterfaceFigure (IType domType) : base (domType)
 		{
-			hideCollection = false;
-			hideAssociations = false;
 			FillColor = new Cairo.Color (0.9140, 0.9140, 0.9140);
 		}
 
@@ -69,68 +60,5 @@ namespace MonoDevelop.ClassDesigner.Figures
 		public override ClassType ClassType {
 			get { return ClassType.Interface; }
 		}
-		
-		#region IAssociation
-		public bool HideAssociations {
-			get { return hideAssociations; }
-			set {
-				if (hideAssociations == value)
-					return;
-				
-				hideAssociations = value;
-				
-				if (hideAssociations) {
-					associations.ForEach ((a) => {
-						if (a.Type == ConnectionType.Association)
-							a.Hide ();
-					});
-				} else {
-					associations.ForEach ((a) => {
-						if (a.Type == ConnectionType.Association)
-							a.Show ();
-					});
-				}
-			}
-		}
-
-		public bool HideCollectionAssocations {
-			get { return hideCollection; }
-			set {
-				if (hideCollection == value)
-					return;
-				
-				hideCollection = value;
-				
-				if (hideCollection) {
-					associations.ForEach ((a) => {
-						if (a.Type == ConnectionType.CollectionAssociation)
-							a.Hide ();
-					});
-				} else {
-					associations.ForEach ((a) => {
-						if (a.Type == ConnectionType.CollectionAssociation)
-							a.Show ();
-					});
-				}
-			}
-		}
-
-		public IEnumerable<IFigure> AssociationFigures {
-			get {
-				throw new NotImplementedException ();
-			}
-		}
-
-		public void AddAssociation (IBaseMember memberInfo, IFigure associatedFigure, bool AsCollection)
-		{
-			throw new NotImplementedException ();
-		}
-
-		public void RemoveAssociation (IBaseMember memberInfo)
-		{
-			throw new NotImplementedException ();
-		}
-		
-		#endregion
 	}
 }

@@ -123,7 +123,7 @@ namespace MonoDevelop.ClassDesigner
 						superclass = Diagram.GetTypeFigure (type.BaseType.Name) as ClassFigure;
 					
 					if (subclass != null && superclass != null) {
-						var connection = new InheritanceConnectionFigure (subclass, superclass);
+						var connection = new InheritanceLine (subclass, superclass);
 						View.Add (connection);
 					}
 				}
@@ -438,14 +438,14 @@ namespace MonoDevelop.ClassDesigner
 				return;
 			
 			if (connectorItem != null) {
-				AbstractConnectionFigure connector;
-				
-				if (connectorItem.ConnectorType == ConnectionType.Inheritance)
-					connector = new InheritanceConnectionFigure ();
-				else
-					connector = new AssociationConnectionFigure (connectorItem.ConnectorType);
-				
-				Tool = new ConnectionCreationTool (this, connector.ConnectionLine);
+//				AbstractConnectionFigure connector;
+//				
+//				if (connectorItem.ConnectorType == ConnectionType.Inheritance)
+//					connector = new InheritanceConnectionFigure ();
+//				else
+//					connector = new AssociationConnectionFigure (connectorItem.ConnectorType);
+//				
+//				Tool = new ConnectionCreationTool (this, connector.ConnectionLine);
 				return;
 			}
 			

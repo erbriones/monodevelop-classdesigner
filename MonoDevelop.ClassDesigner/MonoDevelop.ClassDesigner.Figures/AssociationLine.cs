@@ -30,42 +30,29 @@ using MonoHotDraw.Figures;
 
 namespace MonoDevelop.ClassDesigner
 {
-	internal sealed class AssociationLine : AbstractLine
-	{				
+	internal sealed class AssociationLine : LineConnectionFigure
+	{
+		MemberFigure member;
+		
 		internal AssociationLine () : base ()
 		{
 			Line.EndTerminal = new TriangleArrowLineTerminal (5.0, 10.0);
 		}
 		
-		internal AssociationLine (IFigure fig1, IFigure fig2) : base (fig1, fig2)
+		internal AssociationLine (MemberFigure member, IFigure fig1, IFigure fig2) : base (fig1, fig2)
 		{
+			this.member = member;
 			Line.EndTerminal = new TriangleArrowLineTerminal (5.0, 10.0);
 		}
 								
 		public override bool CanConnectStart (IFigure figure)
 		{
-			if (figure is CommentFigure)
-				return false;
-			else if (figure.Includes (EndFigure))
-				return false;
-			else if (figure is TypeFigure)
-				return true;
-			
-			return false;
+			return figure is TypeFigure && !(figure is EnumFigure);
 		}
 		
 		public override bool CanConnectEnd (IFigure figure)
 		{
-			if (figure is CommentFigure)
-				return false;
-			else if (figure is DelegateFigure)
-				return false;
-			else if (figure.Includes (StartFigure))
-				return false;
-			else if (figure is TypeFigure)
-				return true;
-			
-			return false;
+			return figure is TypeFigure;
 		}
 	}
 }

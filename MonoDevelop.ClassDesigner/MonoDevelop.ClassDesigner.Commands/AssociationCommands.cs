@@ -39,13 +39,14 @@ namespace MonoDevelop.ClassDesigner.Commands
 	{
 		public override bool CanHandle (IEnumerable<IFigure> figures)
 		{
-			if (figures == null)
-				return false;
-			
-			if(figures.Count () == 0)
-				return false;
-			
-			return figures.All (f => f is IAssociation);
+			return false;
+//			if (figures == null)
+//				return false;
+//			
+//			if(figures.Count () == 0)
+//				return false;
+//			
+//			return figures.All (f => f is IAssociation);
 		}
 		
 		#region Commands

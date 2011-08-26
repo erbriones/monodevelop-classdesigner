@@ -79,7 +79,6 @@
     <Compile Include="MonoDevelop.ClassDesigner.Figures\CommentFigure.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Extensions\GenericNodeCommandHandler.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Extensions\GenericNodeBuilderExtension.cs" />
-    <Compile Include="MonoDevelop.ClassDesigner.Figures\IAssociation.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Figures\GroupingSetting.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Figures\MembersFormat.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Figures\ICollapsable.cs" />
@@ -92,11 +91,8 @@
     <Compile Include="DiagramEventArgs.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Figures\INestedTypeSupport.cs" />
     <Compile Include="ClassDesigner.cs" />
-    <Compile Include="MonoDevelop.ClassDesigner.Figures\AssociationConnectionFigure.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Figures\ConnectionType.cs" />
-    <Compile Include="MonoDevelop.ClassDesigner.Figures\AbstractConnectionFigure.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Figures\AssociationLine.cs" />
-    <Compile Include="MonoDevelop.ClassDesigner.Figures\AbstractLine.cs" />
     <Compile Include="gtk-gui\generated.cs" />
     <Compile Include="gtk-gui\MonoDevelop.ClassDesigner.Gui.Dialogs.AddFigureDialog.cs" />
     <Compile Include="DesignerCommands.cs" />
@@ -105,7 +101,6 @@
     <Compile Include="MonoDevelop.ClassDesigner.Extensions\ShowClassDesignerHandler.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Commands\ClassCommands.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Figures\InheritanceLine.cs" />
-    <Compile Include="MonoDevelop.ClassDesigner.Figures\InheritanceConnectionFigure.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Commands\CollapsableCommands.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Visitor\MemberFormatVisitor.cs" />
     <Compile Include="MonoDevelop.ClassDesigner.Visitor\GroupFormatVisitor.cs" />

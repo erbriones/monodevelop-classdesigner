@@ -88,7 +88,7 @@ namespace MonoDevelop.ClassDesigner.Commands
 						?? designer.Diagram.CreateTypeFigure (type);
 				var classFigure = designer.Diagram.GetTypeFigure (m.MemberInfo.DeclaringType.DecoratedFullName);
 				
-				designer.Diagram.Add (new AssociationConnectionFigure (m, ConnectionType.Association, classFigure, typeFigure));
+				designer.Diagram.Add (new AssociationLine (m, classFigure, typeFigure));
 			}
 		}
 		

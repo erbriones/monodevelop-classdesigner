@@ -33,9 +33,8 @@ using MonoDevelop.Projects.Dom;
 
 namespace MonoDevelop.ClassDesigner.Figures
 {
-	public sealed class StructFigure : TypeFigure, IAssociation, INestedTypeSupport
+	public sealed class StructFigure : TypeFigure, INestedTypeSupport
 	{
-		bool hideAssociations;
 		List<IFigure> nestedFigures;
 		
 		public StructFigure () : base ()
@@ -43,14 +42,12 @@ namespace MonoDevelop.ClassDesigner.Figures
 			// TODO: de-duplicate this stuff...
 			FillColor = new Cairo.Color (0.9960, 0.9960, 0.3555);
 			nestedFigures = new List<IFigure> ();
-			HideAssociations = false;
 		}
 		
 		public StructFigure (IType domType) : base(domType)
 		{
 			FillColor = new Cairo.Color (0.9960, 0.9960, 0.3555);
 			nestedFigures = new List<IFigure> ();
-			HideAssociations = false;
 		}
 
 		#region ISerializableFigure implementation
@@ -65,47 +62,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 		public override ClassType ClassType {
 			get { return ClassType.Struct; }
 		}
-	
-		#region IAssociation
-		public bool HideAssociations {
-			get { return hideAssociations; }
-			set {
-				if (hideAssociations == value)
-					return;
-				
-				hideAssociations = value;
-				
-			}
-		}
 
-		public bool HideCollectionAssocations {
-			get {
-				throw new NotImplementedException ();
-			}
-			set {
-				throw new NotImplementedException ();
-			}
-		}
-
-		public IEnumerable<IFigure> AssociationFigures {
-			get {
-				throw new NotImplementedException ();
-			}
-		}
-
-		public void AddAssociation (IBaseMember memberInfo, IFigure associatedFigure, bool AsCollection)
-		{
-			throw new NotImplementedException ();
-		}
-
-		public void RemoveAssociation (IBaseMember memberInfo)
-		{
-			throw new NotImplementedException ();
-		}
-
-		#endregion
-
-		//FIXME: Add to compartment correctly
 		#region INestedTypeSupport implementation
 		public void AddNestedType (IFigure figure)
 		{

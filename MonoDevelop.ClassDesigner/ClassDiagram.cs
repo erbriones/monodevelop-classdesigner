@@ -282,10 +282,10 @@ namespace MonoDevelop.ClassDesigner
 		{
 			var cf = e.Figure as ClassFigure;
 			if (cf != null) {
-				var toRemove = new List<InheritanceConnectionFigure> ();
+				var toRemove = new List<InheritanceLine> ();
 				var lines = Figures
-					.OfType<InheritanceConnectionFigure> ()
-					.Where (l => l.ConnectionLine.StartFigure == e.Figure || l.ConnectionLine.EndFigure == e.Figure);
+					.OfType<InheritanceLine> ()
+					.Where (l => l.StartFigure == e.Figure || l.EndFigure == e.Figure);
 				foreach (var line in lines) {
 					toRemove.Add (line);
 				}
@@ -302,7 +302,7 @@ namespace MonoDevelop.ClassDesigner
 			var baseFigure = GetTypeFigure (derivedFigure.BaseDecoratedFullName) as ClassFigure;
 			
 			if (baseFigure != null) {
-				Add (new InheritanceConnectionFigure (derivedFigure, baseFigure));
+				Add (new InheritanceLine (derivedFigure, baseFigure));
 			}
 		}
 		
@@ -312,11 +312,11 @@ namespace MonoDevelop.ClassDesigner
 				throw new ArgumentNullException ("baseFigure");
 			}
 			
-			var lines = new List<InheritanceConnectionFigure> ();
+			var lines = new List<InheritanceLine> ();
 			
 			foreach (var cf in Figures.OfType<ClassFigure> ()) {
 				if (cf.BaseDecoratedFullName == baseFigure.DecoratedFullName) {
-					lines.Add (new InheritanceConnectionFigure (cf, baseFigure));
+					lines.Add (new InheritanceLine (cf, baseFigure));
 				}
 			}
 			

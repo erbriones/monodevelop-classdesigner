@@ -36,19 +36,15 @@ using MonoDevelop.Projects.Dom;
 
 namespace MonoDevelop.ClassDesigner.Figures
 {		
-	public sealed class ClassFigure: TypeFigure, IAssociation, INestedTypeSupport
+	public sealed class ClassFigure: TypeFigure, INestedTypeSupport
 	{
 		List<IFigure> nestedFigures;
-		List<AssociationConnectionFigure> associations;
 		bool hideInheritance;
-		bool hideAssociations;
-		bool hideCollection;
 		
 		public ClassFigure () : base ()
 		{
 			// TODO: de-duplicate this stuff...
 			hideInheritance = false;
-			HideAssociations = false;
 			nestedFigures = new List<IFigure> ();
 			FillColor = new Cairo.Color (0.6367, 0.6367, 0.9570);
 		}
@@ -57,7 +53,6 @@ namespace MonoDevelop.ClassDesigner.Figures
 		public ClassFigure (IType domType) : base (domType)
 		{
 			hideInheritance = false;
-			HideAssociations = false;
 			nestedFigures = new List<IFigure> ();
 			FillColor = new Cairo.Color (0.6367, 0.6367, 0.9570);
 		}
@@ -91,7 +86,6 @@ namespace MonoDevelop.ClassDesigner.Figures
 			set { hideInheritance = value; }
 		}
 		
-		// FIXME need to probably add to compartment
 		#region INestedTypeSupport implementation
 		public void AddNestedType (IFigure figure)
 		{
@@ -105,76 +99,6 @@ namespace MonoDevelop.ClassDesigner.Figures
 
 		public IEnumerable<IFigure> NestedTypes {
 			get { return nestedFigures; }
-		}
-		#endregion
-		
-		#region IAssociation
-		public bool HideAssociations {
-			get { return hideAssociations; }
-			set {
-				if (hideAssociations == value)
-					return;
-				
-				hideAssociations = value;
-				
-				if (hideAssociations) {
-					associations.ForEach ((a) => {
-						if (a.Type == ConnectionType.Association)
-							a.Hide ();
-					});
-				} else {
-					associations.ForEach ((a) => {
-						if (a.Type == ConnectionType.Association)
-							a.Show ();
-					});
-				}
-			}
-		}
-
-		public bool HideCollectionAssocations {
-			get { return hideCollection; }
-			set {
-				if (hideCollection == value)
-					return;
-				
-				hideCollection = value;
-				
-				if (hideCollection) {
-					associations.ForEach ((a) => {
-						if (a.Type == ConnectionType.CollectionAssociation)
-							a.Hide ();
-					});
-				} else {
-					associations.ForEach ((a) => {
-						if (a.Type == ConnectionType.CollectionAssociation)
-							a.Show ();
-					});
-				}
-			}
-		}
-
-		public IEnumerable<IFigure> AssociationFigures {
-			get {
-				throw new NotImplementedException ();
-			}
-		}
-
-		public void AddAssociation (IBaseMember member, IFigure associatedFigure, bool AsCollection)
-		{
-//			AssociationConnectionFigure association; 
-//			
-//			if (AsCollection)
-//				association = new AssociationConnectionFigure (member, ConnectionType.CollectionAssociation,
-//				                                               this, associatedFigure);
-//			else
-//				association = new AssociationConnectionFigure (member, ConnectionType.Association,
-//				                                               this, associatedFigure);
-//				associations.Add (association);
-		}
-
-		public void RemoveAssociation (IBaseMember member)
-		{
-			
 		}
 		#endregion
 		
