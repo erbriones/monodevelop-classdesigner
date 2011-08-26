@@ -39,7 +39,7 @@ namespace MonoDevelop.ClassDesigner.Commands
 	{
 		public override bool CanHandle (IEnumerable<Figure> figures)
 		{
-			return (figures != null && figures.Count () > 0 && figures.All (f => f is ICollapsable));
+			return (figures != null && figures.Any () && figures.All (f => f is ICollapsable));
 		}
 		
 		#region Commands

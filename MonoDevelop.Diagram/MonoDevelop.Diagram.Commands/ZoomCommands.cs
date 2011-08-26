@@ -38,7 +38,7 @@ namespace MonoDevelop.Diagram.Commands
 	{
 		public override bool CanHandle (IEnumerable<Figure> figures)
 		{
-			 return figures != null & figures.Count () == 0;
+			 return figures != null && !figures.Any ();
 		}
 		
 		#region Commands

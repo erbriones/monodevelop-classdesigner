@@ -50,7 +50,7 @@ namespace MonoHotDraw.Figures
 		
 		protected override double CalculateHeight ()
 		{
-			if (Children.Count() == 0)
+			if (!Children.Any ())
 				return 0.0;
 			
 			return (from Figure fig in this.FigureCollection
@@ -59,7 +59,7 @@ namespace MonoHotDraw.Figures
 		
 		protected override double CalculateWidth ()
 		{
-			int count = FigureCollection.Count();
+			int count = FigureCollection.Count;
 			
 			if (count == 0)
 				return 0.0;

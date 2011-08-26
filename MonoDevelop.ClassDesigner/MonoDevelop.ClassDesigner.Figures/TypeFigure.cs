@@ -108,7 +108,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 			
 			// Get collapsed compartment info
 			var clist = Children.OfType<CompartmentFigure> ().Where (c => c.Collapsed );
-			if (clist.Count() > 0) {
+			if (clist.Any ()) {
 				xml.Add (new XElement ("Compartments",
 					clist.Select(c => new XElement ("Compartment",
 						new XAttribute ("Name", c.Name),
@@ -238,7 +238,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 		
 		public IEnumerable<string> TypeParameters { get; protected set; }
 		public string TypeParametersString {
-			get { return TypeParameters.Count () == 0 ? null : "<" + String.Join (",", TypeParameters) + ">"; }
+			get { return TypeParameters.Any () ? "<" + String.Join (",", TypeParameters) + ">" : null; }
 		}
 		
 		public string PrettyFullName {

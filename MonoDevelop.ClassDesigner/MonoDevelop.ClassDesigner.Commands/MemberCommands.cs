@@ -41,7 +41,7 @@ namespace MonoDevelop.ClassDesigner.Commands
 	{
 		public override bool CanHandle (IEnumerable<Figure> figures)
 		{
-			return figures != null && figures.Count () > 0 && figures.All (f => f is MemberFigure);
+			return figures != null && figures.Any () && figures.All (f => f is MemberFigure);
 		}
 		
 		[CommandHandler (DesignerCommands.GoToDeclaration)]
@@ -56,8 +56,9 @@ namespace MonoDevelop.ClassDesigner.Commands
 		[CommandUpdateHandler (DesignerCommands.GoToDeclaration)]
 		protected void GoToDeclarationUpdate (CommandInfo info)
 		{
-			if (SelectedFigures.Count () == 1) {
-				var type = SelectedFigures.OfType<MemberFigure> ().SingleOrDefault ().MemberInfo;
+			var member = SelectedFigures.OfType<MemberFigure> ().SingleOrDefault ();
+			if (member != null) {
+				var type = member.MemberInfo;
 				info.Enabled = info.Visible = IdeApp.ProjectOperations.CanJumpToDeclaration (type);
 			} else {
 				info.Enabled = info.Visible = false;

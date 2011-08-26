@@ -41,7 +41,7 @@ namespace MonoDevelop.ClassDesigner.Commands
 	{
 		public override bool CanHandle (IEnumerable<Figure> figures)
 		{
-			return figures != null && figures.Count () > 0 && figures.All (f => f is TypeFigure);
+			return figures != null && figures.Any () && figures.All (f => f is TypeFigure);
 		}
 		
 		[CommandHandler (DesignerCommands.GoToDeclaration)]
@@ -56,8 +56,9 @@ namespace MonoDevelop.ClassDesigner.Commands
 		[CommandUpdateHandler (DesignerCommands.GoToDeclaration)]
 		protected void GoToDeclarationUpdate (CommandInfo info)
 		{
-			if (SelectedFigures.Count () == 1) {
-				var type = Designer.Dom.GetType (SelectedFigures.OfType<TypeFigure> ().SingleOrDefault ().DecoratedFullName);
+			var tf = SelectedFigures.OfType<TypeFigure> ().SingleOrDefault ();
+			if (tf != null) {
+				var type = Designer.Dom.GetType (tf.DecoratedFullName);
 				info.Enabled = info.Visible = IdeApp.ProjectOperations.CanJumpToDeclaration (type);
 			} else {
 				info.Enabled = info.Visible = false;
@@ -76,8 +77,8 @@ namespace MonoDevelop.ClassDesigner.Commands
 		[CommandUpdateHandler (DesignerCommands.ShowAllMembers)]
 		protected void ShowAllUpdate (CommandInfo info)
 		{
-			if (SelectedFigures.Count () == 1) {
-				var figure = SelectedFigures.OfType<TypeFigure> ().SingleOrDefault ();
+			var figure = SelectedFigures.OfType<TypeFigure> ().SingleOrDefault ();
+			if (figure != null) {
 				info.Enabled = info.Visible = figure.HasHiddenMembers;
 			} else {
 				info.Enabled = info.Visible = false;

@@ -48,7 +48,7 @@ namespace MonoHotDraw.Figures
 		
 		protected override double CalculateHeight ()
 		{
-			int count = FigureCollection.Count ();
+			int count = FigureCollection.Count;
 			double height = 0.0;
 			
 			if (count == 0)
@@ -64,7 +64,7 @@ namespace MonoHotDraw.Figures
 		{
 			double width = 0.0;
 			
-			if (FigureCollection.Count () == 0)
+			if (FigureCollection.Count == 0)
 				return 0.0;
 			
 			

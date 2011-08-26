@@ -39,10 +39,7 @@ namespace MonoDevelop.ClassDesigner.Commands
 	{
 		public override bool CanHandle (IEnumerable<Figure> figures)
 		{
-			if (figures == null && figures.Count () == 0)
-				return false;
-			
-			return figures.All (f => f is TypeFigure);
+			return figures != null && figures.Any () && figures.All (f => f is TypeFigure);
 		}
 		
 		[CommandHandler (DesignerCommands.ShowAllMembers)]

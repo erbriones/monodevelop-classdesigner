@@ -102,12 +102,8 @@ namespace MonoDevelop.Diagram
 			var rowHeight = 0.0;
 			var x = 50.0;
 			var y = 50.0;
-			var length = View.Drawing.Children.Count ();
 			
 			foreach (Figure figure in View.Drawing.Children) {
-				if (length != View.Drawing.Children.Count ())
-					return;
-			
 				if (x > 1000) {
 					x = 50.0;
 					y += (rowHeight + spacing);

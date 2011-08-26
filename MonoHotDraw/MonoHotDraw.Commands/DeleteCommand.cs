@@ -65,7 +65,7 @@ namespace MonoHotDraw.Commands
 			
 			public override bool Undo ()
 			{
-				if (base.Undo () && AffectedFigures.Count() > 0) {
+				if (base.Undo () && AffectedFigures.Any ()) {
 					DrawingView.ClearSelection ();
 					AffectedFigures = _command.InsertFigures (AffectedFigures.Reverse ().ToFigures (), 0, 0);
 					return true;
