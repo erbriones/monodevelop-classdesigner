@@ -35,7 +35,7 @@ namespace MonoHotDraw.Tools
 {
 	public class MenuTool : AbstractTool
 	{
-		public MenuTool (IDrawingEditor editor, IFigure figure) : base (editor)
+		public MenuTool (IDrawingEditor editor, Figure figure) : base (editor)
 		{
 			this.figure = figure;
 		}
@@ -52,7 +52,7 @@ namespace MonoHotDraw.Tools
 		#endregion
 		
 		#region MenuTool Members
-		IFigure figure;
+		Figure figure;
 		#endregion
 	}
 }

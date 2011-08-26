@@ -47,7 +47,7 @@ namespace MonoHotDraw.Handles
 			get { return WrappedHandle.Width; }
 		}
 
-		public IFigure Owner {
+		public Figure Owner {
 			get { return WrappedHandle.Owner; }
 		}
 		

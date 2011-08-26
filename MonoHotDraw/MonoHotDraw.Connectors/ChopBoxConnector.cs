@@ -34,7 +34,7 @@ namespace MonoHotDraw.Connectors
 	[Serializable]
 	public class ChopBoxConnector : AbstractConnector
 	{
-		public ChopBoxConnector (IFigure figure) : base (figure)
+		public ChopBoxConnector (Figure figure) : base (figure)
 		{
 		}
 
@@ -55,7 +55,7 @@ namespace MonoHotDraw.Connectors
 		#endregion
 		
 		#region Protected Members
-		protected virtual PointD Chop (IFigure target, PointD point)
+		protected virtual PointD Chop (Figure target, PointD point)
 		{	
 			if (target == null)
 				return new PointD (0, 0);

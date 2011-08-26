@@ -32,13 +32,13 @@ namespace MonoHotDraw.Figures
 
 	public class FigureEventArgs : EventArgs
 	{		
-		public FigureEventArgs (IFigure fig, RectangleD rect)
+		public FigureEventArgs (Figure fig, RectangleD rect)
 		{
 			Figure = fig;
 			Rectangle = rect;
 		}
 
-		public IFigure Figure { get; private set; }
+		public Figure Figure { get; private set; }
 		public RectangleD Rectangle	{ get; private set; }
 	}
 }

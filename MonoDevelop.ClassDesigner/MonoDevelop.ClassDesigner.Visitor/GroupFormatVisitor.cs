@@ -43,7 +43,7 @@ namespace MonoDevelop.ClassDesigner.Visitor
 		}
 		
 		#region IFigureVisitor implementation
-		public void VisitFigure (IFigure figure)
+		public void VisitFigure (Figure figure)
 		{			
 			var tf = figure as TypeFigure;
 			if (tf != null) {

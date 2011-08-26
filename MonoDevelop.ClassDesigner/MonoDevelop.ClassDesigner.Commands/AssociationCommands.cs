@@ -37,7 +37,7 @@ namespace MonoDevelop.ClassDesigner.Commands
 {
 	internal sealed class AssociationCommands : FigureCommandHandler
 	{
-		public override bool CanHandle (IEnumerable<IFigure> figures)
+		public override bool CanHandle (IEnumerable<Figure> figures)
 		{
 			return false;
 //			if (figures == null)

@@ -32,7 +32,7 @@ namespace MonoHotDraw.Tools
 {
 	public class DragCreationTool: CreationTool
 	{
-		public DragCreationTool (IDrawingEditor editor, IFigure ptype) : base (editor, ptype)
+		public DragCreationTool (IDrawingEditor editor, Figure ptype) : base (editor, ptype)
 		{
 		}
 		

@@ -58,7 +58,7 @@ namespace MonoHotDraw.Handles
 			Connection.StartConnector = null;
 		}
 		
-		protected override bool IsConnectionPossible (IFigure figure)
+		protected override bool IsConnectionPossible (Figure figure)
 		{
 			if (!figure.Includes (Connection) &&
 				figure.CanConnect &&

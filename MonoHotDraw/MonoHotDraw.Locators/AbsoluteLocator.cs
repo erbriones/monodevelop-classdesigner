@@ -41,7 +41,7 @@ namespace MonoHotDraw.Locators
 			this.y = y;
 		}
 
-		public PointD Locate (IFigure owner)
+		public PointD Locate (Figure owner)
 		{
 			PointD topleft = owner.DisplayBox.TopLeft;
 			return new PointD {

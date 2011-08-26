@@ -150,24 +150,24 @@ namespace MonoHotDraw.Handles
 
 		protected abstract void Disconnect ();
 
-		protected abstract bool IsConnectionPossible (IFigure figure);
+		protected abstract bool IsConnectionPossible (Figure figure);
 		
 		protected abstract PointD FindPoint (IConnector connector);
 
 		protected ConnectionFigure Connection { get; set; }
 
-		protected IFigure TargetFigure { get; set; }
+		protected Figure TargetFigure { get; set; }
 		#endregion
 		
 		#region Private Members
-		private IFigure FindConnectableFigure (double x, double y, IDrawing drawing)
+		private Figure FindConnectableFigure (double x, double y, IDrawing drawing)
 		{
 			return drawing.Figures.LastOrDefault (f => f.ContainsPoint (x, y) && IsConnectionPossible (f));
 		}
 
 		private IConnector FindConnectionTarget (double x, double y, IDrawing drawing)
 		{
-			IFigure target = FindConnectableFigure (x, y, drawing);
+			Figure target = FindConnectableFigure (x, y, drawing);
 			return target != null ? target.ConnectorAt (x, y) : null;
 		}
 

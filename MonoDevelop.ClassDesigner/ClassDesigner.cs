@@ -88,7 +88,7 @@ namespace MonoDevelop.ClassDesigner
 			ProjectDomService.TypesUpdated -= OnTypesUpdated;
 		}
 		
-		public void Remove (IFigure figure)
+		public void Remove (Figure figure)
 		{
 			View.Remove (figure);
 		}
@@ -414,7 +414,7 @@ namespace MonoDevelop.ClassDesigner
 			get { return "/MonoDevelop/ClassDesigner/FigureCommandHandlers"; }
 		}
 		
-		public override void DisplayMenu (IFigure figure, MouseEvent ev)
+		public override void DisplayMenu (Figure figure, MouseEvent ev)
 		{
 			IdeApp.CommandService.ShowContextMenu ("/ClassDesigner/ContextMenu/Diagram");
 		} 

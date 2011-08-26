@@ -32,14 +32,14 @@ namespace MonoHotDraw.Tools
 {
 	public class FigureTool: AbstractTool
 	{
-		public FigureTool (IDrawingEditor editor, IFigure fig, ITool dt) : base (editor)
+		public FigureTool (IDrawingEditor editor, Figure fig, ITool dt) : base (editor)
 		{
 			DefaultTool = dt;
 			Figure = fig;
 		}
 		
 		public virtual ITool DefaultTool { get; set; }		
-		public IFigure Figure { get; set; }
+		public Figure Figure { get; set; }
 		
 		#region Tool Activation
 		public override void Activate ()

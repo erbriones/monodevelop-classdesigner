@@ -38,20 +38,20 @@ namespace MonoHotDraw
 		event DrawingEventHandler DrawingInvalidated;
 		event DrawingEventHandler SizeAllocated;
 		
-		void Add (IFigure figure);
-		void Remove (IFigure figure);
+		void Add (Figure figure);
+		void Remove (Figure figure);
 		void Draw (Context context, FigureCollection figures);
 		void Draw (Context context);
-		bool Includes (IFigure figure);
-		IFigure FindFigure (double x, double y);
+		bool Includes (Figure figure);
+		Figure FindFigure (double x, double y);
 		void RecalculateDisplayBox ();
-		IFigure SelectableAt (double x, double y);
+		Figure SelectableAt (double x, double y);
 		
-		void BringToFront (IFigure figure);
-		void SendToBack (IFigure figure);
+		void BringToFront (Figure figure);
+		void SendToBack (Figure figure);
 
 		RectangleD DisplayBox { get; }
-		IEnumerable <IFigure> Figures { get; }
+		IEnumerable <Figure> Figures { get; }
 		//IList <IFigure> FigureCollection { get; }
 	}
 }

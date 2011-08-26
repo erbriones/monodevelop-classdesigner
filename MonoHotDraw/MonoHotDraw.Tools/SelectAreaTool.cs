@@ -98,7 +98,7 @@ namespace MonoHotDraw.Tools
 		
 		private void SelectFiguresOnRect (IDrawingView view, bool shift_pressed)
 		{
-			foreach (IFigure figure in view.Drawing.Figures) {
+			foreach (Figure figure in view.Drawing.Figures) {
 				RectangleD rect = figure.DisplayBox;
 				
 				if (selectionRectangle.Contains (rect.X, rect.Y) &&

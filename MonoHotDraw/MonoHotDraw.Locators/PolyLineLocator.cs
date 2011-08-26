@@ -36,7 +36,7 @@ namespace MonoHotDraw.Locators
 		}
 		
 		#region ILocator implementation
-		public PointD Locate (IFigure owner)
+		public PointD Locate (Figure owner)
 		{
 			if (owner == null)
 				return new PointD ();

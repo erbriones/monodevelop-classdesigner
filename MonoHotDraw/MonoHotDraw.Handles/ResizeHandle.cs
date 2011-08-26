@@ -33,11 +33,11 @@ namespace MonoHotDraw.Handles {
 	
 	public abstract class ResizeHandle: LocatorHandle {
 		
-		public ResizeHandle(IFigure owner, ILocator locator): base (owner, locator) {
+		public ResizeHandle(Figure owner, ILocator locator): base (owner, locator) {
 		}
 		
 		public class ResizeHandleUndoActivity: AbstractUndoActivity {
-			public ResizeHandleUndoActivity(IDrawingView view, IFigure owner): base (view) {
+			public ResizeHandleUndoActivity(IDrawingView view, Figure owner): base (view) {
 				Undoable = true;
 				Redoable = true;
 				Owner = owner;
@@ -59,7 +59,7 @@ namespace MonoHotDraw.Handles {
 				return true;
 			}
 			
-			public IFigure Owner { get; private set; }
+			public Figure Owner { get; private set; }
 			public RectangleD OldDisplayBox { get; set; }
 			public RectangleD NewDisplayBox { get; set; }
 		}

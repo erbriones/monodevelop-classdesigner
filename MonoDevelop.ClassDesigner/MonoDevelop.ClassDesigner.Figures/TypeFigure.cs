@@ -212,7 +212,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 
 		public override IEnumerable<IHandle> Handles {
 			get {
-				foreach (IFigure fig in Figures)
+				foreach (Figure fig in Figures)
 					foreach (IHandle handle in fig.Handles)
 						yield return handle;
 				

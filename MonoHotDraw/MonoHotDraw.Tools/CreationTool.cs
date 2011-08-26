@@ -34,7 +34,7 @@ namespace MonoHotDraw.Tools
 {
 	public class CreationTool: AbstractTool
 	{
-		public CreationTool (IDrawingEditor editor, IFigure ptype): base (editor)
+		public CreationTool (IDrawingEditor editor, Figure ptype): base (editor)
 		{
 			Prototype = ptype;
 		}
@@ -81,7 +81,7 @@ namespace MonoHotDraw.Tools
 		#region UndoActivity		
 		public class CreationToolUndoActivity: AbstractUndoActivity
 		{
-			public CreationToolUndoActivity (IDrawingView view, IFigure prototype): base (view)
+			public CreationToolUndoActivity (IDrawingView view, Figure prototype): base (view)
 			{
 				Undoable = true;
 				Redoable = true;
@@ -109,7 +109,7 @@ namespace MonoHotDraw.Tools
 				return true;
 			}
 			
-			public IFigure Prototype { set; get; }
+			public Figure Prototype { set; get; }
 		}
 		#endregion
 		
@@ -120,7 +120,7 @@ namespace MonoHotDraw.Tools
 			UndoActivity = new CreationToolUndoActivity (Editor.View, Prototype);
 		}
 		
-		protected IFigure Prototype { get; set; }
+		protected Figure Prototype { get; set; }
 		#endregion
 	}
 }

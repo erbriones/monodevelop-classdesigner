@@ -134,7 +134,7 @@ namespace MonoHotDraw.Tools
 		
 		private void DeleteFigures (IDrawingView view)
 		{
-			IEnumerable<IFigure> figures = view.SelectionEnumerator.ToFigures ();
+			IEnumerable<Figure> figures = view.SelectionEnumerator.ToFigures ();
 			
 			view.ClearSelection ();
 			view.RemoveRange (figures);

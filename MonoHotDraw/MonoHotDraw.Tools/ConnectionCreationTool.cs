@@ -54,7 +54,7 @@ namespace MonoHotDraw.Tools
 		public override void MouseDown (MouseEvent ev)
 		{
 			IDrawingView view = ev.View;
-			IFigure figure = view.Drawing.FindFigure (ev.X, ev.Y);
+			Figure figure = view.Drawing.FindFigure (ev.X, ev.Y);
 
 			if (figure != null) {
 				_connection.EndPoint = new PointD (ev.X, ev.Y);

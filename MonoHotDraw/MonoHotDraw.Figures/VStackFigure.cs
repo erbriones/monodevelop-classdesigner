@@ -54,7 +54,7 @@ namespace MonoHotDraw.Figures
 			if (count == 0)
 				return 0.0;
 			
-			foreach (IFigure fig in FigureCollection)
+			foreach (Figure fig in FigureCollection)
 				height += fig.DisplayBox.Height;
 			
 			return height + Spacing * (count - 1);
@@ -68,7 +68,7 @@ namespace MonoHotDraw.Figures
 				return 0.0;
 			
 			
-			foreach (IFigure fig in FigureCollection)
+			foreach (Figure fig in FigureCollection)
 				width = Math.Max (width, fig.DisplayBox.Width);
 			
 			return width;
@@ -79,7 +79,7 @@ namespace MonoHotDraw.Figures
 			var stackHeight = 0.0;
 			var point = new PointD (0, 0);
 			
-			foreach (IFigure figure in FigureCollection) {
+			foreach (Figure figure in FigureCollection) {
 				
 				point.X = CalculateFigureX (figure);
 				point.Y = Position.Y + stackHeight;
@@ -87,12 +87,12 @@ namespace MonoHotDraw.Figures
 				double dx = point.X - figure.DisplayBox.X;
 				double dy = point.Y - figure.DisplayBox.Y;
 				
-				((AbstractFigure) figure).InternalMoveBy (dx, dy);
+				((Figure) figure).InternalMoveBy (dx, dy);
 				stackHeight += figure.DisplayBox.Height + Spacing;
 			}
 		}
 
-		private double CalculateFigureX (IFigure figure)
+		private double CalculateFigureX (Figure figure)
 		{
 			switch (Alignment) {
 			case VStackAlignment.Center:

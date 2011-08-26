@@ -120,14 +120,14 @@ namespace MonoHotDraw
 		
 		#region Figure and Handle Members
 
-		public void Add (IFigure figure)
+		public void Add (Figure figure)
 		{
 			Drawing.Add (figure);
 		}
 		
-		public void AddRange (IEnumerable<IFigure> figures)
+		public void AddRange (IEnumerable<Figure> figures)
 		{
-			foreach (IFigure figure in figures)
+			foreach (Figure figure in figures)
 				Drawing.Add (figure);
 		}
 		
@@ -145,7 +145,7 @@ namespace MonoHotDraw
 		{
 			var visitor = new InsertIntoDrawingVisitor (Drawing);
 			
-			foreach (IFigure figure in figures) {	
+			foreach (Figure figure in figures) {	
 				figure.MoveBy (dx, dy);
 				visitor.VisitFigure (figure);
 			}
@@ -156,14 +156,14 @@ namespace MonoHotDraw
 		}
 
 		
-		public void Remove (IFigure figure)
+		public void Remove (Figure figure)
 		{
 			Drawing.Remove (figure);
 		}
 		
-		public void RemoveRange (IEnumerable<IFigure> figures)
+		public void RemoveRange (IEnumerable<Figure> figures)
 		{
-			foreach (IFigure figure in figures)
+			foreach (Figure figure in figures)
 				Drawing.Remove (figure);
 		}
 		
@@ -245,13 +245,13 @@ namespace MonoHotDraw
 			get { return selection.Count; }
 		}
 		
-		public IEnumerable<IFigure> SelectionEnumerator {
+		public IEnumerable<Figure> SelectionEnumerator {
 			get { return selection; }
 		}
 		
 		protected IEnumerable <IHandle> SelectionHandles {
 			get {
-				foreach (IFigure figure in SelectionEnumerator) {
+				foreach (Figure figure in SelectionEnumerator) {
 					foreach (IHandle handle in figure.Handles) {
 						yield return handle;
 					}
@@ -259,7 +259,7 @@ namespace MonoHotDraw
 			}
 		}	
 
-		public void AddToSelection (IFigure figure)
+		public void AddToSelection (Figure figure)
 		{
 			if (!IsFigureSelected (figure) && Drawing.Includes (figure)) {
 				selection.Add (figure);
@@ -270,13 +270,13 @@ namespace MonoHotDraw
 		
 		public void AddToSelection (FigureCollection collection)
 		{
-			foreach (IFigure figure in collection)
+			foreach (Figure figure in collection)
 				AddToSelection (figure);
 		}
 
 		public void ClearSelection ()
 		{
-			foreach (IFigure figure in selection) {
+			foreach (Figure figure in selection) {
 				figure.SetAttribute (FigureAttribute.Selected, false);
 				figure.Invalidate ();
 			}
@@ -284,19 +284,19 @@ namespace MonoHotDraw
 
 		}
 		
-		public bool IsFigureSelected (IFigure figure)
+		public bool IsFigureSelected (Figure figure)
 		{
 			return selection.Contains (figure);
 		}
 		
-		public void RemoveFromSelection (IFigure figure)
+		public void RemoveFromSelection (Figure figure)
 		{
 			selection.Remove (figure);
 			figure.SetAttribute (FigureAttribute.Selected, false);
 			figure.Invalidate ();
 		}
 
-		public void ToggleSelection (IFigure figure)
+		public void ToggleSelection (Figure figure)
 		{
 			if (IsFigureSelected (figure))
 				RemoveFromSelection (figure);
@@ -338,7 +338,7 @@ namespace MonoHotDraw
 				
 				var drawVisitor = new DrawInRegionVisitor (ev.Region, context, this);
 
-				foreach (IFigure figure in Drawing.Figures)
+				foreach (Figure figure in Drawing.Figures)
 					figure.AcceptVisitor (drawVisitor);
 				
 				context.ResetClip ();

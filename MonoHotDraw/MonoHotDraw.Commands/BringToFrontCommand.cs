@@ -46,7 +46,7 @@ namespace MonoHotDraw.Commands
 			UndoActivity = CreateUndoActivity ();
 			UndoActivity.AffectedFigures = new FigureCollection (DrawingView.SelectionEnumerator);
 			
-			foreach (IFigure figure in UndoActivity.AffectedFigures)
+			foreach (Figure figure in UndoActivity.AffectedFigures)
 				DrawingView.Drawing.BringToFront (figure);
 		}
 		
@@ -73,7 +73,7 @@ namespace MonoHotDraw.Commands
 				if (base.Undo () == false)
 					return false;
 
-				foreach (IFigure figure in AffectedFigures)
+				foreach (Figure figure in AffectedFigures)
 					DrawingView.Drawing.SendToBack (figure);
 				
 				return true;
@@ -84,7 +84,7 @@ namespace MonoHotDraw.Commands
 				if (Redoable == false)
 					return false;
 
-				foreach (IFigure figure in AffectedFigures)
+				foreach (Figure figure in AffectedFigures)
 					DrawingView.Drawing.BringToFront (figure);
 
 				return true;

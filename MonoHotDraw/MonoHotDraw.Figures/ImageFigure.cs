@@ -30,7 +30,7 @@ using MonoHotDraw.Util;
 
 namespace MonoHotDraw.Figures
 {	
-	public class ImageFigure : AbstractFigure
+	public class ImageFigure : Figure
 	{		
 		public ImageFigure (Pixbuf pixbuf) : base ()
 		{

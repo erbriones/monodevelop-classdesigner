@@ -37,7 +37,7 @@ namespace MonoHotDraw
 		CommandManager CommandManager { get; }
 		UndoManager UndoManager { get; }
 	
-		void DisplayMenu (IFigure figure, MouseEvent ev);
+		void DisplayMenu (Figure figure, MouseEvent ev);
 	}
 }
 

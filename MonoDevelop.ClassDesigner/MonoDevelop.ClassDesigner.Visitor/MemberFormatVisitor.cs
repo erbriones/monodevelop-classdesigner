@@ -46,7 +46,7 @@ namespace MonoDevelop.ClassDesigner.Visitor
 		}		
 	
 		#region IFigureVisitor implementation
-		public void VisitFigure (IFigure hostFigure)
+		public void VisitFigure (Figure hostFigure)
 		{
 			var mf = hostFigure as MemberFigure;
 			if (mf != null) {

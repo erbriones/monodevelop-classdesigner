@@ -36,7 +36,7 @@ namespace MonoHotDraw.Handles
 	{	
 		public static readonly double Size = 8.0;
 	
-		protected AbstractHandle (IFigure owner)
+		protected AbstractHandle (Figure owner)
 		{
 			Owner = owner;
 			LineWidth = 1.0;
@@ -57,7 +57,7 @@ namespace MonoHotDraw.Handles
 			set {}
 		}
 
-		public virtual IFigure Owner { get; set; }
+		public virtual Figure Owner { get; set; }
 		public virtual IUndoActivity UndoActivity { get; set; }
 			
 		public virtual double LineWidth {

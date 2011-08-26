@@ -37,7 +37,7 @@ namespace MonoDevelop.ClassDesigner.Commands
 {
 	public class TypeFigureCommands : FigureCommandHandler
 	{
-		public override bool CanHandle (IEnumerable<IFigure> figures)
+		public override bool CanHandle (IEnumerable<Figure> figures)
 		{
 			if (figures == null && figures.Count () == 0)
 				return false;

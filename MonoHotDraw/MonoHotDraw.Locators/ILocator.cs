@@ -30,6 +30,6 @@ namespace MonoHotDraw.Locators
 {
 	public interface ILocator
 	{
-		PointD Locate (IFigure owner);
+		PointD Locate (Figure owner);
 	}
 }

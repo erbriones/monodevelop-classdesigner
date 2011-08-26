@@ -41,7 +41,7 @@ namespace MonoHotDraw.Visitor
 		public FigureCollection DeletedFigures { get; private set; }
 		public IDrawing Drawing { get; set; }
 		
-		public void VisitFigure (IFigure hostFigure)
+		public void VisitFigure (Figure hostFigure)
 		{
 			if (!Drawing.Includes (hostFigure) || 
 				DeletedFigures.Contains (hostFigure))

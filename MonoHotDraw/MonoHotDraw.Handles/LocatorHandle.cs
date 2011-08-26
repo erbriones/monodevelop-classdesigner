@@ -31,7 +31,7 @@ namespace MonoHotDraw.Handles
 {
 	public abstract class LocatorHandle : AbstractHandle
 	{
-		protected LocatorHandle (IFigure owner, ILocator locator): base (owner)
+		protected LocatorHandle (Figure owner, ILocator locator): base (owner)
 		{
 			this.locator = locator;
 		}

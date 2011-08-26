@@ -88,7 +88,7 @@ namespace MonoHotDraw.Commands
 				
 				DrawingView.ClearSelection ();
 				
-				foreach (IFigure figure in AffectedFigures)
+				foreach (Figure figure in AffectedFigures)
 					figure.AcceptVisitor (visitor);
 				
 				DrawingView.AddToSelection (visitor.AddedFigures); // Create new selection with pasted figure
@@ -100,11 +100,11 @@ namespace MonoHotDraw.Commands
 			{	
 				var visitor = new DeleteFromDrawingVisitor (DrawingView.Drawing);
 
-				foreach (IFigure figure in AffectedFigures)
+				foreach (Figure figure in AffectedFigures)
 					figure.AcceptVisitor (visitor);
 				
 				// Remove pasted figures from selection 
-				foreach (IFigure fig in visitor.DeletedFigures)
+				foreach (Figure fig in visitor.DeletedFigures)
 					DrawingView.RemoveFromSelection (fig);
 						
 				return true;

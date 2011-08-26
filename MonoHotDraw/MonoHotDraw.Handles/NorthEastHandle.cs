@@ -33,7 +33,7 @@ namespace MonoHotDraw.Handles
 {
 	public class NorthEastHandle : ResizeHandle
 	{
-		public NorthEastHandle (IFigure owner) : base (owner, RelativeLocator.NorthEast)
+		public NorthEastHandle (Figure owner) : base (owner, RelativeLocator.NorthEast)
 		{
 		}
 		

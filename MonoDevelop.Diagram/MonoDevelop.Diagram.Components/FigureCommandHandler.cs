@@ -62,7 +62,7 @@ namespace MonoDevelop.Diagram.Components
 			return nextTarget;
 		}
 		
-		internal protected IEnumerable<IFigure> SelectedFigures {
+		internal protected IEnumerable<Figure> SelectedFigures {
 			get { return Designer.View.SelectionEnumerator; }
 		}
 		
@@ -109,12 +109,12 @@ namespace MonoDevelop.Diagram.Components
 			get { return SelectedFigures.Count () > 1; }
 		}
 		
-		public virtual bool CanHandle (IEnumerable<IFigure> figures)
+		public virtual bool CanHandle (IEnumerable<Figure> figures)
 		{
 			return true;
 		}
 		
-		public virtual bool CanHandle (IFigure figure)
+		public virtual bool CanHandle (Figure figure)
 		{
 			return true;
 		}

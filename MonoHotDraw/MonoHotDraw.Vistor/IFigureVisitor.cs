@@ -31,7 +31,7 @@ namespace MonoHotDraw.Visitor
 {		
 	public interface IFigureVisitor
 	{
-		void VisitFigure (IFigure hostFigure);
+		void VisitFigure (Figure hostFigure);
 		void VisitHandle (IHandle hostHandle);
 	}
 }

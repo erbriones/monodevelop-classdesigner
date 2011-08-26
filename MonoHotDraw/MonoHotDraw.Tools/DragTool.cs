@@ -34,12 +34,12 @@ namespace MonoHotDraw.Tools
 {
 	public class DragTool : AbstractTool
 	{
-		public DragTool (IDrawingEditor editor, IFigure anchor): base (editor)
+		public DragTool (IDrawingEditor editor, Figure anchor): base (editor)
 		{
 			AnchorFigure = anchor;
 		}
 		
-		public IFigure AnchorFigure { get; set; }
+		public Figure AnchorFigure { get; set; }
 		
 		public bool CanDragSelection {
 			get {
@@ -79,7 +79,7 @@ namespace MonoHotDraw.Tools
 			HasMoved = (Math.Abs (ev.X - AnchorX) > 4 || Math.Abs (ev.Y - AnchorX) > 4);
 			
 			if (HasMoved && CanDragSelection) {
-				foreach (IFigure figure in ev.View.SelectionEnumerator)
+				foreach (Figure figure in ev.View.SelectionEnumerator)
 					figure.MoveBy (ev.X - LastX, ev.Y - LastY);
 			}
 			SetLastCoords (ev.X, ev.Y);
@@ -110,7 +110,7 @@ namespace MonoHotDraw.Tools
 				double deltaX = StartPoint.X - EndPoint.X;
 				double deltaY = StartPoint.Y - EndPoint.Y;
 			
-				foreach (IFigure figure in AffectedFigures)
+				foreach (Figure figure in AffectedFigures)
 					figure.MoveBy(deltaX, deltaY);
 
 				return true;
@@ -124,7 +124,7 @@ namespace MonoHotDraw.Tools
 				double deltaX = EndPoint.X - StartPoint.X;
 				double deltaY = EndPoint.Y - StartPoint.Y;
 				
-				foreach (IFigure figure in AffectedFigures) {
+				foreach (Figure figure in AffectedFigures) {
 					figure.MoveBy(deltaX, deltaY);
 				
 				}

@@ -71,9 +71,9 @@ namespace MonoDevelop.ClassDesigner.Figures
 			get { yield return expandHandle; }
 		}
 		
-		public new void AddRange (IEnumerable<IFigure> figures)
+		public new void AddRange (IEnumerable<Figure> figures)
 		{
-			foreach (IFigure figure in figures)
+			foreach (Figure figure in figures)
 				membersStack.Add (figure);
 		}
 		

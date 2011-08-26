@@ -46,7 +46,7 @@ namespace MonoHotDraw.Figures
 			StartConnector = (IConnector) info.GetValue ("StartConnector", typeof (IConnector));
 		}
 		
-		public ConnectionFigure (IFigure startFigure, IFigure endFigure)
+		public ConnectionFigure (Figure startFigure, Figure endFigure)
 		{
 			if (startFigure != null)
 				StartConnector = startFigure.ConnectorAt (0.0, 0.0);
@@ -99,8 +99,8 @@ namespace MonoHotDraw.Figures
 			}
 		}
 		
-		public IFigure StartFigure { get { return startConnector == null ? null : startConnector.Owner; } }
-		public IFigure EndFigure { get { return endConnector == null ? null : endConnector.Owner; } }
+		public Figure StartFigure { get { return startConnector == null ? null : startConnector.Owner; } }
+		public Figure EndFigure { get { return endConnector == null ? null : endConnector.Owner; } }
 		
 		public abstract IHandle StartHandle { get; }
 		public abstract IHandle EndHandle { get; }
@@ -134,12 +134,12 @@ namespace MonoHotDraw.Figures
 				ConnectionChanged (this, EventArgs.Empty);
 		}
 
-		public virtual bool CanConnectEnd (IFigure figure)
+		public virtual bool CanConnectEnd (Figure figure)
 		{
 			return true;
 		}
 
-		public virtual bool CanConnectStart (IFigure figure)
+		public virtual bool CanConnectStart (Figure figure)
 		{
 			return true;
 		}

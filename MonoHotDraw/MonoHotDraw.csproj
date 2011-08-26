@@ -88,7 +88,6 @@
     <Compile Include="MonoHotDraw.Connectors\ChopBoxConnector.cs" />
     <Compile Include="MonoHotDraw.Connectors\ChopEllipseConnector.cs" />
     <Compile Include="MonoHotDraw.Connectors\IConnector.cs" />
-    <Compile Include="MonoHotDraw.Figures\AbstractFigure.cs" />
     <Compile Include="MonoHotDraw.Figures\AttributeFigure.cs" />
     <Compile Include="MonoHotDraw.Figures\BaseBoxFigure.cs" />
     <Compile Include="MonoHotDraw.Handles\AbstractHandle.cs" />
@@ -151,7 +150,6 @@
     <Compile Include="MonoHotDraw.Figures\CircularLineTerminal.cs" />
     <Compile Include="MonoHotDraw.Figures\EllipseFigure.cs" />
     <Compile Include="MonoHotDraw.Figures\FigureCollection.cs" />
-    <Compile Include="MonoHotDraw.Figures\IFigure.cs" />
     <Compile Include="MonoHotDraw.Figures\ImageFigure.cs" />
     <Compile Include="MonoHotDraw.Figures\LineTerminal.cs" />
     <Compile Include="MonoHotDraw.Figures\MultiLineTextFigure.cs" />
@@ -174,6 +172,7 @@
     <Compile Include="MonoHotDraw.Vistor\IFigureVisitor.cs" />
     <Compile Include="MonoHotDraw.Vistor\DrawInRegionVisitor.cs" />
     <Compile Include="MonoHotDraw.Figures\ConnectionFigure.cs" />
+    <Compile Include="MonoHotDraw.Figures\Figure.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

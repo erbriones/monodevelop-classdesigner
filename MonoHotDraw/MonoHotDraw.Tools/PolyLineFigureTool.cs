@@ -35,7 +35,7 @@ namespace MonoHotDraw.Tools
 	// TODO: Should be this inside PolyLineFigure ???
 	public class PolyLineFigureTool : FigureTool
 	{
-		public PolyLineFigureTool (IDrawingEditor editor, IFigure fig, ITool dt) : base (editor, fig, dt)
+		public PolyLineFigureTool (IDrawingEditor editor, Figure fig, ITool dt) : base (editor, fig, dt)
 		{
 		}
 		

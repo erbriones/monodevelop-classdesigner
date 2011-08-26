@@ -44,29 +44,29 @@ namespace MonoHotDraw.Figures
 		public event FigureEventHandler ChildAdded;
 		public event FigureEventHandler ChildRemoved;
 		
-		public override IFigure Container {
+		public override Figure Container {
 			get { return this; }
 		}
 		
-		public sealed override IEnumerable <IFigure> Figures {
+		public sealed override IEnumerable <Figure> Figures {
 			get { return FigureCollection; }
 		}
 
 		public override IEnumerable<IHandle> Handles {
 			get {
-				foreach (IFigure fig in FigureCollection)
+				foreach (Figure fig in FigureCollection)
 					foreach (IHandle handle in fig.Handles)
 						yield return handle;
 			}
 		}
 		
-		public void AddRange (IEnumerable<IFigure> figures)
+		public void AddRange (IEnumerable<Figure> figures)
 		{
-			foreach (IFigure fig in figures)
+			foreach (Figure fig in figures)
 				Add (fig);
 		}
 
-		public sealed override void Add (IFigure figure)
+		public sealed override void Add (Figure figure)
 		{
 			if (FigureCollection.Contains (figure))
 				return;
@@ -79,11 +79,11 @@ namespace MonoHotDraw.Figures
 		
 		public void Clear ()	
 		{
-			var tmp = new List<IFigure> (FigureCollection);
+			var tmp = new List<Figure> (FigureCollection);
 			RemoveRange (tmp);
 		}
 
-		public sealed override void Remove (IFigure figure)
+		public sealed override void Remove (Figure figure)
 		{
 			if (!FigureCollection.Contains (figure))
 				return;
@@ -94,13 +94,13 @@ namespace MonoHotDraw.Figures
 			OnChildRemoved (new FigureEventArgs (figure, figure.DisplayBox));
 		}
 		
-		public void RemoveRange(IEnumerable<IFigure> figures)
+		public void RemoveRange(IEnumerable<Figure> figures)
 		{
-			foreach (IFigure figure in figures)
+			foreach (Figure figure in figures)
 				Remove (figure);
 		}
 
-		public void BringToFront (IFigure figure)
+		public void BringToFront (Figure figure)
 		{
 			if (!Includes (figure))
 				return;
@@ -120,12 +120,12 @@ namespace MonoHotDraw.Figures
 			return new CompositeFigureTool (editor, this, dt);
 		}
 
-		public IFigure FindFigure (double x, double y)
+		public Figure FindFigure (double x, double y)
 		{
 			return Figures.LastOrDefault (f => f.ContainsPoint (x, y));
 		}
 
-		public override bool Includes (IFigure figure)
+		public override bool Includes (Figure figure)
 		{
 			if (FigureCollection.Any (f => f.Includes (figure) || base.Includes (figure)))
 				return true;
@@ -133,7 +133,7 @@ namespace MonoHotDraw.Figures
 			return false;
 		}
 		
-		public override IFigure SelectableAt (double x, double y)
+		public override Figure SelectableAt (double x, double y)
 		{
 			if (ContainsPoint (x, y)) {
 				var sub = FindFigure (x, y);
@@ -152,7 +152,7 @@ namespace MonoHotDraw.Figures
 			return null;
 		}
 
-		public void SendToBack (IFigure figure)
+		public void SendToBack (Figure figure)
 		{
 			if (!Includes (figure))
 				return;
@@ -167,7 +167,7 @@ namespace MonoHotDraw.Figures
 				var rectangle = new RectangleD (0.0, 0.0);
 				var first_flag = true;
 				
-				foreach (IFigure figure in FigureCollection) {
+				foreach (Figure figure in FigureCollection) {
 					if (first_flag) {
 						rectangle = figure.DisplayBox;
 						first_flag = false;
@@ -182,7 +182,7 @@ namespace MonoHotDraw.Figures
 				double dx = value.X - r.X;
 				double dy = value.Y - r.Y;
 				
-				FigureCollection.ForEach (f => ((AbstractFigure) f).InternalMoveBy (dx, dy));
+				FigureCollection.ForEach (f => ((Figure) f).InternalMoveBy (dx, dy));
 			}
 		}
 

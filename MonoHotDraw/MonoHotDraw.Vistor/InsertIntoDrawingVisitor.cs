@@ -42,7 +42,7 @@ namespace MonoHotDraw.Visitor
 		public FigureCollection AddedFigures { get; private set; }
 		public IDrawing Drawing { get; set; }
 
-		public void VisitFigure (IFigure hostFigure)
+		public void VisitFigure (Figure hostFigure)
 		{
 			if (AddedFigures.Contains (hostFigure) || 
 				Drawing.Includes (hostFigure))

@@ -38,28 +38,28 @@ namespace MonoHotDraw
 	{
 		event EventHandler VisibleAreaChanged;
 	
-		void Add (IFigure figure);
-		void AddRange (IEnumerable<IFigure> figures);
-		void Remove (IFigure figure);
-		void RemoveRange (IEnumerable<IFigure> figures);
+		void Add (Figure figure);
+		void AddRange (IEnumerable<Figure> figures);
+		void Remove (Figure figure);
+		void RemoveRange (IEnumerable<Figure> figures);
 		//Used by clipboad
 		FigureCollection InsertFigures (FigureCollection figures, double dx, double dy, bool check);
 		
-		void AddToSelection (IFigure figure);
+		void AddToSelection (Figure figure);
 		void AddToSelection (FigureCollection collection);
-		void RemoveFromSelection (IFigure figure);
-		void ToggleSelection (IFigure figure);
+		void RemoveFromSelection (Figure figure);
+		void ToggleSelection (Figure figure);
 		void ClearSelection ();
 		void ScrollToMakeVisible (PointD p);
 		void ScrollToMakeVisible (RectangleD r);
-		bool IsFigureSelected (IFigure figure);
+		bool IsFigureSelected (Figure figure);
 		PointD DrawingToView (double x, double y);
 		PointD ViewToDrawing (double x, double y);
 		IHandle FindHandle (double x, double y);
 		
 		IDrawing Drawing { get; set; }
 		IDrawingEditor Editor { get; set; }
-		IEnumerable <IFigure> SelectionEnumerator { get; }
+		IEnumerable <Figure> SelectionEnumerator { get; }
 		int SelectionCount { get; }
 		RectangleD VisibleArea { get; }
 		ScaleRange ScaleRange { get; set; }

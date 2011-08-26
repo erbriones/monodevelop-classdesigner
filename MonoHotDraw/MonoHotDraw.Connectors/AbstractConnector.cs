@@ -37,14 +37,14 @@ namespace MonoHotDraw.Connectors
 	[Serializable]
 	public abstract class AbstractConnector : IConnector
 	{
-		protected AbstractConnector (IFigure owner)
+		protected AbstractConnector (Figure owner)
 		{
 			Owner = owner;
 		}
 
 		protected AbstractConnector (SerializationInfo info, StreamingContext context)
 		{
-			Owner = (IFigure) info.GetValue ("Owner", typeof (IFigure));
+			Owner = (Figure) info.GetValue ("Owner", typeof (Figure));
 		}
 
 		#region Public Api
@@ -52,7 +52,7 @@ namespace MonoHotDraw.Connectors
 			get { return Owner.DisplayBox; }
 		}
 		
-		public virtual IFigure Owner { get; protected set; }
+		public virtual Figure Owner { get; protected set; }
 		
 		public virtual bool ContainsPoint (double x, double y)
 		{

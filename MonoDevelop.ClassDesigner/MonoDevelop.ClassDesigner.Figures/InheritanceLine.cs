@@ -35,17 +35,17 @@ namespace MonoDevelop.ClassDesigner.Figures
 			Line.EndTerminal = new TriangleArrowLineTerminal ();
 		}
 		
-		public InheritanceLine (IFigure derivedFigure, IFigure baseFigure) : base (derivedFigure, baseFigure)
+		public InheritanceLine (Figure derivedFigure, Figure baseFigure) : base (derivedFigure, baseFigure)
 		{
 			Line.EndTerminal = new TriangleArrowLineTerminal ();
 		}
 		
-		public override bool CanConnectEnd (IFigure figure)
+		public override bool CanConnectEnd (Figure figure)
 		{
 			return figure is ClassFigure && !figure.Includes (StartFigure);
 		}
 		
-		public override bool CanConnectStart (IFigure figure)
+		public override bool CanConnectStart (Figure figure)
 		{
 			return figure is ClassFigure && !figure.Includes (EndFigure);
 		}

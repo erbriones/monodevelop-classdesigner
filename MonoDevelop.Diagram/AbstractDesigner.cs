@@ -104,7 +104,7 @@ namespace MonoDevelop.Diagram
 			var y = 50.0;
 			var length = View.Drawing.Figures.Count ();
 			
-			foreach (IFigure figure in View.Drawing.Figures) {
+			foreach (Figure figure in View.Drawing.Figures) {
 				if (length != View.Drawing.Figures.Count ())
 					return;
 			
@@ -151,7 +151,7 @@ namespace MonoDevelop.Diagram
 		#endregion
 		
 		#region IDrawingEditor implementation
-		public abstract void DisplayMenu (IFigure figure, MouseEvent ev);
+		public abstract void DisplayMenu (Figure figure, MouseEvent ev);
 		
 		public ITool Tool {
 			get { return tool; }

@@ -39,18 +39,18 @@ namespace MonoDevelop.ClassDesigner
 			Line.EndTerminal = new TriangleArrowLineTerminal (5.0, 10.0);
 		}
 		
-		internal AssociationLine (MemberFigure member, IFigure fig1, IFigure fig2) : base (fig1, fig2)
+		internal AssociationLine (MemberFigure member, Figure fig1, Figure fig2) : base (fig1, fig2)
 		{
 			this.member = member;
 			Line.EndTerminal = new TriangleArrowLineTerminal (5.0, 10.0);
 		}
 								
-		public override bool CanConnectStart (IFigure figure)
+		public override bool CanConnectStart (Figure figure)
 		{
 			return figure is TypeFigure && !(figure is EnumFigure);
 		}
 		
-		public override bool CanConnectEnd (IFigure figure)
+		public override bool CanConnectEnd (Figure figure)
 		{
 			return figure is TypeFigure;
 		}

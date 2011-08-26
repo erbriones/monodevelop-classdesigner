@@ -43,7 +43,7 @@ namespace MonoHotDraw.Handles
 	
 	public class ToggleButtonHandle : LocatorHandle
 	{	
-		public ToggleButtonHandle (IFigure owner, ILocator locator): base (owner, locator)
+		public ToggleButtonHandle (Figure owner, ILocator locator): base (owner, locator)
 		{
 			FillColor = new Color (1, 1, 0.0, 0.3);
 			Width = 15.0;

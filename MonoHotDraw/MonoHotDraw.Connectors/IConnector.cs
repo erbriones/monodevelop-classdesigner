@@ -35,7 +35,7 @@ namespace MonoHotDraw.Connectors
 	public interface IConnector : ICloneable, ISerializable
 	{
 		RectangleD DisplayBox { get; }
-		IFigure Owner { get; }
+		Figure Owner { get; }
 
 		PointD FindStart (ConnectionFigure connection);
 		PointD FindEnd (ConnectionFigure connection);

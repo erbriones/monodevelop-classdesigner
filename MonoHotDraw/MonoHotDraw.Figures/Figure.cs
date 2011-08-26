@@ -37,18 +37,18 @@ using MonoHotDraw.Visitor;
 namespace MonoHotDraw.Figures
 {
 	[Serializable]
-	public abstract class AbstractFigure : IFigure
+	public abstract class Figure : ICloneable, ISerializable
 	{
 		bool visible;
 		
-		protected AbstractFigure ()
+		protected Figure ()
 		{
 			FillColor = new Color (1.0, 1.0, 0.2, 0.8);
 			LineColor = (Color) AttributeFigure.GetDefaultAttribute (FigureAttribute.LineColor);
 			visible = true;
 		}
 
-		protected AbstractFigure (SerializationInfo info, StreamingContext context)
+		protected Figure (SerializationInfo info, StreamingContext context)
 		{
 			FillColor = (Color) info.GetValue ("FillColor", typeof (Color));
 			LineColor = (Color) info.GetValue ("LineColor", typeof (Color));
@@ -59,17 +59,17 @@ namespace MonoHotDraw.Figures
 		
 		
 		#region Public Api
-		public virtual void Add (IFigure figure)
+		public virtual void Add (Figure figure)
 		{
 			throw new NotSupportedException ("Does not support adding child figures.");
 		}
 
-		public virtual void Remove (IFigure figure)
+		public virtual void Remove (Figure figure)
 		{
 			throw new NotSupportedException ("Does not support removing child figures.");
 		}
 		
-		public virtual IFigure Container {
+		public virtual Figure Container {
 			get { return null; }
 		}
 		
@@ -94,7 +94,7 @@ namespace MonoHotDraw.Figures
 			}
 		}
 		
-		public virtual IEnumerable <IFigure> Figures {
+		public virtual IEnumerable <Figure> Figures {
 			get { yield break; }
 		}
 		
@@ -137,7 +137,7 @@ namespace MonoHotDraw.Figures
 		{
 			visitor.VisitFigure (this);
 			
-			foreach (IFigure figure in Figures)
+			foreach (Figure figure in Figures)
 				figure.AcceptVisitor (visitor);
 			
 			foreach (IHandle handle in Handles)
@@ -186,7 +186,7 @@ namespace MonoHotDraw.Figures
 			}
 		}
 
-		public virtual bool Includes (IFigure figure)
+		public virtual bool Includes (Figure figure)
 		{
 			return (this == figure);
 		}
@@ -211,7 +211,7 @@ namespace MonoHotDraw.Figures
 			DisplayBox = r;
 		}
 		
-		public virtual IFigure SelectableAt (double x, double y)
+		public virtual Figure SelectableAt (double x, double y)
 		{
 			var selectable = GetAttribute (FigureAttribute.Selectable);
 			return selectable != null && (bool) selectable == true ? this : null;
@@ -234,7 +234,7 @@ namespace MonoHotDraw.Figures
 		#region ICloneable implementation
 		public virtual object Clone ()
 		{
-			return GenericCloner.Clone <AbstractFigure> (this);
+			return GenericCloner.Clone <Figure> (this);
 		}
 
 		#endregion

@@ -50,7 +50,7 @@ namespace MonoHotDraw.Commands
 			UndoActivity = CreateUndoActivity ();
 			UndoActivity.AffectedFigures = new FigureCollection (DrawingView.SelectionEnumerator);
 
-			foreach (IFigure figure in UndoActivity.AffectedFigures)
+			foreach (Figure figure in UndoActivity.AffectedFigures)
 				figure.SetAttribute (attribute, value);
 		}
 		#endregion
@@ -71,19 +71,19 @@ namespace MonoHotDraw.Commands
 			public ChangeAttributeUndoActivity (IDrawingView drawingView, FigureAttribute attribute, object value)
 				: base (drawingView)
 			{
-				originalValues = new Dictionary<IFigure, object> ();
+				originalValues = new Dictionary<Figure, object> ();
 				Undoable = true;
 				Redoable = true;
 				Attribute = attribute;
 				Value = value;
 			}
 			
-			public override IEnumerable<IFigure> AffectedFigures {
+			public override IEnumerable<Figure> AffectedFigures {
 				get { return base.AffectedFigures; }
 				set { 
 					base.AffectedFigures = value;
 			
-					foreach (IFigure figure in AffectedFigures)
+					foreach (Figure figure in AffectedFigures)
 						SetOriginalValue (figure, figure.GetAttribute (Attribute));
 				}
 			}
@@ -96,7 +96,7 @@ namespace MonoHotDraw.Commands
 				if (base.Undo () == false)
 					return false;
 
-				foreach (KeyValuePair<IFigure, object> value in originalValues)
+				foreach (KeyValuePair<Figure, object> value in originalValues)
 					value.Key.SetAttribute (Attribute, value.Value);
 
 				return true;
@@ -107,19 +107,19 @@ namespace MonoHotDraw.Commands
 				if (Redoable == false)
 					return false;
 
-				foreach (KeyValuePair<IFigure, object> value in originalValues)
+				foreach (KeyValuePair<Figure, object> value in originalValues)
 					value.Key.SetAttribute (Attribute, Value);
 
 				return true;
 			}
 			
-			private void SetOriginalValue (IFigure figure, object value)
+			private void SetOriginalValue (Figure figure, object value)
 			{
 				if (value != null)
 					originalValues [figure] = value;
 			}
 			
-			private Dictionary<IFigure, object> originalValues;
+			private Dictionary<Figure, object> originalValues;
 		}
 		#endregion
 	}

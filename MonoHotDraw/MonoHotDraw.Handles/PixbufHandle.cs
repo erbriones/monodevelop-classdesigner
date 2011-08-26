@@ -34,7 +34,7 @@ namespace MonoHotDraw.Handles {
 
 	public class PixbufHandle: LocatorHandle {
 		
-		public PixbufHandle(IFigure owner, ILocator locator, Pixbuf pixbuf):
+		public PixbufHandle(Figure owner, ILocator locator, Pixbuf pixbuf):
 			base(owner, locator) {
 			Image = pixbuf;
 		}

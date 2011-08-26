@@ -32,7 +32,7 @@ using MonoDevelop.Projects.Dom.Parser;
 
 namespace MonoDevelop.ClassDesigner.Figures
 {
-	public interface ISerializableFigure : IFigure
+	public interface ISerializableFigure
 	{
 		XElement Serialize ();
 		void Deserialize (XElement xml, ProjectDom dom);

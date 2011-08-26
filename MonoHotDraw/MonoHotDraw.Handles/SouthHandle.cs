@@ -34,7 +34,7 @@ namespace MonoHotDraw.Handles {
 
 	public class SouthHandle: ResizeHandle	{
 	
-		public SouthHandle (IFigure owner): base (owner, RelativeLocator.South)	{
+		public SouthHandle (Figure owner): base (owner, RelativeLocator.South)	{
 		}
 		
 		public override Gdk.Cursor CreateCursor () {

@@ -26,6 +26,7 @@
 using System;
 using System.Xml.Linq;
 
+using MonoHotDraw.Figures;
 using MonoHotDraw.Util;
 
 using MonoDevelop.ClassDesigner;
@@ -34,7 +35,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 {
 	public static class FigureExtensions
 	{
-		public static XElement SerializePosition (this ISerializableFigure figure, bool includeHeight)
+		public static XElement SerializePosition (this Figure figure, bool includeHeight)
 		{
 			var xml = new XElement ("Position",
 				new XAttribute ("X", ClassDiagram.PixelsToInches (figure.DisplayBox.X)),
@@ -49,7 +50,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 			return xml;
 		}
 		
-		public static void DeserializePosition (this ISerializableFigure figure, XElement position)
+		public static void DeserializePosition (this Figure figure, XElement position)
 		{
 			if (position == null)
 				return;

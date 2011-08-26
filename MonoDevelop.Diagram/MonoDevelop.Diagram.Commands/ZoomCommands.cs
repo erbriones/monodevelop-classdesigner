@@ -36,7 +36,7 @@ namespace MonoDevelop.Diagram.Commands
 {
 	public class ZoomCommands : FigureCommandHandler
 	{
-		public override bool CanHandle (IEnumerable<IFigure> figures)
+		public override bool CanHandle (IEnumerable<Figure> figures)
 		{
 			 return figures != null & figures.Count () == 0;
 		}

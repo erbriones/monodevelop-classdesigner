@@ -36,14 +36,14 @@ namespace MonoHotDraw.Commands
 		}		
 		
 		#region Public Members
-		public FigureCollection InsertFigures (IEnumerable<IFigure> figures, double dx, double dy)
+		public FigureCollection InsertFigures (IEnumerable<Figure> figures, double dx, double dy)
 		{
 			return DrawingView.InsertFigures (figures.ToFigures (), dx, dy, false);
 		}
 
-		public void DeleteFigures (IEnumerable<IFigure> figures)
+		public void DeleteFigures (IEnumerable<Figure> figures)
 		{
-			foreach (IFigure figure in figures)
+			foreach (Figure figure in figures)
 				DrawingView.Remove (figure);
 				
 			DrawingView.ClearSelection ();
@@ -51,7 +51,7 @@ namespace MonoHotDraw.Commands
 		#endregion 
 		
 		#region ProtectedMembers
-		protected void CopyFigures (IEnumerable<IFigure> figures)
+		protected void CopyFigures (IEnumerable<Figure> figures)
 		{
 			Clipboard.GetInstance ().Contents = figures;
 		}

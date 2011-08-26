@@ -47,7 +47,7 @@ namespace MonoHotDraw.Figures
 		{
 		}
 
-		public LineConnectionFigure (IFigure startFigure, IFigure endFigure) : base (startFigure, endFigure)
+		public LineConnectionFigure (Figure startFigure, Figure endFigure) : base (startFigure, endFigure)
 		{
 			Line = new PolyLineFigure ();
 			Line.AddPoint (0.0, 0.0);
@@ -92,7 +92,7 @@ namespace MonoHotDraw.Figures
 			get { return false; }
 		}
 		
-		public override IEnumerable<IFigure> Figures {
+		public override IEnumerable<Figure> Figures {
 			get {
 				foreach (var figure in base.Figures) {
 					yield return figure;

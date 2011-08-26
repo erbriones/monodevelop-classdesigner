@@ -32,7 +32,7 @@ namespace MonoHotDraw.Tools
 	// NOTE: Should this be inside CompositeFigure??
 	public class CompositeFigureTool : FigureTool
 	{
-		public CompositeFigureTool (IDrawingEditor editor, IFigure fig, ITool dt): base (editor, fig, dt)
+		public CompositeFigureTool (IDrawingEditor editor, Figure fig, ITool dt): base (editor, fig, dt)
 		{
 		}
 
@@ -50,7 +50,7 @@ namespace MonoHotDraw.Tools
 		#region Mouse Events
 		public override void MouseDown (MouseEvent ev)
 		{
-			IFigure fig = ((CompositeFigure) Figure).FindFigure (ev.X, ev.Y);
+			Figure fig = ((CompositeFigure) Figure).FindFigure (ev.X, ev.Y);
 			
 			if (fig != null) {
 				DelegateTool = fig.CreateFigureTool (Editor, DefaultTool);

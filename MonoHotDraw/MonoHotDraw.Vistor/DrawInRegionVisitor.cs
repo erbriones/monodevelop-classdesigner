@@ -39,22 +39,22 @@ namespace MonoHotDraw.Visitor
 		Cairo.Context context;
 		Gdk.Region region;
 		IDrawingView view;
-		List<IFigure> figures;
+		List<Figure> figures;
 		
 		public DrawInRegionVisitor (Gdk.Region region, Cairo.Context context, IDrawingView view)
 		{
 			this.context = context;
 			this.region = region;
 			this.view = view;
-			this.figures = new List<IFigure> ();
+			this.figures = new List<Figure> ();
 		}
 		
-		public IEnumerable<IFigure> AffectedFigures { 
+		public IEnumerable<Figure> AffectedFigures { 
 			get { return figures; }
 		}
 		
 		#region IFigureVisitor implementation		
-		public void VisitFigure (IFigure figure)
+		public void VisitFigure (Figure figure)
 		{
 			var point = view.DrawingToView (figure.DisplayBox.X, figure.DisplayBox.Y);
 			var rect = new RectangleD (point.X, point.Y);

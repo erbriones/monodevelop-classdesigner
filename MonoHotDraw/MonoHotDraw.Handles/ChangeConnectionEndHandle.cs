@@ -50,7 +50,7 @@ namespace MonoHotDraw.Handles {
 			Connection.EndConnector = null;
 		}
 		
-		protected override bool IsConnectionPossible (IFigure figure) {
+		protected override bool IsConnectionPossible (Figure figure) {
 			if (!figure.Includes (Connection)
 			    && figure.CanConnect
 			    && Connection.CanConnectEnd (figure)) {

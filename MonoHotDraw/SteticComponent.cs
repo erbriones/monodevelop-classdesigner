@@ -58,7 +58,7 @@ namespace MonoHotDraw
 		public CommandManager CommandManager { get; private set; }
 		public UndoManager UndoManager { get; private set; }
 		
-		public virtual void DisplayMenu (IFigure figure, MouseEvent ev)
+		public virtual void DisplayMenu (Figure figure, MouseEvent ev)
 		{
 		}
 		
@@ -86,12 +86,12 @@ namespace MonoHotDraw
 			command.Execute();
 		}
 		
-		public void AddWithDragging (IFigure figure)
+		public void AddWithDragging (Figure figure)
 		{
 			Tool = new DragCreationTool(this, figure);
 		}
 		
-		public void AddWithResizing (IFigure figure)
+		public void AddWithResizing (Figure figure)
 		{
 			Tool = new ResizeCreationTool(this, figure);
 		}

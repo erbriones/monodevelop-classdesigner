@@ -44,7 +44,7 @@ namespace MonoHotDraw.Handles {
 		void Draw (Context context, IDrawingView view);
 		Gdk.Cursor CreateCursor ();
 		
-		IFigure Owner { get; }
+		Figure Owner { get; }
 		IUndoActivity UndoActivity { get; set; }
 		double Width { get; }
 		double Height { get; }

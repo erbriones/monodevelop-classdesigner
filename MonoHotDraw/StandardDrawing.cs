@@ -47,7 +47,7 @@ namespace MonoHotDraw
 		#region Drawing Api
 		public void Draw (Context context, FigureCollection figures)
 		{
-			foreach (IFigure figure in figures)
+			foreach (Figure figure in figures)
 				figure.Draw (context);
 		}
 
@@ -65,7 +65,7 @@ namespace MonoHotDraw
 			_displayBox = new RectangleD (0.0, 0.0);
 			bool first_flag = true;
 			
-			foreach (IFigure figure in Figures) {
+			foreach (Figure figure in Figures) {
 				if (first_flag) {
 					_displayBox = figure.DisplayBox;
 					first_flag = false;

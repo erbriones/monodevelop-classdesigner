@@ -31,13 +31,13 @@ using MonoHotDraw.Util;
 
 namespace MonoHotDraw.Figures
 {
-	public class FigureCollection : List<IFigure>, System.ICloneable
+	public class FigureCollection : List<Figure>, System.ICloneable
 	{
 		public FigureCollection () : base ()
 		{
 		}
 
-		public FigureCollection (IEnumerable <IFigure> list) : base (list)
+		public FigureCollection (IEnumerable <Figure> list) : base (list)
 		{
 		}
 		
@@ -46,7 +46,7 @@ namespace MonoHotDraw.Figures
 		{
 			var rectangle = new RectangleD (0, 0, 0, 0);
 			
-			foreach (IFigure figure in this)
+			foreach (Figure figure in this)
 				rectangle.Add (figure.DisplayBox);
 			
 			return rectangle;
@@ -68,7 +68,7 @@ namespace MonoHotDraw.Figures
 	
 	public static class FigureCollectionExtensions
 	{
-		public static FigureCollection ToFigures (this IEnumerable<IFigure> collection)
+		public static FigureCollection ToFigures (this IEnumerable<Figure> collection)
 	    {
 	          return new FigureCollection (collection);
 	    }

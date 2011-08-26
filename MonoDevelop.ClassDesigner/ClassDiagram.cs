@@ -57,7 +57,7 @@ namespace MonoDevelop.ClassDesigner
 		{
 		}
 		
-		public ClassDiagram (GroupingSetting grouping, MembersFormat format, IEnumerable<IFigure> figures)
+		public ClassDiagram (GroupingSetting grouping, MembersFormat format, IEnumerable<Figure> figures)
 		{
 			majorVersion = 1;
 			minorVersion = 1;
@@ -382,7 +382,7 @@ namespace MonoDevelop.ClassDesigner
 		protected void OnCreatedHandler (object o, FigureEventArgs e)
 		{
 			Add (e.Figure);
-			IFigure last = Figures.FirstOrDefault ();
+			Figure last = Figures.FirstOrDefault ();
 			
 			if (last == null)
 				return;

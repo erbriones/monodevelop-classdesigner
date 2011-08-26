@@ -34,7 +34,7 @@ namespace MonoHotDraw.Figures
 	//doesn't serialize completetly.
 
 	[Serializable]
-	public abstract class AttributeFigure : AbstractFigure
+	public abstract class AttributeFigure : Figure
 	{	
 		protected AttributeFigure ()
 		{

@@ -36,7 +36,7 @@ namespace MonoHotDraw.Commands
 		bool Redoable { get; set; }
 
 		IDrawingView DrawingView { get; }
-		IEnumerable<IFigure> AffectedFigures { get; set; }
+		IEnumerable<Figure> AffectedFigures { get; set; }
 
 		bool Undo ();
 		bool Redo();

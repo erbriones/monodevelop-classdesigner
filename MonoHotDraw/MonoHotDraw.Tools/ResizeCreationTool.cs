@@ -32,7 +32,7 @@ namespace MonoHotDraw.Tools
 {
 	public class ResizeCreationTool: CreationTool
 	{
-		public ResizeCreationTool (IDrawingEditor editor, IFigure ptype) : base (editor, ptype)
+		public ResizeCreationTool (IDrawingEditor editor, Figure ptype) : base (editor, ptype)
 		{
 		}
 		
