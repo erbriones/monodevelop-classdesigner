@@ -50,6 +50,7 @@ namespace MonoHotDraw.Figures
 		public LineConnectionFigure (Figure startFigure, Figure endFigure) : base (startFigure, endFigure)
 		{
 			Line = new PolyLineFigure ();
+			Line.Parent = this;
 			Line.AddPoint (0.0, 0.0);
 			Line.AddPoint (0.0, 0.0);
 			UpdateConnection ();

@@ -71,7 +71,12 @@ namespace MonoHotDraw.Figures
 			if (FigureCollection.Contains (figure))
 				return;
 			
+			if (figure.Parent != null) {
+				throw new Exception ("Can't add a figure which already has a parent");
+			}
+			
 			FigureCollection.Add (figure);
+			figure.Parent = this;
 			figure.FigureInvalidated += OnChildInvalidated;
 			figure.Invalidate ();
 			OnChildAdded (new FigureEventArgs (figure, figure.DisplayBox));
@@ -88,6 +93,7 @@ namespace MonoHotDraw.Figures
 			if (!FigureCollection.Contains (figure))
 				return;
 			
+			figure.Parent = null;
 			FigureCollection.Remove (figure);
 			figure.FigureInvalidated -= OnChildInvalidated;
 			figure.Invalidate ();

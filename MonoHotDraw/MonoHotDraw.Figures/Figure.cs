@@ -122,6 +122,8 @@ namespace MonoHotDraw.Figures
 			}
 		}
 		
+		public Figure Parent { get; internal set; }
+		
 		public virtual bool Visible {
 			get { return visible; }
 			set {
@@ -172,6 +174,17 @@ namespace MonoHotDraw.Figures
 			context.Save ();
 			BasicDrawSelected (context);
 			context.Restore ();
+		}
+		
+		public ParentT FindParent<ParentT> () where ParentT : Figure
+		{
+			return FindParent ((ParentT p) => true);
+		}
+		
+		public ParentT FindParent<ParentT> (Func<ParentT, bool> predicate) where ParentT : Figure
+		{
+			var p = Parent as ParentT;
+			return Parent == null ? null : p == null || !predicate(p) ? Parent.FindParent (predicate) : p;
 		}
 
 		public virtual object GetAttribute (FigureAttribute attribute)
