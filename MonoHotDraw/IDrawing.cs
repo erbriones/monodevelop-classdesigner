@@ -51,7 +51,7 @@ namespace MonoHotDraw
 		void SendToBack (Figure figure);
 
 		RectangleD DisplayBox { get; }
-		IEnumerable <Figure> Figures { get; }
+		IEnumerable <Figure> Children { get; }
 		//IList <IFigure> FigureCollection { get; }
 	}
 }

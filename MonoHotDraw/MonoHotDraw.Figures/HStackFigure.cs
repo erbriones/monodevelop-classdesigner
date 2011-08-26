@@ -50,7 +50,7 @@ namespace MonoHotDraw.Figures
 		
 		protected override double CalculateHeight ()
 		{
-			if (Figures.Count() == 0)
+			if (Children.Count() == 0)
 				return 0.0;
 			
 			return (from Figure fig in this.FigureCollection

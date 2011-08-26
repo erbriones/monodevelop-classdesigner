@@ -93,9 +93,9 @@ namespace MonoHotDraw.Figures
 			get { return false; }
 		}
 		
-		public override IEnumerable<Figure> Figures {
+		public override IEnumerable<Figure> Children {
 			get {
-				foreach (var figure in base.Figures) {
+				foreach (var figure in base.Children) {
 					yield return figure;
 				}
 				yield return Line;

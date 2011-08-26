@@ -69,6 +69,16 @@ namespace MonoHotDraw.Figures
 			throw new NotSupportedException ("Does not support removing child figures.");
 		}
 		
+		public IEnumerable<Figure> Ancestors {
+			get {
+				var p = Parent;
+				while (p != null) {
+					yield return p;
+					p = p.Parent;
+				}
+			}
+		}
+		
 		public virtual Figure Container {
 			get { return null; }
 		}
@@ -94,12 +104,23 @@ namespace MonoHotDraw.Figures
 			}
 		}
 		
-		public virtual IEnumerable <Figure> Figures {
+		public virtual IEnumerable <Figure> Children {
 			get { yield break; }
 		}
 		
 		public Color FillColor { get; set; }
-
+		
+		public IEnumerable<Figure> Descendants {
+			get {
+				foreach (var child in Children) {
+					yield return child;
+					foreach (var descendant in child.Descendants) {
+						yield return descendant;
+					}
+				}
+			}
+		}
+		
 		public virtual IEnumerable <IHandle> Handles {
 			get { yield break; }
 		}
@@ -139,7 +160,7 @@ namespace MonoHotDraw.Figures
 		{
 			visitor.VisitFigure (this);
 			
-			foreach (Figure figure in Figures)
+			foreach (Figure figure in Children)
 				figure.AcceptVisitor (visitor);
 			
 			foreach (IHandle handle in Handles)
@@ -174,17 +195,6 @@ namespace MonoHotDraw.Figures
 			context.Save ();
 			BasicDrawSelected (context);
 			context.Restore ();
-		}
-		
-		public ParentT FindParent<ParentT> () where ParentT : Figure
-		{
-			return FindParent ((ParentT p) => true);
-		}
-		
-		public ParentT FindParent<ParentT> (Func<ParentT, bool> predicate) where ParentT : Figure
-		{
-			var p = Parent as ParentT;
-			return Parent == null ? null : p == null || !predicate(p) ? Parent.FindParent (predicate) : p;
 		}
 
 		public virtual object GetAttribute (FigureAttribute attribute)

@@ -107,7 +107,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 			}
 			
 			// Get collapsed compartment info
-			var clist = Figures.OfType<CompartmentFigure> ().Where (c => c.Collapsed );
+			var clist = Children.OfType<CompartmentFigure> ().Where (c => c.Collapsed );
 			if (clist.Count() > 0) {
 				xml.Add (new XElement ("Compartments",
 					clist.Select(c => new XElement ("Compartment",
@@ -143,8 +143,8 @@ namespace MonoDevelop.ClassDesigner.Figures
 						
 						var member = domType.SearchMember (memberName.Value, true).SingleOrDefault ();
 						if (member != null) {
-							foreach (var c in Figures) {
-								var memberFigure = c.Figures
+							foreach (var c in Children) {
+								var memberFigure = c.Children
 									.OfType<MemberFigure> ()
 									.Where (f => f.Name == member.Name)
 									.SingleOrDefault ();
@@ -163,7 +163,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 							if (name == null)
 								continue;
 							
-							var compartment = Figures
+							var compartment = Children
 								.OfType<CompartmentFigure> ()
 								.Where (c => c.Name == name.Value)
 								.SingleOrDefault ();
@@ -212,7 +212,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 
 		public override IEnumerable<IHandle> Handles {
 			get {
-				foreach (Figure fig in Figures)
+				foreach (Figure fig in Children)
 					foreach (IHandle handle in fig.Handles)
 						yield return handle;
 				

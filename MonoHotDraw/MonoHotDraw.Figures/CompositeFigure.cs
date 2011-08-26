@@ -48,7 +48,7 @@ namespace MonoHotDraw.Figures
 			get { return this; }
 		}
 		
-		public sealed override IEnumerable <Figure> Figures {
+		public sealed override IEnumerable <Figure> Children {
 			get { return FigureCollection; }
 		}
 
@@ -128,7 +128,7 @@ namespace MonoHotDraw.Figures
 
 		public Figure FindFigure (double x, double y)
 		{
-			return Figures.LastOrDefault (f => f.ContainsPoint (x, y));
+			return Children.LastOrDefault (f => f.ContainsPoint (x, y));
 		}
 
 		public override bool Includes (Figure figure)

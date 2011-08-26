@@ -87,7 +87,7 @@ namespace MonoDevelop.ClassDesigner.Figures
 		
 		public override bool Visible {
 			get {
-				return base.Visible && membersStack != null && membersStack.Figures.Any (f => f.Visible);
+				return base.Visible && membersStack != null && membersStack.Children.Any (f => f.Visible);
 			}
 			set {
 				base.Visible = value;

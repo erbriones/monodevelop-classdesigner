@@ -88,7 +88,7 @@ namespace MonoDevelop.ClassDesigner
 			    )
 			);
 			
-			xml.Add (Figures.OfType<ISerializableFigure> ().Select (f => f.Serialize ()));
+			xml.Add (Children.OfType<ISerializableFigure> ().Select (f => f.Serialize ()));
 			
 			return xml;
 		}
@@ -263,7 +263,7 @@ namespace MonoDevelop.ClassDesigner
 		
 		public bool HasTypeFigure (string decoratedFullName)
 		{
-			return (String.IsNullOrEmpty (decoratedFullName)) ? false : Figures
+			return (String.IsNullOrEmpty (decoratedFullName)) ? false : Children
 				.OfType<TypeFigure> ()
 				.Any (tf => tf.DecoratedFullName == decoratedFullName);
 		}
@@ -283,7 +283,7 @@ namespace MonoDevelop.ClassDesigner
 			var cf = e.Figure as ClassFigure;
 			if (cf != null) {
 				var toRemove = new List<InheritanceLine> ();
-				var lines = Figures
+				var lines = Children
 					.OfType<InheritanceLine> ()
 					.Where (l => l.StartFigure == e.Figure || l.EndFigure == e.Figure);
 				foreach (var line in lines) {
@@ -314,7 +314,7 @@ namespace MonoDevelop.ClassDesigner
 			
 			var lines = new List<InheritanceLine> ();
 			
-			foreach (var cf in Figures.OfType<ClassFigure> ()) {
+			foreach (var cf in Children.OfType<ClassFigure> ()) {
 				if (cf.BaseDecoratedFullName == baseFigure.DecoratedFullName) {
 					lines.Add (new InheritanceLine (cf, baseFigure));
 				}
@@ -341,7 +341,7 @@ namespace MonoDevelop.ClassDesigner
 
 		public TypeFigure GetTypeFigure (string decoratedFullName)
 		{
-			return (String.IsNullOrEmpty (decoratedFullName)) ? null : Figures
+			return (String.IsNullOrEmpty (decoratedFullName)) ? null : Children
 				.OfType<TypeFigure> ()
 				.SingleOrDefault (f => f.DecoratedFullName == decoratedFullName);
 		}
@@ -382,7 +382,7 @@ namespace MonoDevelop.ClassDesigner
 		protected void OnCreatedHandler (object o, FigureEventArgs e)
 		{
 			Add (e.Figure);
-			Figure last = Figures.FirstOrDefault ();
+			Figure last = Children.FirstOrDefault ();
 			
 			if (last == null)
 				return;

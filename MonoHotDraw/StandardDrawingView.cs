@@ -338,7 +338,7 @@ namespace MonoHotDraw
 				
 				var drawVisitor = new DrawInRegionVisitor (ev.Region, context, this);
 
-				foreach (Figure figure in Drawing.Figures)
+				foreach (Figure figure in Drawing.Children)
 					figure.AcceptVisitor (drawVisitor);
 				
 				context.ResetClip ();

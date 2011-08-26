@@ -162,7 +162,7 @@ namespace MonoHotDraw.Handles
 		#region Private Members
 		private Figure FindConnectableFigure (double x, double y, IDrawing drawing)
 		{
-			return drawing.Figures.LastOrDefault (f => f.ContainsPoint (x, y) && IsConnectionPossible (f));
+			return drawing.Children.LastOrDefault (f => f.ContainsPoint (x, y) && IsConnectionPossible (f));
 		}
 
 		private IConnector FindConnectionTarget (double x, double y, IDrawing drawing)

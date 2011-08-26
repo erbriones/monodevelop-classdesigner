@@ -42,7 +42,7 @@ namespace MonoHotDraw.Commands
 			UndoActivity = CreateUndoActivity ();
 			UndoActivity.AffectedFigures = new FigureCollection (DrawingView.SelectionEnumerator);
 			
-			foreach (Figure figure in DrawingView.Drawing.Figures)
+			foreach (Figure figure in DrawingView.Drawing.Children)
 				DrawingView.AddToSelection (figure);
 		}
 		#endregion
@@ -76,7 +76,7 @@ namespace MonoHotDraw.Commands
 
 			public override bool Redo ()
 			{
-				foreach (Figure figure in DrawingView.Drawing.Figures)
+				foreach (Figure figure in DrawingView.Drawing.Children)
 					DrawingView.AddToSelection (figure);
 
 				return true;

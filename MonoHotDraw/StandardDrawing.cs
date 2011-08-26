@@ -65,7 +65,7 @@ namespace MonoHotDraw
 			_displayBox = new RectangleD (0.0, 0.0);
 			bool first_flag = true;
 			
-			foreach (Figure figure in Figures) {
+			foreach (Figure figure in Children) {
 				if (first_flag) {
 					_displayBox = figure.DisplayBox;
 					first_flag = false;
